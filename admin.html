@@ -461,27 +461,383 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        /* ================================
+           RESPONSIVE DESIGN - ADMIN PAGE
+           Optimisé pour Mobile, Tablette et Desktop
+           ================================ */
+
+        /* Tablette (max 1024px) */
+        @media (max-width: 1024px) {
+            .cars-admin-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
             .admin-container {
-                padding: 0 1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Tablette portrait et mobile landscape (max 768px) */
+        @media (max-width: 768px) {
+            /* Header admin responsive */
+            .admin-header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .admin-title {
+                font-size: 1.8rem;
+            }
+
+            .back-link {
+                align-self: center;
+            }
+
+            /* Container */
+            .admin-container {
+                padding: 1rem;
+            }
+
+            /* Actions globales */
+            .global-actions {
+                padding: 1.5rem;
+            }
+
+            .actions-grid {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .action-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* Grid des voitures - 1 colonne */
+            .cars-admin-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            /* Carte voiture responsive */
+            .car-admin-card {
+                margin-bottom: 1rem;
+            }
+
+            .car-admin-header {
+                height: 180px;
+            }
+
+            /* Détails voiture */
+            .car-details {
+                padding: 0.8rem;
+            }
+
+            /* Réservations */
+            .reservation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .reservation-info {
+                width: 100%;
+            }
+
+            /* Boutons d'action des réservations */
+            .reservation-item > div:last-child {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .delete-reservation,
+            .whatsapp-btn {
+                width: 100% !important;
+            }
+
+            /* Modal responsive */
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                margin: 2% auto;
+                padding: 1.5rem;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .modal-header h2 {
+                font-size: 1.3rem;
+            }
+
+            /* Form responsive */
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .modal-form-group {
+                margin-bottom: 1rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .modal-btn {
+                width: 100%;
+                padding: 0.9rem;
+            }
+
+            /* Edit car button */
+            .edit-car-btn {
+                width: 100%;
+                padding: 0.9rem;
+            }
+
+            /* Delete car button */
+            .delete-car-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+                top: 8px;
+                right: 8px;
+            }
+        }
+
+        /* Mobile (max 480px) */
+        @media (max-width: 480px) {
+            /* Header mobile */
+            .admin-header {
+                padding: 1rem 0;
+            }
+
+            .admin-title {
+                font-size: 1.5rem;
+            }
+
+            .back-link {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+
+            /* Container mobile */
+            .admin-container {
+                padding: 0.75rem;
+            }
+
+            /* Status message */
+            #statusMessage {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            /* Actions globales */
+            .global-actions {
+                padding: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .global-actions h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .action-btn {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 48px; /* Touch-friendly */
+            }
+
+            /* Car card mobile */
+            .car-admin-header {
+                height: 160px;
+            }
+
+            .car-admin-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .car-price {
+                font-size: 1rem;
+            }
+
+            .car-admin-content {
+                padding: 1rem;
+            }
+
+            .car-details h4 {
+                font-size: 1rem;
+            }
+
+            .detail-row {
+                font-size: 0.9rem;
+                padding: 0.4rem 0;
+            }
+
+            /* Réservations mobile */
+            .reservations-list h4 {
+                font-size: 1rem;
+            }
+
+            .reservations-container {
+                max-height: 300px; /* Plus de hauteur sur mobile */
+            }
+
+            .reservation-dates {
+                font-size: 0.9rem;
+            }
+
+            .reservation-customer {
+                font-size: 0.85rem;
+            }
+
+            .delete-reservation {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+                min-height: 44px; /* Touch-friendly */
+            }
+
+            /* Modal full-screen sur mobile */
+            .modal-content {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 1rem;
+                border-radius: 0;
+                max-height: 100vh;
+                height: 100%;
+            }
+
+            .modal-header {
+                padding-bottom: 1rem;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid #e9ecef;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .close-modal {
+                font-size: 1.8rem;
+                width: 35px;
+                height: 35px;
+            }
+
+            /* Form mobile */
+            .modal-form-group label {
+                font-size: 0.9rem;
+            }
+
+            .modal-form-group input,
+            .modal-form-group select,
+            .modal-form-group textarea {
+                padding: 0.75rem;
+                font-size: 1rem;
+                min-height: 48px; /* Touch-friendly */
+            }
+
+            .modal-form-group textarea {
+                min-height: 100px;
+            }
+
+            /* File inputs */
+            input[type="file"] {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            /* Price preview */
+            .price-preview {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .price-preview-details,
+            .price-preview-total {
+                font-size: 0.9rem;
+            }
+
+            /* Delete car button mobile */
+            .delete-car-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+                top: 6px;
+                right: 6px;
+            }
+
+            /* Scrollbar mobile - Plus fin */
+            .reservations-container::-webkit-scrollbar {
+                width: 5px;
+            }
+        }
+
+        /* Très petits écrans (max 360px) */
+        @media (max-width: 360px) {
+            .admin-title {
+                font-size: 1.3rem;
+            }
+
+            .action-btn {
+                font-size: 0.85rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .car-admin-header {
+                height: 140px;
+            }
+
+            .car-admin-header h3 {
+                font-size: 1rem;
+            }
+
+            .reservations-container {
+                max-height: 250px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .modal-content {
+                max-height: 98vh;
+                overflow-y: scroll;
+            }
+
+            .car-admin-header {
+                height: 120px;
+            }
+
+            .admin-header {
+                padding: 0.5rem 0;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .admin-header,
+            .global-actions,
+            .edit-car-btn,
+            .delete-car-btn,
+            .delete-reservation,
+            .whatsapp-btn,
+            .modal {
+                display: none !important;
             }
 
             .cars-admin-grid {
                 grid-template-columns: 1fr;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .actions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .reservation-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+            .car-admin-card {
+                break-inside: avoid;
+                margin-bottom: 2rem;
             }
         }
 
