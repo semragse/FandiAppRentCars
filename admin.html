@@ -1107,8 +1107,32 @@
                         <textarea id="modalNotes" rows="3" placeholder="Notes sur la réservation..." style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.95rem; font-family: Arial, sans-serif; resize: vertical;"></textarea>
                     </div>
 
+                    <!-- Champ Prix Manuel (optionnel) -->
+                    <div class="modal-form-group" style="background: #f0f7ff; border: 2px solid #667eea; border-radius: 10px; padding: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #667eea;">
+                            💵 Prix Manuel (optionnel)
+                            <span style="font-size: 0.75rem; font-weight: normal; color: #666; background: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                                ℹ️ Laissez vide pour calcul automatique
+                            </span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="modalManualPrice" 
+                            placeholder="Ex: 1500" 
+                            min="0" 
+                            step="0.01"
+                            style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem; margin-top: 0.5rem;"
+                            oninput="updatePricePreview()"
+                        >
+                        <small style="color: #666; font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+                            💡 <strong>Prix manuel :</strong> Si vous saisissez un prix, il sera utilisé à la place du calcul automatique.<br>
+                            🤖 <strong>Prix automatique :</strong> Calculé selon la durée + majorations (week-end, vacances, haute saison).
+                        </small>
+                    </div>
+
+                    <!-- Aperçu du prix (calculé automatiquement ou manuel) -->
                     <div class="price-preview" id="pricePreview">
-                        <div class="price-preview-title">💰 Calcul du prix</div>
+                        <div class="price-preview-title">💰 Prix de la réservation</div>
                         <div class="price-preview-details" id="priceDetails"></div>
                         <div class="price-preview-total" id="priceTotal"></div>
                     </div>
@@ -1858,6 +1882,7 @@
             document.getElementById('modalCustomerEmail').value = '';
             document.getElementById('modalCustomerPhone').value = '';
             document.getElementById('modalNotes').value = '';
+            document.getElementById('modalManualPrice').value = ''; // Reset prix manuel
             document.getElementById('modalDocCIN').value = '';
             document.getElementById('modalDocPermis').value = '';
             document.getElementById('modalDocAutre').value = '';
@@ -1876,10 +1901,11 @@
             document.getElementById('reservationModal').style.display = 'none';
         }
 
-        // Calculer et afficher le prix dans la modal
-        function updateModalPrice() {
+        // Calculer et afficher le prix dans la modal (Prix manuel ou automatique)
+        function updatePricePreview() {
             const startDate = document.getElementById('modalStartDate').value;
             const endDate = document.getElementById('modalEndDate').value;
+            const manualPrice = document.getElementById('modalManualPrice').value.trim();
             const pricePreview = document.getElementById('pricePreview');
             const modal = document.getElementById('reservationModal');
             const carPrice = parseInt(modal.getAttribute('data-car-price'), 10);
@@ -1898,13 +1924,35 @@
             }
 
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            const total = carPrice * days;
 
-            document.getElementById('priceDetails').innerHTML = `
-                <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
-            `;
-            document.getElementById('priceTotal').innerHTML = `Total: ${total}€`;
+            // Déterminer quel prix afficher
+            if (manualPrice && parseFloat(manualPrice) > 0) {
+                // Prix manuel saisi
+                const finalPrice = parseFloat(manualPrice);
+                document.getElementById('priceDetails').innerHTML = `
+                    <div style="color: #667eea; font-weight: 600;">
+                        💵 Prix manuel saisi par l'administrateur
+                    </div>
+                `;
+                document.getElementById('priceTotal').innerHTML = `
+                    <strong style="color: #667eea;">Total: ${finalPrice.toFixed(2)}€</strong>
+                `;
+            } else {
+                // Prix calculé automatiquement
+                const total = carPrice * days;
+                document.getElementById('priceDetails').innerHTML = `
+                    🤖 <strong>Calcul automatique</strong><br>
+                    <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
+                `;
+                document.getElementById('priceTotal').innerHTML = `Total: ${total}€`;
+            }
+            
             pricePreview.classList.add('show');
+        }
+
+        // Alias pour compatibilité avec les event listeners existants
+        function updateModalPrice() {
+            updatePricePreview();
         }
 
         // Soumettre nouvelle réservation
@@ -1918,6 +1966,7 @@
             const customerEmail = document.getElementById('modalCustomerEmail').value.trim();
             const customerPhone = document.getElementById('modalCustomerPhone').value.trim();
             const notes = document.getElementById('modalNotes').value.trim();
+            const manualPrice = document.getElementById('modalManualPrice').value.trim();
 
             if (!customerName || !customerEmail || !startDate || !endDate) {
                 showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
@@ -1926,6 +1975,12 @@
 
             if (new Date(startDate) >= new Date(endDate)) {
                 showStatus('La date de fin doit être postérieure à la date de début!', 'error');
+                return;
+            }
+
+            // Validation du prix manuel (si fourni)
+            if (manualPrice && parseFloat(manualPrice) <= 0) {
+                showStatus('Le prix manuel doit être supérieur à zéro!', 'error');
                 return;
             }
 
@@ -1959,6 +2014,16 @@
                 return;
             }
 
+            // Déterminer le prix final : Manuel ou Calculé automatiquement
+            let finalPrice;
+            if (manualPrice && parseFloat(manualPrice) > 0) {
+                // Prix manuel saisi par l'admin
+                finalPrice = parseFloat(manualPrice);
+            } else {
+                // Prix calculé automatiquement (avec majorations)
+                finalPrice = calculatePrice(carId, startDate, endDate);
+            }
+
             const reservationData = {
                 carId,
                 startDate,
@@ -1966,7 +2031,7 @@
                 customerName,
                 customerEmail,
                 customerPhone: customerPhone || '+212 6 00 00 00 00',
-                totalPrice: calculatePrice(carId, startDate, endDate),
+                totalPrice: finalPrice, // Prix manuel ou calculé
                 notes: notes,
                 documents: JSON.stringify(documents),
                 createdAt: new Date().toISOString()
