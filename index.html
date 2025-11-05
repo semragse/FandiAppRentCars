@@ -1408,12 +1408,12 @@
                 
                 <div class="date-group">
                     <label for="searchStartDate">Date de début :</label>
-                    <input type="date" id="searchStartDate" name="searchStartDate">
+                    <input type="date" id="searchStartDate" name="searchStartDate" min="">
                 </div>
 
                 <div class="date-group">
                     <label for="searchEndDate">Date de fin :</label>
-                    <input type="date" id="searchEndDate" name="searchEndDate">
+                    <input type="date" id="searchEndDate" name="searchEndDate" min="">
                 </div>
 
                 <button class="search-btn" id="searchAvailability">
@@ -2277,19 +2277,41 @@
             const endDateInput = document.getElementById('searchEndDate');
             const today = new Date().toISOString().split('T')[0];
             
-            // Vérifier si la date sélectionnée est dans le passé
+            // Bloquer la sélection de dates dans le passé
             if (startDate && startDate < today) {
-                alert('⚠️ Attention: Vous ne pouvez pas rechercher des dates dans le passé. La date a été réinitialisée à aujourd\'hui.');
+                alert('⚠️ Vous ne pouvez pas sélectionner une date dans le passé.\nLa date a été réinitialisée à aujourd\'hui.');
                 this.value = today;
                 return;
             }
             
             if (startDate) {
+                // Mettre à jour la date minimum de fin
                 endDateInput.min = startDate;
                 
+                // Réinitialiser la date de fin si elle est invalide
                 if (endDateInput.value && endDateInput.value <= startDate) {
                     endDateInput.value = '';
                 }
+            }
+        });
+
+        // Validation de la date de fin
+        document.getElementById('searchEndDate').addEventListener('change', function() {
+            const endDate = this.value;
+            const startDateInput = document.getElementById('searchStartDate');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Bloquer la sélection de dates dans le passé
+            if (endDate && endDate < today) {
+                alert('⚠️ Vous ne pouvez pas sélectionner une date dans le passé.\nLa date a été réinitialisée à aujourd\'hui.');
+                this.value = today;
+                return;
+            }
+            
+            // Vérifier que la date de fin est après la date de début
+            if (endDate && startDateInput.value && endDate <= startDateInput.value) {
+                alert('⚠️ La date de fin doit être après la date de début.');
+                this.value = '';
             }
         });
 
@@ -2864,15 +2886,25 @@
             // Fonction pour mettre à jour les dates minimums
             function updateMinDates() {
                 const today = new Date().toISOString().split('T')[0];
-                document.getElementById('searchStartDate').min = today;
-                document.getElementById('searchEndDate').min = today;
-                document.getElementById('startDate').min = today;
-                document.getElementById('endDate').min = today;
-                console.log('📅 Dates minimums mises à jour:', today);
+                const searchStartDate = document.getElementById('searchStartDate');
+                const searchEndDate = document.getElementById('searchEndDate');
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+                
+                // Définir les dates minimum (empêche la sélection de dates passées)
+                if (searchStartDate) searchStartDate.min = today;
+                if (searchEndDate) searchEndDate.min = today;
+                if (startDate) startDate.min = today;
+                if (endDate) endDate.min = today;
+                
+                console.log('📅 Dates minimums mises à jour à:', today);
             }
             
             // Définir la date minimum à aujourd'hui pour la recherche ET le modal de réservation
             updateMinDates();
+            
+            // Mettre à jour les dates chaque jour (si la page reste ouverte)
+            setInterval(updateMinDates, 60000); // Toutes les minutes
             
             // Mettre à jour les dates minimums toutes les heures pour s'assurer qu'elles restent à jour
             setInterval(updateMinDates, 60 * 60 * 1000); // 1 heure
