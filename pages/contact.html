@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - FandiApp Location de Voitures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .contact-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-info {
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-info a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .hours-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .hours-table tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        .hours-table td {
+            padding: 0.8rem 0.5rem;
+        }
+
+        .hours-table td:first-child {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .hours-table td:last-child {
+            text-align: right;
+            color: #333;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 2rem;
+        }
+
+        .map-container h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .map-placeholder {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.2rem;
+            border: 2px dashed #ccc;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+
+        .emergency-contact {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .emergency-contact h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-contact p {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-placeholder {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+        <div class="header">
+            <h1>📞 Contactez-nous</h1>
+            <p>Nous sommes là pour vous aider !</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Téléphone -->
+            <div class="contact-card">
+                <div class="contact-card-icon">📱</div>
+                <h2>Téléphone</h2>
+                <div class="contact-info">
+                    <p>📞 <a href="tel:+212600000000">+212 6 00 00 00 00</a></p>
+                    <p>📞 <a href="tel:+212700000000">+212 7 00 00 00 00</a></p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
+                        Disponible 7j/7 de 8h à 20h
+                    </p>
+                    
+                    <div class="social-links">
+                        <a href="https://wa.me/212600000000" class="social-btn whatsapp-btn" target="_blank">
+                            💬 WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="contact-card">
+                <div class="contact-card-icon">📧</div>
+                <h2>Email</h2>
+                <div class="contact-info">
+                    <p>✉️ <a href="mailto:contact@fandiapp.ma">contact@fandiapp.ma</a></p>
+                    <p>✉️ <a href="mailto:reservations@fandiapp.ma">reservations@fandiapp.ma</a></p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
+                        Réponse sous 24h maximum
+                    </p>
+                </div>
+            </div>
+
+            <!-- Adresse -->
+            <div class="contact-card">
+                <div class="contact-card-icon">📍</div>
+                <h2>Adresse</h2>
+                <div class="contact-info">
+                    <p>🏢 <strong>FandiApp Location</strong></p>
+                    <p>123 Avenue Mohammed V</p>
+                    <p>Casablanca 20000</p>
+                    <p>Maroc</p>
+                    <div class="social-links" style="margin-top: 1rem;">
+                        <a href="https://maps.google.com" class="social-btn" target="_blank">
+                            🗺️ Voir sur Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Horaires d'ouverture -->
+        <div class="contact-card">
+            <div class="contact-card-icon">🕐</div>
+            <h2>Horaires d'ouverture</h2>
+            <table class="hours-table">
+                <tr>
+                    <td>Lundi</td>
+                    <td>08:00 - 20:00</td>
+                </tr>
+                <tr>
+                    <td>Mardi</td>
+                    <td>08:00 - 20:00</td>
+                </tr>
+                <tr>
+                    <td>Mercredi</td>
+                    <td>08:00 - 20:00</td>
+                </tr>
+                <tr>
+                    <td>Jeudi</td>
+                    <td>08:00 - 20:00</td>
+                </tr>
+                <tr>
+                    <td>Vendredi</td>
+                    <td>08:00 - 20:00</td>
+                </tr>
+                <tr>
+                    <td>Samedi</td>
+                    <td>09:00 - 18:00</td>
+                </tr>
+                <tr>
+                    <td style="color: #ff6b6b;">Dimanche</td>
+                    <td>10:00 - 16:00</td>
+                </tr>
+            </table>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+                ⚠️ Ouvert tous les jours, même les jours fériés
+            </p>
+        </div>
+
+        <!-- Urgence 24/7 -->
+        <div class="emergency-contact">
+            <h3>🚨 Service d'urgence 24/7</h3>
+            <p>📞 +212 6 12 34 56 78</p>
+            <p style="font-size: 1rem; margin-top: 0.5rem; opacity: 0.9;">
+                Pour toute urgence en dehors des heures d'ouverture
+            </p>
+        </div>
+
+        <!-- Carte -->
+        <div class="map-container">
+            <h2>📍 Notre localisation</h2>
+            <div class="map-placeholder">
+                🗺️ Carte Google Maps à intégrer ici
+            </div>
+            <p style="color: #666; margin-top: 1rem; text-align: center;">
+                Nous sommes situés au cœur de Casablanca, facilement accessible en voiture ou en transport en commun
+            </p>
+        </div>
+    </div>
+</body>
+</html>
