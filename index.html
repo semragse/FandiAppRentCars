@@ -1,0 +1,3105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        /* Reset et configuration de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header fixe - Navigation professionnelle */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 0.75rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .contact-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Logo/Nom du site - MODIFIEZ ICI pour changer le nom */
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🚗";
+            font-size: 1.8rem;
+        }
+
+        /* Navigation professionnelle - SUPPRIMÉE POUR HEADER SIMPLIFIÉ */
+        /*
+        .nav {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        */
+
+        /* Section principale */
+        .main {
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 160px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Sidebar de recherche */
+        .search-sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .search-sidebar h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .date-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .date-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .date-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .date-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .seed-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #FFA500 0%, #FF7A00 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .seed-btn:hover {
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .availability-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .availability-info h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .availability-info small {
+            display: block;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Alerte centrale pour les messages importants */
+        .center-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 2rem;
+            text-align: center;
+            z-index: 1000;
+            min-width: 350px;
+            max-width: 500px;
+            border: 3px solid #ff6b35;
+            display: none;
+        }
+
+        .center-alert.error {
+            border-color: #ff4757;
+        }
+
+        .center-alert.success {
+            border-color: #2ed573;
+        }
+
+        .center-alert h3 {
+            margin-top: 0;
+            color: #ff4757;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .center-alert.success h3 {
+            color: #2ed573;
+        }
+
+        .center-alert p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .center-alert .alert-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .center-alert .close-alert {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .center-alert .close-alert:hover {
+            background: #ff3742;
+        }
+
+        .center-alert.success .close-alert {
+            background: #2ed573;
+        }
+
+        .center-alert.success .close-alert:hover {
+            background: #26d467;
+        }
+
+        /* Overlay sombre derrière l'alerte */
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        /* Styles pour les voitures statiques (non réservables) */
+        .static-car {
+            opacity: 0.8;
+            position: relative;
+        }
+
+        .static-car .car-image {
+            background-color: #f8f9fa;
+            position: relative;
+        }
+
+        .static-car .car-image::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%);
+            pointer-events: none;
+        }
+
+        .static-car::after {
+            content: "🔒";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .static-car .car-status {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+        }
+
+        .static-car .reserve-btn {
+            background: #bdc3c7 !important;
+            cursor: not-allowed;
+            color: #7f8c8d;
+        }
+
+        .static-car .car-price {
+            color: #7f8c8d;
+            text-decoration: line-through;
+        }
+
+        .static-car .car-name {
+            color: #7f8c8d;
+        }
+
+        /* Section calcul de prix */
+        .price-calculation {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .price-header h3 {
+            margin: 0;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .price-details {
+            margin-top: 1rem;
+        }
+
+        .price-summary {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .price-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .price-line:last-child {
+            border-bottom: none;
+        }
+
+        .price-line.special {
+            color: #fd7e14;
+            font-weight: 500;
+        }
+
+        .price-line.discount {
+            color: #27ae60;
+            font-weight: 500;
+            background: #f8fff9;
+            margin: 0 -1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .price-line.total {
+            border-top: 2px solid #dee2e6;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            font-size: 1.1rem;
+            color: #28a745;
+        }
+
+        .price-calendar {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .calendar-day {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            margin: 0.2rem 0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day.normal {
+            background: #e8f5e8;
+            border-left: 3px solid #28a745;
+        }
+
+        .calendar-day.weekend {
+            background: #fff3cd;
+            border-left: 3px solid #fd7e14;
+        }
+
+        .calendar-day.high-season {
+            background: #f8d7da;
+            border-left: 3px solid #dc3545;
+        }
+
+        .calendar-day.holiday {
+            background: #d1ecf1;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .day-label {
+            flex: 1;
+        }
+
+        .day-price {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .day-modifier {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-left: 0.5rem;
+        }
+
+        /* Contenu principal */
+        .main-content {
+            flex: 1;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .page-title p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Message d'excuse */
+        .apologize-message {
+            margin: 2rem auto;
+            max-width: 600px;
+            transition: all 0.4s ease;
+        }
+
+        .apologize-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border: 2px solid #f56565;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(245, 101, 101, 0.2);
+            animation: apologizeSlide 0.6s ease-out;
+        }
+
+        .apologize-card h3 {
+            color: #c53030;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .apologize-card p {
+            color: #744210;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .apologize-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .apologize-card a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes apologizeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Grille des voitures */
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            min-height: 600px;
+            align-content: start;
+        }
+
+        /* Carte de voiture */
+        .car-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Image de la voiture - REMPLACEZ les URLs des images ici */
+        .car-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Images par défaut - MODIFIEZ ces URLs pour vos vraies images */
+    .car-1 { background-image: url('images/clio5.jpg'); }
+    .car-2 { background-image: url('images/audia4.jpg'); }
+    .car-3 { background-image: url('images/Mercedes CLA 220.jpg'); }
+    .car-4 { background-image: url('images/Dacia Logan.jpg'); }
+    .car-5 { background-image: url('images/Peugeot 308.jpg'); }
+
+        .car-content {
+            padding: 1.5rem;
+        }
+
+        .car-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .car-details {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .car-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .car-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .status-available {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-reserved {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .reserve-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reserve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .reserve-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Footer professionnel */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 3rem 0 1.5rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section {
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-section p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-bottom a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        /* Icône WhatsApp flottante */
+    .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            width: 70px;
+            height: 70px;
+            background: url('images/whatsappincone.jpg') center/cover no-repeat;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            border: 3px solid #25d366;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.7), 0 0 0 10px rgba(37, 211, 102, 0.1);
+            }
+            100% {
+                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            }
+        }
+
+        /* Responsive pour mobile */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 60px;
+                height: 60px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* Formulaire */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50%) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+        }
+
+        /* Media queries pour responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .contact-link {
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+
+            /* Navigation supprimée - styles commentés
+            .nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+            */
+
+            .main {
+                padding: 1rem;
+                margin-top: 70px;
+            }
+
+            .container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-sidebar {
+                width: 100%;
+                position: static;
+                margin-bottom: 1rem;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .apologize-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .apologize-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .apologize-card p {
+                font-size: 0.9rem;
+            }
+
+            .cars-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                padding: 1.5rem;
+                margin: 1rem auto;
+                max-height: 95vh;
+            }
+
+            .cars-grid {
+                min-height: 400px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .car-content {
+                padding: 1rem;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+
+            /* Responsive pour la section de calcul de prix */
+            .price-calculation {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+
+            .price-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .calculate-btn {
+                width: 100%;
+                padding: 0.8rem;
+            }
+
+            .price-calendar {
+                max-height: 150px;
+            }
+
+            .calendar-day {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .price-line {
+                font-size: 0.9rem;
+                padding: 0.3rem 0;
+            }
+        }
+
+        /* États de chargement */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Success message */
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header avec logo centré et contact à droite -->
+    <header class="header">
+        <div class="header-content">
+            <!-- Espace vide à gauche pour équilibrer -->
+            <div class="header-left"></div>
+            
+            <!-- Logo centré -->
+            <a href="#" class="logo">FandiApp</a>
+            
+            <!-- Contact à droite -->
+            <div class="header-right">
+                <a href="pages/contact.html" class="contact-link">Contact Us</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section principale -->
+    <main class="main">
+        <div class="container">
+            <!-- Sidebar de recherche -->
+            <aside class="search-sidebar">
+                <h3>🗓️ Rechercher par dates</h3>
+                
+                <div class="date-group">
+                    <label for="searchStartDate">Date de début :</label>
+                    <input type="date" id="searchStartDate" name="searchStartDate">
+                </div>
+
+                <div class="date-group">
+                    <label for="searchEndDate">Date de fin :</label>
+                    <input type="date" id="searchEndDate" name="searchEndDate">
+                </div>
+
+                <button class="search-btn" id="searchAvailability">
+                    🔍 Rechercher la disponibilité
+                </button>
+
+                <button class="reset-btn" id="resetSearch">
+                    🔄 Réinitialiser
+                </button>
+
+                <!-- Seed button supprimé -->
+
+                <div class="availability-info" id="availabilityInfo" style="display: none;">
+                    <h4>Résultats :</h4>
+                    <p id="availabilityText">Sélectionnez des dates pour voir la disponibilité</p>
+                </div>
+            </aside>
+
+            <!-- Contenu principal -->
+            <div class="main-content">
+                <!-- Titre de la page -->
+                <section class="page-title">
+                    <h1>Location de voiture Fandi</h1>
+                    
+                    <!-- Message d'excuse pour indisponibilité -->
+                    <div class="apologize-message" id="apologizeMessage" style="display: none;">
+                        <div class="apologize-card">
+                            <h3>🚗 Nous nous excusons</h3>
+                            <p>Toutes nos voitures sont actuellement <strong>réservées pour aujourd'hui</strong> (28/10/2025).</p>
+                            <p>📅 Veuillez utiliser notre <strong>recherche par dates</strong> pour voir la disponibilité à partir de <strong>demain</strong>.</p>
+                            <p>📞 Pour toute urgence, contactez-nous au <a href="tel:+212677889988"><strong>+212 6 77 88 99 88</strong></a></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Grille des voitures -->
+            <section class="cars-grid">
+                <!-- Voiture 1 -->
+                <article class="car-card" data-car-id="car1">
+                    <!-- CHANGEZ la classe "car-1" et ajoutez votre image ici -->
+                    <div class="car-image car-1">
+                        <span style="display: none;">Remplacer par votre image</span>
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Clio 5</h3>
+                        <div class="car-price">35€/jour</div>
+                        <span class="car-status status-available">Disponible</span>
+                        <button class="reserve-btn" data-car="Clio 5" data-price="35">Réserver</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 2 -->
+                <article class="car-card" data-car-id="car2">
+                    <!-- CHANGEZ la classe "car-2" et ajoutez votre image ici -->
+                    <div class="car-image car-2">
+                        <span style="display: none;">Remplacer par votre image</span>
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Audi A4</h3>
+                        <div class="car-price">85€/jour</div>
+                        <span class="car-status status-available">Disponible</span>
+                        <button class="reserve-btn" data-car="Audi A4" data-price="85">Réserver</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 3 -->
+                <article class="car-card" data-car-id="car3">
+                    <!-- CHANGEZ la classe "car-3" et ajoutez votre image ici -->
+                    <div class="car-image car-3">
+                        <span style="display: none;">Remplacer par votre image</span>
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Mercedes CLA 220</h3>
+                        <div class="car-price">120€/jour</div>
+                        <span class="car-status status-available">Disponible</span>
+                        <button class="reserve-btn" data-car="Mercedes CLA 220" data-price="120">Réserver</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 4 -->
+                <article class="car-card" data-car-id="car4">
+                    <!-- CHANGEZ la classe "car-4" et ajoutez votre image ici -->
+                    <div class="car-image car-4">
+                        <span style="display: none;">Remplacer par votre image</span>
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Dacia Logan</h3>
+                        <div class="car-price">45€/jour</div>
+                        <span class="car-status status-available">Disponible</span>
+                        <button class="reserve-btn" data-car="Dacia Logan" data-price="45">Réserver</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 5 -->
+                <article class="car-card" data-car-id="car5">
+                    <!-- CHANGEZ la classe "car-5" et ajoutez votre image ici -->
+                    <div class="car-image car-5">
+                        <span style="display: none;">Remplacer par votre image</span>
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Peugeot 308</h3>
+                        <div class="car-price">65€/jour</div>
+                        <span class="car-status status-available">Disponible</span>
+                        <button class="reserve-btn" data-car="Peugeot 308" data-price="65">Réserver</button>
+                    </div>
+                </article>
+
+                <!-- Voitures supplémentaires (non disponibles à la réservation) -->
+                
+                <!-- Voiture 6 - BMW X3 -->
+                <article class="car-card static-car" data-car-name="BMW X3">
+                    <div class="car-image" style="background-image: url('images/BMW X3.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">BMW X3</h3>
+                        <div class="car-price">95€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 7 - Volkswagen Golf -->
+                <article class="car-card static-car" data-car-name="Volkswagen Golf">
+                    <div class="car-image" style="background-image: url('images/Volkswagen Golf.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Volkswagen Golf</h3>
+                        <div class="car-price">55€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 8 - Toyota Corolla -->
+                <article class="car-card static-car" data-car-name="Toyota Corolla">
+                    <div class="car-image" style="background-image: url('images/Toyota Corolla.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Toyota Corolla</h3>
+                        <div class="car-price">60€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 9 - Hyundai i20 -->
+                <article class="car-card static-car" data-car-name="Hyundai i20">
+                    <div class="car-image" style="background-image: url('images/Hyundai i20.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Hyundai i20</h3>
+                        <div class="car-price">40€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 10 - Ford Focus -->
+                <article class="car-card static-car" data-car-name="Ford Focus">
+                    <div class="car-image" style="background-image: url('images/Ford Focus.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Ford Focus</h3>
+                        <div class="car-price">50€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+
+                <!-- Voiture 11 - Seat Ibiza -->
+                <article class="car-card static-car" data-car-name="Seat Ibiza">
+                    <div class="car-image" style="background-image: url('images/Seat Ibiza.jpg'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="car-content">
+                        <h3 class="car-name">Seat Ibiza</h3>
+                        <div class="car-price">42€/jour</div>
+                        <span class="car-status status-reserved">Non disponible</span>
+                        <button class="reserve-btn" disabled style="opacity: 0.5;">Bientôt disponible</button>
+                    </div>
+                </article>
+            </section>
+            
+            <!-- Espacement pour garantir la hauteur -->
+            <div style="height: 200px;"></div>
+            </div> <!-- Fin main-content -->
+        </div>
+    </main>
+
+    <!-- Footer professionnel -->
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- Services 
+            <div class="footer-section">
+                <h3>Nos Services</h3>
+                <ul>
+                    <li><a href="pages/services.html">Location courte durée</a></li>
+                    <li><a href="pages/services.html">Location longue durée</a></li>
+                    <li><a href="pages/services.html">Véhicules de luxe</a></li>
+                    <li><a href="pages/services.html">Assurance complète</a></li>
+                    <li><a href="pages/services.html">Livraison gratuite</a></li>
+                </ul>
+            </div>
+
+           
+            <div class="footer-section">
+                <h3>Informations</h3>
+                <ul>
+                    <li><a href="pages/tarifs.html">Grille tarifaire</a></li>
+                    <li><a href="pages/conditions.html">Conditions générales</a></li>
+                    <li><a href="pages/faq.html">Questions fréquentes</a></li>
+                    <li><a href="pages/politique.html">Politique de confidentialité</a></li>
+                    <li><a href="pages/mentions.html">Mentions légales</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>📍 123 Avenue Mohammed V, Casablanca</p>
+                <p>📞 <a href="tel:+212677889988">+212 6 77 88 99 88</a></p>
+                <p>✉️ <a href="mailto:contact@fandirent.ma">contact@fandirent.ma</a></p>
+                <p>🕒 Lun-Dim: 8h00 - 20h00</p>
+                
+                <div class="social-links">
+                    <a href="https://facebook.com/fandirent" target="_blank" title="Facebook">📘</a>
+                    <a href="https://instagram.com/fandirent" target="_blank" title="Instagram">📷</a>
+                    <a href="https://wa.me/212677889988?text=Bonjour,%20je%20souhaite%20louer%20une%20voiture" target="_blank" title="WhatsApp">💬</a>
+                    <a href="https://linkedin.com/company/fandirent" target="_blank" title="LinkedIn">💼</a>
+                </div>
+            </div>
+
+            
+            <div class="footer-section">
+                <h3>FandiRent</h3>
+                <p>Leader de la location de véhicules au Maroc depuis 2020. Notre flotte moderne et nos services personnalisés garantissent votre satisfaction.</p>
+                <ul>
+                    <li><a href="apropos.html">Notre histoire</a></li>
+                    <li><a href="apropos.html">Notre équipe</a></li>
+                    <li><a href="blog.html">Blog & Actualités</a></li>
+                    <li><a href="carrieres.html">Carrières</a></li>
+                </ul>
+            </div>
+        </div>
+                -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 FandiRent - Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <!-- Modal de réservation -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Réserver une voiture</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+
+            <!-- Message de succès -->
+            <div id="successMessage" class="success-message">
+                Votre demande de réservation a été envoyée avec succès !
+            </div>
+
+            <!-- Formulaire de réservation -->
+            <form id="reservationForm">
+                <div class="form-group">
+                    <label for="carName">Véhicule sélectionné :</label>
+                    <input type="text" id="carName" name="carName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerName">Nom complet :</label>
+                    <input type="text" id="customerName" name="customerName" required placeholder="Votre nom complet">
+                </div>
+
+                <div class="form-group">
+                    <label for="customerEmail">Adresse e-mail :</label>
+                    <input type="email" id="customerEmail" name="customerEmail" required placeholder="votre.email@exemple.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Date de début :</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">Date de fin :</label>
+                    <input type="date" id="endDate" name="endDate" required>
+                </div>
+
+                <!-- Section calcul de prix -->
+                <div class="price-calculation" id="priceCalculation" style="display: none;">
+                    <div class="price-header">
+                        <h3>📊 Calcul du prix</h3>
+                        <button type="button" class="calculate-btn" id="calculatePrice">
+                            💰 Calculer le prix
+                        </button>
+                    </div>
+                    
+                    <div class="price-details" id="priceDetails" style="display: none;">
+                        <div class="price-summary">
+                            <div class="price-line">
+                                <span>Nombre de jours :</span>
+                                <span id="totalDays">-</span>
+                            </div>
+                            <div class="price-line">
+                                <span>Prix de base :</span>
+                                <span id="basePrice">-</span>
+                            </div>
+                            <div class="price-line special" id="weekendLine" style="display: none;">
+                                <span>Jours week-end (+30%) :</span>
+                                <span id="weekendDays">-</span>
+                            </div>
+                            <div class="price-line special" id="highSeasonLine" style="display: none;">
+                                <span>Haute saison (+30%) :</span>
+                                <span id="highSeasonDays">-</span>
+                            </div>
+                            <div class="price-line special" id="holidayLine" style="display: none;">
+                                <span>Vacances (+30%) :</span>
+                                <span id="holidayDays">-</span>
+                            </div>
+                            <div class="price-line">
+                                <span>Prix avec majorations :</span>
+                                <span id="totalPrice">-</span>
+                            </div>
+                            <div class="price-line discount" id="discountLine" style="display: none;">
+                                <span id="discountDescription">Remise dégressive :</span>
+                                <span id="discountAmount" style="color: #27ae60;">-</span>
+                            </div>
+                            <div class="price-line total">
+                                <span><strong>Prix final :</strong></span>
+                                <span id="finalPrice"><strong>-</strong></span>
+                            </div>
+                        </div>
+                        
+                        <div class="price-calendar" id="priceCalendar">
+                            <!-- Calendrier des prix sera généré ici -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup rapide de réservation (simplifié pour paiement) -->
+    <div id="quickReservationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2500;">
+        <div style="background:#ffffff; width:94%; max-width:400px; margin:6% auto; padding:1.4rem 1.6rem 1.6rem; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25); position:relative; font-family:Arial,sans-serif;">
+            <button id="quickCloseBtn" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
+            <h3 style="margin:0 0 1rem 0; color:#667eea; font-size:1.25rem; font-weight:700;">⚡ Réservation</h3>
+            <div style="display:flex; flex-direction:column; gap:.95rem;">
+                <div>
+                    <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Véhicule</label>
+                    <div id="quickCarName" style="margin-top:.35rem; background:#f8f9fa; border:2px solid #e9ecef; border-radius:10px; padding:.65rem .75rem; font-weight:600; font-size:.9rem; color:#333;">-</div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:.85rem;">
+                    <div>
+                        <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Début</label>
+                        <input type="date" id="quickStart" style="margin-top:.35rem; width:100%; padding:.55rem .6rem; border:2px solid #e9ecef; border-radius:10px; font-size:.85rem;" />
+                    </div>
+                    <div>
+                        <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Fin</label>
+                        <input type="date" id="quickEnd" style="margin-top:.35rem; width:100%; padding:.55rem .6rem; border:2px solid #e9ecef; border-radius:10px; font-size:.85rem;" />
+                    </div>
+                </div>
+                <div id="quickPriceBox" style="background:#f8f9fa; border:2px solid #e9ecef; border-radius:14px; padding:.85rem .9rem; display:none;">
+                    <div style="display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:.4rem;">
+                        <span style="color:#555;">Tarif journalier:</span>
+                        <strong id="quickDailyRate">-</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:.9rem;">
+                        <span style="color:#333;">Prix total:</span>
+                        <strong id="quickTotalPrice" style="color:#28a745;">-</strong>
+                    </div>
+                </div>
+                <div id="quickError" style="display:none; background:#f8d7da; color:#721c24; padding:.55rem .7rem; border-radius:8px; font-size:.75rem; font-weight:600;"></div>
+                <div style="display:flex; gap:.75rem; margin-top:.2rem;">
+                    <button type="button" id="quickCancelBtn" style="flex:1; padding:.65rem .9rem; background:#6c757d; color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer;">Annuler</button>
+                    <button type="button" id="quickPayBtn" style="flex:1; padding:.65rem .9rem; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer;">Aller au paiement →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const modal = document.getElementById('reservationModal');
+        const form = document.getElementById('reservationForm');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const successMessage = document.getElementById('successMessage');
+        const reserveButtons = document.querySelectorAll('.reserve-btn');
+        
+        // Variables pour la recherche active
+        let currentSearchDates = {
+            startDate: null,
+            endDate: null
+        };
+
+        // Base de données des voitures avec réservations (mise à jour: toutes les dates futures)
+        const carsDatabase = {
+            car1: {
+                id: 'car1',
+                name: 'Clio 5',
+                price: 35,
+                image: 'images/clio5.jpg',
+                reservations: [
+                    { id: 'r1c1', startDate: '2025-11-10', endDate: '2025-11-12' },
+                    { id: 'r2c1', startDate: '2025-11-18', endDate: '2025-11-19' }
+                ]
+            },
+            car2: {
+                id: 'car2',
+                name: 'Audi A4',
+                price: 85,
+                image: 'images/audia4.jpg',
+                reservations: [
+                    { id: 'r1c2', startDate: '2025-11-13', endDate: '2025-11-16' }
+                ]
+            },
+            car3: {
+                id: 'car3',
+                name: 'Mercedes CLA 220',
+                price: 120,
+                image: 'images/Mercedes CLA 220.jpg',
+                reservations: [
+                    { id: 'r1c3', startDate: '2025-11-20', endDate: '2025-11-25' }
+                ]
+            },
+            car4: {
+                id: 'car4',
+                name: 'Dacia Logan',
+                price: 45,
+                image: 'images/Dacia Logan.jpg',
+                reservations: [
+                    { id: 'r1c4', startDate: '2025-11-06', endDate: '2025-11-08' }
+                ]
+            },
+            car5: {
+                id: 'car5',
+                name: 'Peugeot 308',
+                price: 65,
+                image: 'images/Peugeot 308.jpg',
+                reservations: [
+                    { id: 'r1c5', startDate: '2025-12-05', endDate: '2025-12-10' }
+                ]
+            }
+        };
+
+        // Fonction pour définir dynamiquement les min sur les inputs date
+        function setDynamicMinDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = ['searchStartDate','searchEndDate','startDate','endDate']
+                .map(id => document.getElementById(id))
+                .filter(el => !!el);
+            dateInputs.forEach(input => {
+                input.setAttribute('min', today);
+            });
+            // Ajuster min de endDate quand startDate change (form)
+            const startDateEl = document.getElementById('startDate');
+            const endDateEl = document.getElementById('endDate');
+            if (startDateEl && endDateEl) {
+                startDateEl.addEventListener('change', () => {
+                    if (startDateEl.value) {
+                        endDateEl.min = startDateEl.value;
+                        if (endDateEl.value && endDateEl.value < startDateEl.value) {
+                            endDateEl.value = '';
+                        }
+                    }
+                });
+            }
+            // Ajuster min de searchEndDate selon searchStartDate
+            const searchStartEl = document.getElementById('searchStartDate');
+            const searchEndEl = document.getElementById('searchEndDate');
+            if (searchStartEl && searchEndEl) {
+                searchStartEl.addEventListener('change', () => {
+                    if (searchStartEl.value) {
+                        searchEndEl.min = searchStartEl.value;
+                        if (searchEndEl.value && searchEndEl.value < searchStartEl.value) {
+                            searchEndEl.value = '';
+                        }
+                    }
+                });
+            }
+        }
+
+        // Appliquer statut réservé pour les voitures ayant une réservation aujourd'hui
+        function applyTodayReservationsStatus() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            for (const carId in carsDatabase) {
+                const car = carsDatabase[carId];
+                const isReservedToday = car.reservations.some(r => todayStr >= r.startDate && todayStr <= r.endDate);
+                const card = document.querySelector(`[data-car-id="${carId}"]`);
+                if (card) {
+                    const statusEl = card.querySelector('.car-status');
+                    const btnEl = card.querySelector('.reserve-btn');
+                    if (isReservedToday) {
+                        statusEl.textContent = 'Réservé';
+                        statusEl.className = 'car-status status-reserved';
+                        btnEl.disabled = true;
+                    } else {
+                        statusEl.textContent = 'Disponible';
+                        statusEl.className = 'car-status status-available';
+                        btnEl.disabled = false;
+                    }
+                }
+            }
+        }
+
+        // Recharger les exemples de réservations (réinitialise et ré-applique)
+        function seedSampleReservations() {
+            // Réinjecter les jeux de données (futures uniquement)
+            carsDatabase.car1.reservations = [
+                { id: 'r1c1', startDate: '2025-11-10', endDate: '2025-11-12' },
+                { id: 'r2c1', startDate: '2025-11-18', endDate: '2025-11-19' }
+            ];
+            carsDatabase.car2.reservations = [
+                { id: 'r1c2', startDate: '2025-11-13', endDate: '2025-11-16' }
+            ];
+            carsDatabase.car3.reservations = [
+                { id: 'r1c3', startDate: '2025-11-20', endDate: '2025-11-25' }
+            ];
+            carsDatabase.car4.reservations = [
+                { id: 'r1c4', startDate: '2025-11-06', endDate: '2025-11-08' }
+            ];
+            carsDatabase.car5.reservations = [
+                { id: 'r1c5', startDate: '2025-12-05', endDate: '2025-12-10' }
+            ];
+
+            applyTodayReservationsStatus();
+            console.log('🧪 Exemples de réservations chargés');
+            try {
+                if (typeof showCenterAlert === 'function') {
+                    showCenterAlert('🧪 Exemples chargés', 'Les réservations de test ont été réinitialisées. Lancez une recherche de dates qui chevauchent ces périodes pour vérifier le filtre.', false);
+                }
+            } catch (e) {
+                // Fallback
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setDynamicMinDates();
+            applyTodayReservationsStatus();
+        });
+
+        // Fonctions de gestion de la disponibilité
+        function isCarAvailable(carId, startDate, endDate) {
+            const car = carsDatabase[carId];
+            if (!car) return false;
+
+            const searchStart = new Date(startDate);
+            const searchEnd = new Date(endDate);
+
+            // Vérifier si la période demandée chevauche avec les réservations existantes
+            for (const reservation of car.reservations) {
+                const resStart = new Date(reservation.startDate);
+                const resEnd = new Date(reservation.endDate);
+
+                // Vérifier le chevauchement
+                if (searchStart <= resEnd && searchEnd >= resStart) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Nouvelle fonction qui vérifie la disponibilité via l'API
+        async function isCarAvailableAPI(carId, startDate, endDate) {
+            try {
+                // Récupérer toutes les réservations pour cette voiture depuis l'API
+                const response = await fetch(`http://localhost:3001/reservations?carId=${carId}`);
+                if (!response.ok) {
+                    console.error('Erreur lors de la récupération des réservations:', response.status);
+                    return false;
+                }
+                
+                const reservations = await response.json();
+                const searchStart = new Date(startDate);
+                const searchEnd = new Date(endDate);
+
+                // Vérifier si la période demandée chevauche avec les réservations existantes
+                for (const reservation of reservations) {
+                    const resStart = new Date(reservation.startDate);
+                    const resEnd = new Date(reservation.endDate);
+
+                    // Vérifier le chevauchement
+                    if (searchStart <= resEnd && searchEnd >= resStart) {
+                        console.log(`❌ Conflit de réservation trouvé pour ${carId}:`, reservation);
+                        return false;
+                    }
+                }
+                
+                console.log(`✅ Voiture ${carId} disponible pour ${startDate} - ${endDate}`);
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de la vérification de disponibilité via API:', error);
+                return false;
+            }
+        }
+
+        // Ancienne fonction (gardée pour compatibilité)
+        function getAvailableCars(startDate, endDate) {
+            const availableCars = [];
+            
+            for (const carId in carsDatabase) {
+                if (isCarAvailable(carId, startDate, endDate)) {
+                    availableCars.push({
+                        ...carsDatabase[carId],
+                        element: document.querySelector(`[data-car-id="${carId}"]`)
+                    });
+                }
+            }
+            
+            return availableCars;
+        }
+
+        // Nouvelle fonction qui utilise l'API
+        async function getAvailableCarsAPI(startDate, endDate) {
+            const availableCars = [];
+            
+            for (const carId in carsDatabase) {
+                const isAvailable = await isCarAvailableAPI(carId, startDate, endDate);
+                if (isAvailable) {
+                    availableCars.push({
+                        ...carsDatabase[carId],
+                        element: document.querySelector(`[data-car-id="${carId}"]`)
+                    });
+                }
+            }
+            
+            return availableCars;
+        }
+
+        function updateCarDisplay(availableCars = null) {
+            const allCarCards = document.querySelectorAll('.car-card');
+            const apologizeMessage = document.getElementById('apologizeMessage');
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            
+            if (!availableCars) {
+                // Afficher toutes les voitures avec leur statut par défaut (disponibles)
+                allCarCards.forEach(card => {
+                    card.style.display = 'block';
+                    // Restaurer le statut par défaut (disponibles)
+                    const statusElement = card.querySelector('.car-status');
+                    const buttonElement = card.querySelector('.reserve-btn');
+                    statusElement.textContent = 'Disponible';
+                    statusElement.className = 'car-status status-available';
+                    buttonElement.disabled = false;
+                });
+                apologizeMessage.style.display = 'none'; // Masquer le message d'excuse
+                availabilityInfo.style.display = 'none';
+                return;
+            }
+
+            // Cacher le message d'excuse quand on fait une recherche
+            apologizeMessage.style.display = 'none';
+
+            // Cacher toutes les cartes et réinitialiser leur statut
+            allCarCards.forEach(card => {
+                card.style.display = 'none';
+                const statusElement = card.querySelector('.car-status');
+                const buttonElement = card.querySelector('.reserve-btn');
+                statusElement.textContent = 'Réservé';
+                statusElement.className = 'car-status status-reserved';
+                buttonElement.disabled = true;
+            });
+
+            // Afficher seulement les voitures disponibles avec le bon statut
+            availableCars.forEach((car) => {
+                const cardElement = document.querySelector(`[data-car-id="${car.id}"]`);
+                if (cardElement) {
+                    cardElement.style.display = 'block';
+                    
+                    // Mettre à jour le statut pour les voitures disponibles
+                    const statusElement = cardElement.querySelector('.car-status');
+                    const buttonElement = cardElement.querySelector('.reserve-btn');
+                    
+                    statusElement.textContent = 'Disponible';
+                    statusElement.className = 'car-status status-available';
+                    buttonElement.disabled = false;
+                    
+                    console.log(`✅ ${car.name} (${car.id}) - Statut: Disponible, Bouton: Activé`);
+                }
+            });
+
+            // Mettre à jour les informations de disponibilité
+            const availabilityText = document.getElementById('availabilityText');
+            
+            if (availableCars.length === 0) {
+                // Afficher l'alerte centrale au lieu de la petite étiquette
+                showCenterAlert(
+                    'error',
+                    'Aucune voiture disponible',
+                    `Aucune voiture n'est disponible pour la période du ${formatDateFrench(startDate)} au ${formatDateFrench(endDate)}. Essayez d'autres dates.`,
+                    '❌'
+                );
+                
+                // Masquer la petite info box
+                availabilityInfo.style.display = 'none';
+            } else {
+                const carNames = availableCars.map(car => car.name).join(', ');
+                availabilityText.innerHTML = `✅ ${availableCars.length} voiture(s) disponible(s)<br><small><strong>${carNames}</strong></small>`;
+                availabilityInfo.style.backgroundColor = '#d4edda';
+                availabilityInfo.style.borderLeft = '4px solid #38a169';
+                availabilityInfo.style.display = 'block';
+            }
+            
+            availabilityInfo.style.display = 'block';
+        }
+
+        async function addReservation(carId, startDate, endDate, customerName, customerEmail) {
+            try {
+                // Calculer le prix total
+                const car = carsDatabase[carId];
+                if (!car) {
+                    console.error('Voiture non trouvée:', carId);
+                    return false;
+                }
+                
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                
+                // Calculer le prix avec les remises progressives et modifiers
+                let totalPrice = car.price * days;
+                
+                // Appliquer les remises progressives
+                if (days >= 30) {
+                    totalPrice *= 0.6; // 40% de réduction
+                } else if (days >= 15) {
+                    totalPrice *= 0.7; // 30% de réduction
+                } else if (days >= 8) {
+                    totalPrice *= 0.8; // 20% de réduction
+                } else if (days >= 4) {
+                    totalPrice *= 0.9; // 10% de réduction
+                }
+                
+                totalPrice = Math.round(totalPrice);
+                
+                // Préparer les données de réservation pour l'API
+                const reservationData = {
+                    carId,
+                    startDate,
+                    endDate,
+                    customerName,
+                    customerEmail,
+                    customerPhone: '+212 6 00 00 00 00', // Valeur par défaut
+                    totalPrice,
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Envoyer à l'API
+                const response = await fetch('http://localhost:3001/reservations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reservationData)
+                });
+                
+                if (response.ok) {
+                    const savedReservation = await response.json();
+                    console.log(`✅ Réservation ajoutée via API pour ${carId}:`, savedReservation);
+                    return true;
+                } else {
+                    console.error('Erreur API lors de l\'ajout de réservation:', response.status);
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout de la réservation via API:', error);
+                return false;
+            }
+        }
+
+        // Gestionnaires d'événements pour la recherche
+        document.getElementById('searchAvailability').addEventListener('click', async function() {
+            const startDate = document.getElementById('searchStartDate').value;
+            const endDate = document.getElementById('searchEndDate').value;
+            const today = new Date().toISOString().split('T')[0];
+
+            if (!startDate || !endDate) {
+                alert('Veuillez sélectionner les dates de début et de fin.');
+                return;
+            }
+
+            // Vérifier que la date de début n'est pas dans le passé
+            if (startDate < today) {
+                alert('⚠️ La date de début ne peut pas être dans le passé. Veuillez sélectionner une date à partir d\'aujourd\'hui.');
+                return;
+            }
+
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert('La date de fin doit être postérieure à la date de début.');
+                return;
+            }
+
+            // Sauvegarder les dates de recherche
+            currentSearchDates.startDate = startDate;
+            currentSearchDates.endDate = endDate;
+
+            console.log(`🔍 Recherche de disponibilité du ${startDate} au ${endDate} (via API)`);
+            
+            // Afficher un indicateur de chargement
+            this.disabled = true;
+            this.textContent = 'Recherche en cours...';
+            
+            try {
+                const availableCars = await getAvailableCarsAPI(startDate, endDate);
+                
+                console.log('Voitures disponibles (API):', availableCars.map(car => `${car.name} (${car.id})`));
+                
+                updateCarDisplay(availableCars);
+                
+                // Scroll vers les résultats
+                document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Erreur lors de la recherche:', error);
+                alert('❌ Erreur lors de la recherche. Veuillez réessayer.');
+            } finally {
+                // Restaurer le bouton
+                this.disabled = false;
+                this.textContent = '🔍 Rechercher la disponibilité';
+            }
+        });
+
+        document.getElementById('resetSearch').addEventListener('click', function() {
+            document.getElementById('searchStartDate').value = '';
+            document.getElementById('searchEndDate').value = '';
+            
+            // Réinitialiser les dates de recherche
+            currentSearchDates.startDate = null;
+            currentSearchDates.endDate = null;
+            
+            // Réinitialiser l'affichage SANS déclencher les alertes
+            resetToDefaultDisplay();
+            
+            console.log('🔄 Recherche réinitialisée - retour à l\'affichage par défaut');
+        });
+
+        // Bouton pour recharger les réservations d'exemple
+        // Seed button supprimé (suppression du listener)
+
+        // Validation des dates de recherche
+        document.getElementById('searchStartDate').addEventListener('change', function() {
+            const startDate = this.value;
+            const endDateInput = document.getElementById('searchEndDate');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Vérifier si la date sélectionnée est dans le passé
+            if (startDate && startDate < today) {
+                alert('⚠️ Attention: Vous ne pouvez pas rechercher des dates dans le passé. La date a été réinitialisée à aujourd\'hui.');
+                this.value = today;
+                return;
+            }
+            
+            if (startDate) {
+                endDateInput.min = startDate;
+                
+                if (endDateInput.value && endDateInput.value <= startDate) {
+                    endDateInput.value = '';
+                }
+            }
+        });
+
+        // Ouvrir la modal au clic sur "Réserver" (délégation d'événement)
+        // Nouveau gestionnaire: ouverture popup rapide au clic sur Réserver
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('reserve-btn') && !e.target.disabled) {
+                const carName = e.target.getAttribute('data-car');
+                const carPrice = parseInt(e.target.getAttribute('data-price'), 10);
+                const carId = e.target.closest('.car-card').getAttribute('data-car-id');
+                const quickModal = document.getElementById('quickReservationModal');
+                quickModal.setAttribute('data-car-id', carId);
+                quickModal.setAttribute('data-car-price', carPrice);
+                document.getElementById('quickCarName').textContent = `${carName}`;
+                document.getElementById('quickDailyRate').textContent = `${carPrice}€`; 
+                // Init dates
+                const today = new Date().toISOString().split('T')[0];
+                const qs = document.getElementById('quickStart');
+                const qe = document.getElementById('quickEnd');
+                qs.min = today; qe.min = today;
+                if (currentSearchDates.startDate && currentSearchDates.endDate) {
+                    qs.value = currentSearchDates.startDate;
+                    qe.value = currentSearchDates.endDate;
+                } else { qs.value=''; qe.value=''; }
+                document.getElementById('quickPriceBox').style.display='none';
+                document.getElementById('quickError').style.display='none';
+                quickModal.style.display='block';
+                document.body.style.overflow='hidden';
+            }
+        });
+
+        // Fermer popup rapide
+        function closeQuickModal() {
+            const quickModal = document.getElementById('quickReservationModal');
+            quickModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        document.getElementById('quickCloseBtn').addEventListener('click', closeQuickModal);
+        document.getElementById('quickCancelBtn').addEventListener('click', closeQuickModal);
+        window.addEventListener('click', function(ev){
+            const quickModal = document.getElementById('quickReservationModal');
+            if (ev.target === quickModal) closeQuickModal();
+        });
+
+        // Mise à jour boîte de prix (jour & total)
+        function updateQuickPrice() {
+            const qsVal = document.getElementById('quickStart').value;
+            const qeVal = document.getElementById('quickEnd').value;
+            const quickModal = document.getElementById('quickReservationModal');
+            const box = document.getElementById('quickPriceBox');
+            const err = document.getElementById('quickError');
+            err.style.display='none';
+            if (!qsVal || !qeVal) { box.style.display='none'; return; }
+            const start = new Date(qsVal); const end = new Date(qeVal);
+            if (start >= end) { box.style.display='none'; err.textContent='Dates invalides'; err.style.display='block'; return; }
+            const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
+            const days = Math.ceil((end - start)/(1000*60*60*24));
+            let total = pricePerDay * days;
+            if (days >= 31) total = Math.round(total * 0.6); else if (days >= 15) total = Math.round(total * 0.7); else if (days >= 8) total = Math.round(total * 0.8); else if (days >= 4) total = Math.round(total * 0.9);
+            document.getElementById('quickTotalPrice').textContent = `${total}€ (${days}j)`;
+            box.style.display='block';
+        }
+        document.getElementById('quickStart').addEventListener('change', function(){
+            const qe = document.getElementById('quickEnd');
+            if (this.value) { qe.min = this.value; if (qe.value && qe.value <= this.value) qe.value=''; }
+            updateQuickPrice();
+        });
+    document.getElementById('quickEnd').addEventListener('change', updateQuickPrice);
+
+        // Redirection vers page de paiement
+        document.getElementById('quickPayBtn').addEventListener('click', async function(){
+            const quickModal = document.getElementById('quickReservationModal');
+            const carId = quickModal.getAttribute('data-car-id');
+            const startDate = document.getElementById('quickStart').value;
+            const endDate = document.getElementById('quickEnd').value;
+            const err = document.getElementById('quickError');
+            if (!startDate || !endDate) { err.textContent='Sélectionnez les dates'; err.style.display='block'; return; }
+            if (new Date(startDate) >= new Date(endDate)) { err.textContent='Dates invalides'; err.style.display='block'; return; }
+            // Vérifier disponibilité avant paiement
+            const avail = await isCarAvailableAPI(carId, startDate, endDate);
+            if (!avail) { err.textContent='Cette voiture est déjà réservée pour ces dates.'; err.style.display='block'; return; }
+            // Recalcul du total (même logique que updateQuickPrice)
+            const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
+            const days = Math.ceil((new Date(endDate) - new Date(startDate))/(1000*60*60*24));
+            let total = pricePerDay * days;
+            if (days >= 31) total = Math.round(total * 0.6); else if (days >= 15) total = Math.round(total * 0.7); else if (days >= 8) total = Math.round(total * 0.8); else if (days >= 4) total = Math.round(total * 0.9);
+            const params = new URLSearchParams({ carId, start:startDate, end:endDate, days:String(days), total:String(total) });
+            window.location.href = `payment.html?${params.toString()}`;
+        });
+
+
+        // Fermer la modal
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            form.reset();
+            successMessage.style.display = 'none';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Fermer la modal en cliquant à l'extérieur
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Validation des dates
+        document.getElementById('startDate').addEventListener('change', function() {
+            const startDate = this.value;
+            const endDateInput = document.getElementById('endDate');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Vérifier si la date sélectionnée est dans le passé
+            if (startDate && startDate < today) {
+                alert('⚠️ Attention: Vous ne pouvez pas sélectionner une date dans le passé. La date a été réinitialisée à aujourd\'hui.');
+                this.value = today;
+                return;
+            }
+            
+            if (startDate) {
+                endDateInput.min = startDate;
+                
+                // Si la date de fin est antérieure à la date de début, la réinitialiser
+                if (endDateInput.value && endDateInput.value < startDate) {
+                    endDateInput.value = '';
+                }
+            }
+        });
+
+        // Gestion de la soumission du formulaire
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Simulation d'envoi (remplacez par votre logique backend)
+            const formData = new FormData(form);
+            const reservationData = {
+                carName: formData.get('carName'),
+                customerName: formData.get('customerName'),
+                customerEmail: formData.get('customerEmail'),
+                startDate: formData.get('startDate'),
+                endDate: formData.get('endDate')
+            };
+
+            // Validation basique
+            if (!reservationData.customerName || !reservationData.customerEmail || 
+                !reservationData.startDate || !reservationData.endDate) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+
+            // Validation de la date
+            const start = new Date(reservationData.startDate);
+            const end = new Date(reservationData.endDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Réinitialiser l'heure pour comparer seulement les dates
+            
+            // Vérifier que la date de début n'est pas dans le passé
+            if (start < today) {
+                alert('La date de début ne peut pas être dans le passé. Veuillez choisir une date à partir d\'aujourd\'hui.');
+                return;
+            }
+            
+            if (end <= start) {
+                alert('La date de fin doit être postérieure à la date de début.');
+                return;
+            }
+
+            // Simulation d'un délai d'envoi
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi en cours...';
+            
+            // Récupérer l'ID de la voiture sélectionnée
+            const selectedCarId = form.getAttribute('data-selected-car-id');
+            
+            // Processus asynchrone de réservation
+            (async () => {
+                try {
+                    // Vérifier la disponibilité avant d'enregistrer via l'API
+                    const isAvailable = await isCarAvailableAPI(selectedCarId, reservationData.startDate, reservationData.endDate);
+                    
+                    if (!isAvailable) {
+                        alert('❌ Désolé, cette voiture n\'est plus disponible pour les dates sélectionnées. Veuillez choisir d\'autres dates.');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                        return;
+                    }
+                    
+                    // Enregistrer la réservation dans la base de données via l'API
+                    const success = await addReservation(
+                        selectedCarId,
+                        reservationData.startDate,
+                            reservationData.endDate,
+                        reservationData.customerName,
+                        reservationData.customerEmail
+                    );
+                    
+                    if (success) {
+                        // Afficher le message de succès
+                        successMessage.style.display = 'block';
+                        
+                        // Calculer le nombre de jours et le prix total
+                        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                        const car = carsDatabase[selectedCarId];
+                        let totalPrice = car.price * days;
+                        
+                        // Appliquer les remises progressives (même logique que dans addReservation)
+                        if (days >= 30) {
+                            totalPrice *= 0.6; // 40% de réduction
+                        } else if (days >= 15) {
+                            totalPrice *= 0.7; // 30% de réduction
+                        } else if (days >= 8) {
+                            totalPrice *= 0.8; // 20% de réduction
+                        } else if (days >= 4) {
+                            totalPrice *= 0.9; // 10% de réduction
+                        }
+                        
+                        totalPrice = Math.round(totalPrice);
+                        
+                        console.log('✅ Réservation confirmée:', {
+                            ...reservationData,
+                            carId: selectedCarId,
+                            days,
+                            totalPrice: totalPrice + '€'
+                        });
+                        
+                        // Mettre à jour l'affichage si une recherche est active
+                        const searchStartDate = document.getElementById('searchStartDate').value;
+                        const searchEndDate = document.getElementById('searchEndDate').value;
+                        if (searchStartDate && searchEndDate) {
+                            // TODO: Mettre à jour la recherche avec l'API
+                            console.log('🔄 Recherche à actualiser avec nouvelle réservation');
+                        }
+                        
+                        // Fermer la modal après 2 secondes
+                        setTimeout(() => {
+                            closeModal();
+                        }, 2000);
+                    } else {
+                        alert('❌ Erreur lors de l\'enregistrement de la réservation.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Erreur lors du processus de réservation:', error);
+                    alert('❌ Erreur technique lors de la réservation. Veuillez réessayer.');
+                }
+                
+                // Réinitialiser le bouton
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            })();
+        });
+
+        // Menu mobile (fonctionnalité basique)
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const nav = document.querySelector('.nav');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Smooth scroll pour les liens de navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animation d'apparition des cartes au scroll (bonus)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Appliquer l'animation aux cartes
+        document.querySelectorAll('.car-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Gestion du redimensionnement de fenêtre
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                nav.style.display = 'flex';
+            } else {
+                nav.style.display = 'none';
+            }
+        });
+
+        // Vérifier le statut des voitures pour aujourd'hui
+        function checkTodayAvailability() {
+            const today = new Date().toISOString().split('T')[0];
+            let availableToday = 0;
+            
+            Object.keys(carsDatabase).forEach((carId, index) => {
+                const isAvailable = isCarAvailable(carId, today, today);
+                const cardElement = document.querySelector(`[data-car-id="${carId}"]`);
+                
+                if (cardElement) {
+                    const statusElement = cardElement.querySelector('.car-status');
+                    const buttonElement = cardElement.querySelector('.reserve-btn');
+                    
+                    if (isAvailable) {
+                        statusElement.textContent = 'Disponible';
+                        statusElement.className = 'car-status status-available';
+                        buttonElement.disabled = false;
+                        availableToday++;
+                        console.log(`✅ ${carsDatabase[carId].name} - Disponible aujourd'hui`);
+                    } else {
+                        statusElement.textContent = 'Réservé';
+                        statusElement.className = 'car-status status-reserved';
+                        buttonElement.disabled = true;
+                        console.log(`❌ ${carsDatabase[carId].name} - Réservé aujourd'hui`);
+                    }
+                }
+            });
+            
+            console.log(`📊 Aujourd'hui (${today}): ${availableToday} voiture(s) disponible(s) sur ${Object.keys(carsDatabase).length}`);
+            
+            // Gérer le message d'excuse
+            const apologizeMessage = document.getElementById('apologizeMessage');
+            if (availableToday > 0) {
+                console.log('🟢 Masquer le message d\'excuse - voitures disponibles');
+                apologizeMessage.style.display = 'none';
+            } else {
+                console.log('🔴 Aucune voiture disponible aujourd\'hui - afficher alerte centrale');
+                apologizeMessage.style.display = 'none'; // Masquer le message statique
+                
+                // Afficher l'alerte centrale
+                setTimeout(() => {
+                    showCenterAlert(
+                        'error',
+                        'Aucune voiture disponible aujourd\'hui',
+                        `Nous nous excusons, toutes nos voitures sont réservées pour aujourd'hui (${formatDateFrench(today)}). Essayez de rechercher pour d'autres dates ou revenez demain !`,
+                        '😔'
+                    );
+                }, 500); // Petit délai pour que la page se charge complètement
+            }
+            
+            return availableToday;
+        }
+
+        // Charger les données depuis localStorage si disponibles
+        function loadDatabaseFromStorage() {
+            try {
+                const saved = localStorage.getItem('fandiapp_reservations');
+                if (saved) {
+                    const savedData = JSON.parse(saved);
+                    // Fusionner les données sauvegardées
+                    Object.keys(carsDatabase).forEach(carId => {
+                        if (savedData[carId] && savedData[carId].reservations) {
+                            carsDatabase[carId].reservations = savedData[carId].reservations;
+                        }
+                    });
+                    console.log('📁 Base de données synchronisée depuis localStorage');
+                    return true;
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement depuis localStorage:', error);
+            }
+            return false;
+        }
+
+        // Surveiller les changements depuis l'admin avec notification
+        function watchForAdminUpdates() {
+            let lastUpdate = localStorage.getItem('fandiapp_last_update');
+            
+            setInterval(() => {
+                const currentUpdate = localStorage.getItem('fandiapp_last_update');
+                if (currentUpdate && currentUpdate !== lastUpdate) {
+                    lastUpdate = currentUpdate;
+                    console.log('🔄 Mise à jour détectée depuis l\'admin');
+                    loadDatabaseFromStorage();
+                    
+                    // Afficher notification de mise à jour en temps réel
+                    showLiveUpdateNotification();
+                    
+                    // Remettre à jour l'affichage selon le contexte
+                    if (!currentSearchDates.startDate || !currentSearchDates.endDate) {
+                        // Mode affichage par défaut - mise à jour silencieuse
+                        resetToDefaultDisplay();
+                    } else {
+                        // Mode recherche active - relancer la recherche
+                        const availableCars = getAvailableCars(currentSearchDates.startDate, currentSearchDates.endDate);
+                        updateCarDisplay(availableCars);
+                    }
+                }
+            }, 500); // Vérification plus rapide (0.5 seconde)
+        }
+
+        // Notification en temps réel des mises à jour
+        function showLiveUpdateNotification() {
+            let notification = document.getElementById('liveUpdateNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'liveUpdateNotification';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                    color: white;
+                    padding: 0.8rem 1.2rem;
+                    border-radius: 25px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    z-index: 1001;
+                    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+                    transform: translateX(300px);
+                    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(notification);
+            }
+
+            notification.innerHTML = '✨ Données mises à jour !';
+            notification.style.transform = 'translateX(0)';
+
+            // Animation de sortie après 3 secondes
+            setTimeout(() => {
+                notification.style.transform = 'translateX(300px)';
+            }, 3000);
+        }
+
+        // Auto-refresh pour le développement (détecte les changements de fichiers)
+        function enableDevLiveReload() {
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                console.log('🔧 Mode développement - Auto-refresh activé');
+                
+                setInterval(() => {
+                    fetch(window.location.href + '?t=' + Date.now(), {
+                        method: 'HEAD',
+                        cache: 'no-cache'
+                    }).catch(() => {
+                        // Si le serveur ne répond pas, tenter de recharger
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    });
+                }, 5000); // Vérifier toutes les 5 secondes
+            }
+        }
+
+        // Synchronisation améliorée avec indicateur visuel
+        function enhancedSync() {
+            // Indicateur de statut de connexion
+            const statusIndicator = document.createElement('div');
+            statusIndicator.id = 'connectionStatus';
+            statusIndicator.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #28a745;
+                z-index: 1002;
+                box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
+                animation: pulse 2s infinite;
+            `;
+            
+            // Animation CSS pour le pulse
+            const pulseStyle = document.createElement('style');
+            pulseStyle.textContent = `
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 10px rgba(40, 167, 69, 0.6); }
+                    50% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.8); }
+                    100% { box-shadow: 0 0 10px rgba(40, 167, 69, 0.6); }
+                }
+            `;
+            document.head.appendChild(pulseStyle);
+            document.body.appendChild(statusIndicator);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard FandiApp initialisé avec base de données ✅');
+            
+            // Vider le localStorage pour éviter les conflits
+            localStorage.clear();
+            
+            // Charger les données sauvegardées
+            // loadDatabaseFromStorage(); // Désactivé - nous utilisons maintenant l'API JSON Server
+            
+            // Activer la synchronisation en temps réel
+            watchForAdminUpdates();
+            
+            // Activer le live reload pour le développement
+            enableDevLiveReload();
+            
+            // Ajouter l'indicateur de statut de connexion
+            enhancedSync();
+            
+            // Fonction pour mettre à jour les dates minimums
+            function updateMinDates() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('searchStartDate').min = today;
+                document.getElementById('searchEndDate').min = today;
+                document.getElementById('startDate').min = today;
+                document.getElementById('endDate').min = today;
+                console.log('📅 Dates minimums mises à jour:', today);
+            }
+            
+            // Définir la date minimum à aujourd'hui pour la recherche ET le modal de réservation
+            updateMinDates();
+            
+            // Mettre à jour les dates minimums toutes les heures pour s'assurer qu'elles restent à jour
+            setInterval(updateMinDates, 60 * 60 * 1000); // 1 heure
+            
+            // Vérifier et mettre à jour les statuts pour aujourd'hui
+            // checkTodayAvailability(); // Désactivé temporairement - les voitures s'affichent comme disponibles par défaut
+            
+            console.log('🚀 Mode LIVE activé - Synchronisation automatique en cours...');
+            
+            // Mettre à jour les compteurs de disponibilité
+            const totalCars = Object.keys(carsDatabase).length;
+            console.log(`${totalCars} voiture(s) dans la base de données`);
+            console.log('Base de données:', carsDatabase);
+            
+            // === EVENT LISTENERS POUR LE CALCUL DE PRIX ===
+            
+            // Event listener pour le bouton "Calculer le prix"
+            document.getElementById('calculatePrice').addEventListener('click', function() {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const today = new Date().toISOString().split('T')[0];
+                
+                if (!startDate || !endDate) {
+                    alert('Veuillez sélectionner les dates de début et de fin');
+                    return;
+                }
+                
+                // Vérifier que la date de début n'est pas dans le passé
+                if (startDate < today) {
+                    alert('⚠️ La date de début ne peut pas être dans le passé. Veuillez sélectionner une date à partir d\'aujourd\'hui.');
+                    return;
+                }
+                
+                if (new Date(startDate) >= new Date(endDate)) {
+                    alert('La date de fin doit être après la date de début');
+                    return;
+                }
+                
+                console.log('💰 Calcul de prix demandé:', { startDate, endDate, currentCarPrice });
+                
+                // Calculer et afficher le prix
+                currentCalculation = calculateRentalPrice(startDate, endDate, currentCarPrice);
+                displayPriceCalculation(currentCalculation);
+            });
+
+            // Event listeners pour les champs de date (recalcul automatique)
+            document.getElementById('startDate').addEventListener('change', function() {
+                const endDate = document.getElementById('endDate').value;
+                if (endDate && this.value) {
+                    // Recalculer automatiquement si les deux dates sont remplies
+                    setTimeout(() => {
+                        document.getElementById('calculatePrice').click();
+                    }, 300);
+                }
+            });
+
+            document.getElementById('endDate').addEventListener('change', function() {
+                const startDate = document.getElementById('startDate').value;
+                if (startDate && this.value) {
+                    // Recalculer automatiquement si les deux dates sont remplies
+                    setTimeout(() => {
+                        document.getElementById('calculatePrice').click();
+                    }, 300);
+                }
+            });
+            
+            // Fermer l'alerte en cliquant sur l'overlay
+            document.getElementById('alertOverlay').addEventListener('click', closeCenterAlert);
+        });
+
+        // Fonction utilitaire pour formater les dates en français
+        function formatDateFrench(dateString) {
+            const date = new Date(dateString);
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        // Fonctions pour l'alerte centrale
+        function showCenterAlert(type, title, message, icon) {
+            const overlay = document.getElementById('alertOverlay');
+            const alert = document.getElementById('centerAlert');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+
+            // Mettre à jour le contenu
+            alertIcon.textContent = icon || '❌';
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+
+            // Appliquer le style selon le type
+            alert.className = 'center-alert ' + (type || 'error');
+
+            // Afficher l'alerte
+            overlay.style.display = 'block';
+            alert.style.display = 'block';
+
+            // Auto-fermer après 5 secondes pour les succès
+            if (type === 'success') {
+                setTimeout(() => {
+                    closeCenterAlert();
+                }, 5000);
+            }
+        }
+
+        function closeCenterAlert() {
+            const overlay = document.getElementById('alertOverlay');
+            const alert = document.getElementById('centerAlert');
+            
+            overlay.style.display = 'none';
+            alert.style.display = 'none';
+        }
+
+        // === SYSTÈME DE CALCUL DE PRIX ===
+
+        // Configuration des périodes spéciales
+        const pricingConfig = {
+            weekendMultiplier: 1.3,      // +30% pour les week-ends
+            highSeasonMultiplier: 1.3,   // +30% pour la haute saison
+            holidayMultiplier: 1.3,      // +30% pour les vacances
+            
+            // Périodes de haute saison (été)
+            highSeason: {
+                start: { month: 6, day: 1 },   // 1er juin
+                end: { month: 8, day: 31 }     // 31 août
+            },
+            
+            // Périodes de vacances (Noël)
+            holidays: [
+                {
+                    start: { month: 12, day: 20 }, // 20 décembre
+                    end: { month: 1, day: 5 }      // 5 janvier (année suivante)
+                }
+            ]
+        };
+
+        // Variables globales pour le calcul
+        let currentCarPrice = 0;
+        let currentCalculation = null;
+
+        // Configuration des remises dégressives
+        const progressiveDiscountTiers = [
+            { minDays: 1, maxDays: 3, discount: 0, description: "Prix normal" },
+            { minDays: 4, maxDays: 7, discount: 10, description: "Remise semaine (-10%)" },
+            { minDays: 8, maxDays: 14, discount: 20, description: "Remise 2 semaines (-20%)" },
+            { minDays: 15, maxDays: 30, discount: 30, description: "Remise mensuelle (-30%)" },
+            { minDays: 31, maxDays: Infinity, discount: 40, description: "Remise longue durée (-40%)" }
+        ];
+
+        // Fonction pour calculer la remise dégressive selon la durée
+        function calculateProgressiveDiscount(days) {
+            for (const tier of progressiveDiscountTiers) {
+                if (days >= tier.minDays && days <= tier.maxDays) {
+                    return tier;
+                }
+            }
+            return progressiveDiscountTiers[0]; // Par défaut, aucune remise
+        }
+
+        // Fonction principale de calcul de prix
+        function calculateRentalPrice(startDate, endDate, dailyPrice) {
+            console.log(`💰 Calcul du prix: ${startDate} à ${endDate}, prix de base: ${dailyPrice}€/jour`);
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = [];
+            let totalPrice = 0;
+            let basePrice = 0;
+            let weekendDays = 0;
+            let highSeasonDays = 0;
+            let holidayDays = 0;
+
+            // Générer tous les jours de la période
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const currentDay = new Date(d);
+                const dayInfo = analyzDay(currentDay);
+                
+                let dayPrice = dailyPrice;
+                let modifier = '';
+                
+                // Appliquer les règles tarifaires (weekend prioritaire)
+                if (dayInfo.isWeekend) {
+                    dayPrice *= pricingConfig.weekendMultiplier;
+                    weekendDays++;
+                    modifier = 'Week-end (+30%)';
+                } else if (dayInfo.isHighSeason) {
+                    dayPrice *= pricingConfig.highSeasonMultiplier;
+                    highSeasonDays++;
+                    modifier = 'Haute saison (+30%)';
+                } else if (dayInfo.isHoliday) {
+                    dayPrice *= pricingConfig.holidayMultiplier;
+                    holidayDays++;
+                    modifier = 'Vacances (+30%)';
+                } else {
+                    modifier = 'Normal';
+                }
+
+                days.push({
+                    date: new Date(currentDay),
+                    price: Math.round(dayPrice),
+                    basePrice: dailyPrice,
+                    modifier: modifier,
+                    type: dayInfo.isWeekend ? 'weekend' : 
+                          dayInfo.isHighSeason ? 'high-season' :
+                          dayInfo.isHoliday ? 'holiday' : 'normal'
+                });
+
+                totalPrice += dayPrice;
+                basePrice += dailyPrice;
+            }
+
+            // NOUVEAU : Calculer la remise dégressive sur le prix total (après majorations)
+            const totalDays = days.length;
+            const discountInfo = calculateProgressiveDiscount(totalDays);
+            const discountAmount = Math.round(totalPrice * (discountInfo.discount / 100));
+            const finalPrice = Math.round(totalPrice - discountAmount);
+
+            const calculation = {
+                days: days,
+                totalDays: totalDays,
+                basePrice: basePrice,
+                totalPrice: Math.round(totalPrice), // Prix avec majorations week-end/saison
+                discountInfo: discountInfo, // Info sur la remise dégressive
+                discountAmount: discountAmount, // Montant de la remise
+                finalPrice: finalPrice, // Prix final après remise dégressive
+                weekendDays: weekendDays,
+                highSeasonDays: highSeasonDays,
+                holidayDays: holidayDays,
+                savings: Math.round(basePrice - totalPrice) // Économies/majorations saison
+            };
+
+            console.log('📊 Résultat du calcul avec remise dégressive:', calculation);
+            return calculation;
+        }
+
+        // Analyser un jour pour déterminer ses caractéristiques
+        function analyzDay(date) {
+            const dayOfWeek = date.getDay(); // 0 = dimanche, 6 = samedi
+            const month = date.getMonth() + 1; // 1-12
+            const day = date.getDate();
+            const year = date.getFullYear();
+
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            
+            // Vérifier haute saison
+            const isHighSeason = (month >= pricingConfig.highSeason.start.month && month <= pricingConfig.highSeason.end.month);
+            
+            // Vérifier vacances
+            let isHoliday = false;
+            for (const holiday of pricingConfig.holidays) {
+                if (holiday.start.month === 12 && holiday.end.month === 1) {
+                    // Période à cheval sur deux années (Noël)
+                    if ((month === 12 && day >= holiday.start.day) || 
+                        (month === 1 && day <= holiday.end.day)) {
+                        isHoliday = true;
+                        break;
+                    }
+                }
+            }
+
+            return { isWeekend, isHighSeason, isHoliday };
+        }
+
+        // Afficher les résultats du calcul
+        function displayPriceCalculation(calculation) {
+            const priceDetails = document.getElementById('priceDetails');
+            const priceCalendar = document.getElementById('priceCalendar');
+            
+            // Remplir le résumé
+            document.getElementById('totalDays').textContent = `${calculation.totalDays} jour(s)`;
+            document.getElementById('basePrice').textContent = `${calculation.basePrice}€`;
+            document.getElementById('totalPrice').textContent = `${calculation.totalPrice}€`;
+
+            // Afficher les lignes spéciales si nécessaires
+            const weekendLine = document.getElementById('weekendLine');
+            const highSeasonLine = document.getElementById('highSeasonLine');
+            const holidayLine = document.getElementById('holidayLine');
+
+            weekendLine.style.display = calculation.weekendDays > 0 ? 'flex' : 'none';
+            highSeasonLine.style.display = calculation.highSeasonDays > 0 ? 'flex' : 'none';
+            holidayLine.style.display = calculation.holidayDays > 0 ? 'flex' : 'none';
+
+            if (calculation.weekendDays > 0) {
+                document.getElementById('weekendDays').textContent = `${calculation.weekendDays} jour(s)`;
+            }
+            if (calculation.highSeasonDays > 0) {
+                document.getElementById('highSeasonDays').textContent = `${calculation.highSeasonDays} jour(s)`;
+            }
+            if (calculation.holidayDays > 0) {
+                document.getElementById('holidayDays').textContent = `${calculation.holidayDays} jour(s)`;
+            }
+
+            // NOUVEAU : Afficher la remise dégressive si applicable
+            const discountLine = document.getElementById('discountLine');
+            if (calculation.discountInfo && calculation.discountInfo.discount > 0) {
+                discountLine.style.display = 'flex';
+                document.getElementById('discountDescription').textContent = calculation.discountInfo.description + ' :';
+                document.getElementById('discountAmount').textContent = `-${calculation.discountAmount}€`;
+            } else {
+                discountLine.style.display = 'none';
+            }
+
+            // Afficher le prix final (avec ou sans remise)
+            document.getElementById('finalPrice').textContent = `${calculation.finalPrice}€`;
+
+            // Ajouter un message d'encouragement si proche du palier suivant
+            const encouragementMsg = getEncouragementMessage(calculation.totalDays, calculation.discountInfo);
+            if (encouragementMsg) {
+                showEncouragementMessage(encouragementMsg);
+            }
+
+            // Générer le calendrier détaillé
+            priceCalendar.innerHTML = '<h4 style="margin: 0 0 1rem 0; color: #495057; font-size: 1rem;">📅 Détail par jour</h4>';
+            
+            calculation.days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = `calendar-day ${day.type}`;
+                dayElement.innerHTML = `
+                    <span class="day-label">${formatDateFrenchShort(day.date.toISOString().split('T')[0])}</span>
+                    <span class="day-price">${day.price}€</span>
+                    <span class="day-modifier">${day.modifier}</span>
+                `;
+                priceCalendar.appendChild(dayElement);
+            });
+
+            priceDetails.style.display = 'block';
+        }
+
+        // Version courte pour le calendrier de prix
+        function formatDateFrenchShort(dateString) {
+            const date = new Date(dateString);
+            const options = { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric'
+            };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+
+        // Fonction pour générer un message d'encouragement
+        function getEncouragementMessage(totalDays, currentDiscountInfo) {
+            // Trouver le palier suivant
+            const nextTier = progressiveDiscountTiers.find(tier => tier.minDays > totalDays);
+            
+            if (nextTier) {
+                const daysNeeded = nextTier.minDays - totalDays;
+                return `💡 Plus que ${daysNeeded} jour${daysNeeded > 1 ? 's' : ''} pour obtenir ${nextTier.description} !`;
+            } else if (currentDiscountInfo && currentDiscountInfo.discount > 0) {
+                return `🎉 Félicitations ! Vous bénéficiez de la remise maximale !`;
+            }
+            
+            return null;
+        }
+
+        // Fonction pour afficher un message d'encouragement
+        function showEncouragementMessage(message) {
+            // Chercher s'il y a déjà un message
+            let encouragementDiv = document.getElementById('encouragementMessage');
+            
+            if (!encouragementDiv) {
+                // Créer un nouveau div de message
+                encouragementDiv = document.createElement('div');
+                encouragementDiv.id = 'encouragementMessage';
+                encouragementDiv.style.cssText = `
+                    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+                    color: white;
+                    padding: 0.8rem;
+                    border-radius: 8px;
+                    margin: 1rem 0;
+                    text-align: center;
+                    font-weight: 600;
+                    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+                `;
+                
+                // Insérer après le résumé de prix
+                const priceDetails = document.getElementById('priceDetails');
+                const priceCalendar = document.getElementById('priceCalendar');
+                priceDetails.insertBefore(encouragementDiv, priceCalendar);
+            }
+            
+            encouragementDiv.textContent = message;
+            encouragementDiv.style.display = 'block';
+        }
+
+
+
+        function resetToDefaultDisplay() {
+            const allCarCards = document.querySelectorAll('.car-card');
+            const apologizeMessage = document.getElementById('apologizeMessage');
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            
+            console.log('🔄 Réinitialisation de l\'affichage par défaut...');
+            
+            // Masquer le message d'excuse et les infos de disponibilité
+            apologizeMessage.style.display = 'none';
+            availabilityInfo.style.display = 'none';
+            
+            // Afficher toutes les voitures avec le statut d'aujourd'hui
+            allCarCards.forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // Vérifier le statut réel d'aujourd'hui SANS déclencher d'alertes
+            // checkTodayAvailabilityQuiet(); // Désactivé - utilise l'ancien système localStorage
+            
+            console.log('✅ Affichage réinitialisé sans alertes');
+        }
+
+        function checkTodayAvailabilityQuiet() {
+            const today = new Date().toISOString().split('T')[0];
+            let availableToday = 0;
+            
+            Object.keys(carsDatabase).forEach((carId, index) => {
+                const isAvailable = isCarAvailable(carId, today, today);
+                const cardElement = document.querySelector(`[data-car-id="${carId}"]`);
+                
+                if (cardElement) {
+                    const statusElement = cardElement.querySelector('.car-status');
+                    const buttonElement = cardElement.querySelector('.reserve-btn');
+                    
+                    if (isAvailable) {
+                        statusElement.textContent = 'Disponible';
+                        statusElement.className = 'car-status status-available';
+                        buttonElement.disabled = false;
+                        availableToday++;
+                    } else {
+                        statusElement.textContent = 'Réservé';
+                        statusElement.className = 'car-status status-reserved';
+                        buttonElement.disabled = true;
+                    }
+                }
+            });
+            
+            console.log(`📊 Statut aujourd'hui (silencieux): ${availableToday} voiture(s) disponible(s)`);
+            
+            // NE PAS afficher d'alerte, juste retourner le nombre
+            return availableToday;
+        }
+
+
+    </script>
+
+    <!-- Script d'intégration API dynamique (ajouté) -->
+    <script>
+    // Tentative de synchronisation initiale avec l'API backend
+    (async function initApiSync() {
+        const API_BASE = 'http://localhost:3001';
+        console.log('🔄 Tentative de connexion à l\'API FandiRent ...');
+        try {
+            const carsResp = await fetch(`${API_BASE}/cars`);
+            if (!carsResp.ok) throw new Error('Réponse /cars non OK');
+            const carsData = await carsResp.json();
+            console.log('✅ Voitures récupérées depuis API:', carsData);
+
+            // Mettre à jour / enrichir carsDatabase existant
+            carsData.forEach(car => {
+                if (!carsDatabase[car.id]) {
+                    carsDatabase[car.id] = {
+                        id: car.id,
+                        name: car.name,
+                        price: car.price,
+                        image: car.image || '',
+                        reservations: []
+                    };
+                } else {
+                    carsDatabase[car.id].name = car.name;
+                    carsDatabase[car.id].price = car.price;
+                    if (car.image) carsDatabase[car.id].image = car.image;
+                }
+            });
+
+            // Récupérer toutes les réservations en un appel
+            const resResp = await fetch(`${API_BASE}/reservations`);
+            if (resResp.ok) {
+                const reservationsData = await resResp.json();
+                // Réinitialiser les tableaux de réservation
+                Object.keys(carsDatabase).forEach(cid => carsDatabase[cid].reservations = []);
+                reservationsData.forEach(r => {
+                    if (carsDatabase[r.carId]) {
+                        carsDatabase[r.carId].reservations.push({
+                            id: r.id,
+                            startDate: r.startDate,
+                            endDate: r.endDate,
+                            customerName: r.customerName
+                        });
+                    }
+                });
+                console.log('✅ Réservations synchronisées depuis API:', reservationsData.length);
+            } else {
+                console.warn('⚠️ Impossible de charger /reservations (status)', resResp.status);
+            }
+
+            // Appliquer les statuts actuels
+            applyTodayReservationsStatus();
+            console.log('💾 Base locale mise à jour depuis API.');
+        } catch (err) {
+            console.warn('❌ API non accessible, utilisation du jeu de données local. Détail:', err.message);
+        }
+    })();
+    </script>
+
+    <!-- Overlay et alerte centrale -->
+    <div class="alert-overlay" id="alertOverlay"></div>
+    <div class="center-alert" id="centerAlert">
+        <div class="alert-icon" id="alertIcon">❌</div>
+        <h3 id="alertTitle">Aucune voiture disponible</h3>
+        <p id="alertMessage">Aucune voiture n'est disponible pour ces dates. Essayez d'autres dates.</p>
+        <button class="close-alert" onclick="closeCenterAlert()">Fermer</button>
+    </div>
+
+    <!-- Icône WhatsApp flottante -->
+    <a href="https://api.whatsapp.com/send/?phone=212676543456&text&type=phone_number&app_absent=0" 
+       target="_blank" 
+       class="whatsapp-float" 
+       title="Contactez-nous sur WhatsApp">
+    </a>
+</body>
+</html>

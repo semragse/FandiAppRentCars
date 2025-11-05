@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - FandiApp</title>
+    <style>
+        /* Reset et configuration de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header admin */
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .back-link {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Container principal */
+        .admin-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Cartes des voitures */
+        .cars-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .car-admin-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .car-admin-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .car-admin-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-admin-header .car-price {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .car-admin-content {
+            padding: 1.5rem;
+        }
+
+        /* Réservations existantes */
+        .reservations-list {
+            margin-bottom: 2rem;
+        }
+
+        .reservations-list h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .reservation-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reservation-info {
+            flex: 1;
+        }
+
+        .reservation-dates {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .reservation-customer {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .delete-reservation {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-reservation:hover {
+            background: #c82333;
+        }
+
+        .no-reservations {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+
+        /* Formulaire d'ajout */
+        .add-reservation {
+            border-top: 2px solid #e9ecef;
+            padding-top: 1.5rem;
+        }
+
+        .add-reservation h4 {
+            color: #28a745;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            padding: 0.6rem;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Actions globales */
+        .global-actions {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .global-actions h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #333;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Messages de status */
+        .status-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 0 1rem;
+            }
+
+            .cars-admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reservation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .car-admin-card {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Admin -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <h1 class="admin-title">🛠️ Administration FandiApp</h1>
+            <a href="../index.html" class="back-link">← Retour au site</a>
+        </div>
+    </header>
+
+    <!-- Container principal -->
+    <div class="admin-container">
+        <!-- Message de status -->
+        <div id="statusMessage" class="status-message"></div>
+
+        <!-- Actions globales -->
+        <div class="global-actions">
+            <h3>🎛️ Actions globales</h3>
+            <div class="actions-grid">
+                <button class="action-btn btn-danger" onclick="clearAllReservations()">
+                    🗑️ Vider toutes les réservations
+                </button>
+                <button class="action-btn btn-warning" onclick="clearTodayReservations()">
+                    📅 Libérer toutes les voitures aujourd'hui
+                </button>
+                <button class="action-btn btn-success" onclick="saveToLocalStorage()">
+                    💾 Sauvegarder les données
+                </button>
+                <button class="action-btn btn-success" onclick="loadFromLocalStorage()">
+                    📁 Charger les données sauvées
+                </button>
+                <button class="action-btn btn-success" onclick="forceSync()" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                    🔄 Forcer la synchronisation
+                </button>
+            </div>
+        </div>
+
+        <!-- Grille des voitures -->
+        <div class="cars-admin-grid" id="carsAdminGrid">
+            <!-- Les cartes seront générées par JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Configuration de l'API
+        const API_BASE_URL = 'http://localhost:3001';
+        
+        // Variables globales
+        let cars = [];
+        let reservations = [];
+
+        // Fonctions API
+        async function fetchCars() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cars`);
+                return await response.json();
+            } catch (error) {
+                console.error('Erreur lors du chargement des voitures:', error);
+                return [];
+            }
+        }
+
+        async function fetchReservations() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations`);
+                return await response.json();
+            } catch (error) {
+                console.error('Erreur lors du chargement des réservations:', error);
+                return [];
+            }
+        }
+
+        async function addReservationToAPI(reservationData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reservationData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout de la réservation:', error);
+                throw error;
+            }
+        }
+
+        async function deleteReservationFromAPI(reservationId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
+                    method: 'DELETE'
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Erreur lors de la suppression de la réservation:', error);
+                throw error;
+            }
+        }
+
+        // Fonction pour obtenir les réservations d'une voiture
+        function getCarReservations(carId) {
+            return reservations.filter(reservation => reservation.carId === carId);
+        }
+
+        // Afficher un message de status
+        function showStatus(message, type = 'success') {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message status-${type}`;
+            statusElement.style.display = 'block';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Formater une date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        // Supprimer une réservation
+        async function deleteReservation(reservationId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
+                try {
+                    await deleteReservationFromAPI(reservationId);
+                    await loadAllData(); // Recharger les données
+                    renderCarsAdmin();
+                    showStatus('Réservation supprimée avec succès!', 'success');
+                } catch (error) {
+                    showStatus('Erreur lors de la suppression de la réservation!', 'error');
+                }
+            }
+        }
+
+        // Ajouter une réservation
+        async function addReservation(carId) {
+            const startDate = document.getElementById(`startDate-${carId}`).value;
+            const endDate = document.getElementById(`endDate-${carId}`).value;
+            const customerName = document.getElementById(`customerName-${carId}`).value.trim();
+
+            if (!startDate || !endDate || !customerName) {
+                showStatus('Veuillez remplir tous les champs!', 'error');
+                return;
+            }
+
+            if (new Date(startDate) >= new Date(endDate)) {
+                showStatus('La date de fin doit être postérieure à la date de début!', 'error');
+                return;
+            }
+
+            // Vérifier les conflits
+            const existingReservations = getCarReservations(carId);
+            const newStart = new Date(startDate);
+            const newEnd = new Date(endDate);
+
+            for (const reservation of existingReservations) {
+                const resStart = new Date(reservation.startDate);
+                const resEnd = new Date(reservation.endDate);
+
+                if (newStart <= resEnd && newEnd >= resStart) {
+                    showStatus('Conflit avec une réservation existante!', 'error');
+                    return;
+                }
+            }
+
+            // Préparer les données de réservation
+            const reservationData = {
+                carId,
+                startDate,
+                endDate,
+                customerName,
+                customerEmail: 'admin@fandirent.ma', // Email par défaut pour l'admin
+                customerPhone: '+212 6 00 00 00 00', // Téléphone par défaut
+                totalPrice: calculatePrice(carId, startDate, endDate),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                // Ajouter la réservation via l'API
+                await addReservationToAPI(reservationData);
+                
+                // Recharger les données
+                await loadAllData();
+
+                // Réinitialiser le formulaire
+                document.getElementById(`startDate-${carId}`).value = '';
+                document.getElementById(`endDate-${carId}`).value = '';
+                document.getElementById(`customerName-${carId}`).value = '';
+
+                renderCarsAdmin();
+                showStatus('Réservation ajoutée avec succès!', 'success');
+            } catch (error) {
+                showStatus('Erreur lors de l\'ajout de la réservation!', 'error');
+            }
+        }
+
+        // Calculer le prix d'une réservation
+        function calculatePrice(carId, startDate, endDate) {
+            const car = cars.find(c => c.id === carId);
+            if (!car) return 0;
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            return car.price * days;
+        }
+
+        // Actions globales
+        async function clearAllReservations() {
+            if (confirm('⚠️ ATTENTION: Voulez-vous vraiment supprimer TOUTES les réservations de TOUTES les voitures?')) {
+                try {
+                    // Supprimer toutes les réservations une par une
+                    const deletePromises = reservations.map(reservation => 
+                        deleteReservationFromAPI(reservation.id)
+                    );
+                    await Promise.all(deletePromises);
+                    
+                    await loadAllData();
+                    renderCarsAdmin();
+                    showStatus('Toutes les réservations ont été supprimées!', 'warning');
+                } catch (error) {
+                    showStatus('Erreur lors de la suppression des réservations!', 'error');
+                }
+            }
+        }
+
+        async function clearTodayReservations() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            try {
+                // Trouver les réservations qui touchent aujourd'hui
+                const todayReservations = reservations.filter(reservation => {
+                    const resStart = new Date(reservation.startDate);
+                    const resEnd = new Date(reservation.endDate);
+                    const todayDate = new Date(today);
+                    
+                    return todayDate >= resStart && todayDate <= resEnd;
+                });
+
+                if (todayReservations.length === 0) {
+                    showStatus('Aucune réservation pour aujourd\'hui!', 'warning');
+                    return;
+                }
+
+                // Supprimer les réservations d'aujourd'hui
+                const deletePromises = todayReservations.map(reservation => 
+                    deleteReservationFromAPI(reservation.id)
+                );
+                await Promise.all(deletePromises);
+
+                await loadAllData();
+                renderCarsAdmin();
+                showStatus(`${todayReservations.length} réservation(s) d'aujourd'hui supprimée(s)!`, 'success');
+            } catch (error) {
+                showStatus('Erreur lors de la suppression des réservations!', 'error');
+            }
+        }
+
+        // Charger toutes les données depuis l'API
+        async function loadAllData() {
+            try {
+                cars = await fetchCars();
+                reservations = await fetchReservations();
+                console.log('✅ Données chargées depuis l\'API');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des données:', error);
+                showStatus('Erreur de connexion à la base de données!', 'error');
+                return false;
+            }
+        }
+
+        // Notification de synchronisation
+        function showSaveNotification() {
+            let notification = document.getElementById('saveNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'saveNotification';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                    color: white;
+                    padding: 0.6rem 1rem;
+                    border-radius: 20px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    z-index: 1001;
+                    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+                    transform: scale(0);
+                    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                `;
+                document.body.appendChild(notification);
+            }
+
+            notification.innerHTML = '✓ Synchronisé !';
+            notification.style.transform = 'scale(1)';
+
+            setTimeout(() => {
+                notification.style.transform = 'scale(0)';
+            }, 2000);
+        }
+
+        // Rafraîchir les données depuis l'API
+        async function refreshData() {
+            try {
+                await loadAllData();
+                renderCarsAdmin();
+                showSaveNotification();
+                showStatus('Données actualisées depuis la base de données!', 'success');
+            } catch (error) {
+                showStatus('Erreur lors de l\'actualisation!', 'error');
+            }
+        }
+
+        // Tester la connexion API
+        async function testApiConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cars`);
+                if (response.ok) {
+                    showStatus('✅ Connexion API active!', 'success');
+                } else {
+                    showStatus('❌ Problème de connexion API!', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Serveur API non accessible!', 'error');
+            }
+        }
+
+        function forceSync() {
+            refreshData();
+        }
+
+        // Générer le HTML pour une voiture
+        function generateCarAdminHTML(car) {
+            const carReservations = getCarReservations(car.id);
+            
+            const reservationsHTML = carReservations.length > 0 
+                ? carReservations.map(reservation => `
+                    <div class="reservation-item">
+                        <div class="reservation-info">
+                            <div class="reservation-dates">
+                                📅 ${formatDate(reservation.startDate)} → ${formatDate(reservation.endDate)}
+                            </div>
+                            <div class="reservation-customer">
+                                👤 ${reservation.customerName}
+                            </div>
+                            <div class="reservation-customer">
+                                💰 ${reservation.totalPrice}€
+                            </div>
+                        </div>
+                        <button class="delete-reservation" onclick="deleteReservation('${reservation.id}')">
+                            🗑️ Supprimer
+                        </button>
+                    </div>
+                `).join('')
+                : '<div class="no-reservations">🚫 Aucune réservation</div>';
+
+            return `
+                <div class="car-admin-card">
+                    <div class="car-admin-header">
+                        <h3>${car.name}</h3>
+                        <div class="car-price">${car.price}€/jour</div>
+                    </div>
+                    <div class="car-admin-content">
+                        <div class="reservations-list">
+                            <h4>📋 Réservations existantes (${carReservations.length})</h4>
+                            ${reservationsHTML}
+                        </div>
+
+                        <div class="add-reservation">
+                            <h4>➕ Ajouter une réservation</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date de début:</label>
+                                    <input type="date" id="startDate-${car.id}" min="${new Date().toISOString().split('T')[0]}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date de fin:</label>
+                                    <input type="date" id="endDate-${car.id}" min="${new Date().toISOString().split('T')[0]}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Nom du client:</label>
+                                <input type="text" id="customerName-${car.id}" placeholder="Ex: Ahmed Alami">
+                            </div>
+                            <button class="add-btn" onclick="addReservation('${car.id}')">
+                                ➕ Ajouter la réservation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render de toutes les voitures
+        function renderCarsAdmin() {
+            const container = document.getElementById('carsAdminGrid');
+            if (cars.length === 0) {
+                container.innerHTML = '<div class="no-reservations">🔄 Chargement des données...</div>';
+                return;
+            }
+            
+            container.innerHTML = cars
+                .map(car => generateCarAdminHTML(car))
+                .join('');
+        }
+
+        // Mettre à jour les boutons d'actions globales
+        function updateGlobalActions() {
+            const actionsContainer = document.querySelector('.actions-grid');
+            actionsContainer.innerHTML = `
+                <button class="action-btn btn-danger" onclick="clearAllReservations()">
+                    🗑️ Vider toutes les réservations
+                </button>
+                <button class="action-btn btn-warning" onclick="clearTodayReservations()">
+                    📅 Libérer toutes les voitures aujourd'hui
+                </button>
+                <button class="action-btn btn-success" onclick="refreshData()">
+                    🔄 Actualiser les données
+                </button>
+                <button class="action-btn btn-success" onclick="testApiConnection()" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                    🔗 Tester la connexion API
+                </button>
+            `;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🛠️ Initialisation de l\'interface Admin FandiApp...');
+            
+            // Mettre à jour l'interface
+            updateGlobalActions();
+            
+            // Charger les données depuis l'API
+            const dataLoaded = await loadAllData();
+            
+            if (dataLoaded) {
+                renderCarsAdmin();
+                showStatus('✅ Interface admin connectée à la base de données API!', 'success');
+            } else {
+                showStatus('❌ Erreur de connexion - Vérifiez que le serveur API fonctionne!', 'error');
+            }
+            
+            // Gestion des dates liées
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'date' && e.target.id.startsWith('startDate-')) {
+                    const carId = e.target.id.replace('startDate-', '');
+                    const endDateInput = document.getElementById(`endDate-${carId}`);
+                    if (e.target.value) {
+                        endDateInput.min = e.target.value;
+                        if (endDateInput.value && endDateInput.value <= e.target.value) {
+                            endDateInput.value = '';
+                        }
+                    }
+                }
+            });
+            
+            console.log('✅ Interface Admin FandiApp initialisée');
+        });
+    </script>
+</body>
+</html>
