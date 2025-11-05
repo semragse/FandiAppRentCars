@@ -115,6 +115,32 @@
             color: white;
         }
 
+        .delete-car-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .delete-car-btn:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
         .car-admin-header h3 {
             font-size: 1.4rem;
             margin-bottom: 0.3rem;
@@ -326,27 +352,33 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            text-align: center;
         }
 
         .global-actions h3 {
             color: #667eea;
             margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
         .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 1rem;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .action-btn {
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             border: none;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            white-space: nowrap;
         }
 
         .btn-danger {
@@ -602,20 +634,14 @@
         <div class="global-actions">
             <h3>🎛️ Actions globales</h3>
             <div class="actions-grid">
+                <button class="action-btn btn-success" onclick="openAddCarModal()" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); font-weight: bold;">
+                    ➕ Ajouter une voiture
+                </button>
                 <button class="action-btn btn-danger" onclick="clearAllReservations()">
                     🗑️ Vider toutes les réservations
                 </button>
                 <button class="action-btn btn-warning" onclick="clearTodayReservations()">
                     📅 Libérer toutes les voitures aujourd'hui
-                </button>
-                <button class="action-btn btn-success" onclick="saveToLocalStorage()">
-                    💾 Sauvegarder les données
-                </button>
-                <button class="action-btn btn-success" onclick="loadFromLocalStorage()">
-                    📁 Charger les données sauvées
-                </button>
-                <button class="action-btn btn-success" onclick="forceSync()" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                    🔄 Forcer la synchronisation
                 </button>
             </div>
         </div>
@@ -818,6 +844,46 @@
                     Fermer
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter une voiture -->
+    <div id="addCarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Ajouter une nouvelle voiture</h2>
+                <button class="close-modal" onclick="closeAddCarModal()">&times;</button>
+            </div>
+            <form onsubmit="submitNewCar(event)">
+                <div class="modal-body">
+                    <div class="modal-form-group">
+                        <label>🚗 Nom de la voiture *</label>
+                        <input type="text" id="newCarName" placeholder="Ex: Renault Clio 5" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>💰 Prix par jour (€) *</label>
+                        <input type="number" id="newCarPrice" placeholder="Ex: 35" min="1" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>🖼️ Image de la voiture *</label>
+                        <input type="file" id="newCarImage" accept="image/*" required onchange="previewNewCarImage(event)">
+                        <div id="newCarImagePreview" style="margin-top: 1rem; text-align: center;">
+                            <!-- Aperçu de l'image -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn modal-btn-secondary" onclick="closeAddCarModal()">
+                        Annuler
+                    </button>
+                    <button type="submit" class="modal-btn modal-btn-primary">
+                        ✓ Ajouter la voiture
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1231,6 +1297,9 @@
                 <div class="car-admin-card">
                     <div class="car-admin-header">
                         <div class="car-image-container">
+                            <button class="delete-car-btn" onclick="deleteCar('${car.id}', '${car.name}')" title="Supprimer cette voiture">
+                                🗑️
+                            </button>
                             <img src="${car.image}" alt="${car.name}" onerror="this.src='images/placeholder.jpg'">
                             <div class="car-image-overlay">
                                 <h3>${car.name}</h3>
@@ -1289,17 +1358,14 @@
         function updateGlobalActions() {
             const actionsContainer = document.querySelector('.actions-grid');
             actionsContainer.innerHTML = `
+                <button class="action-btn btn-success" onclick="openAddCarModal()" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); font-weight: bold;">
+                    ➕ Ajouter une voiture
+                </button>
                 <button class="action-btn btn-danger" onclick="clearAllReservations()">
-                    🗑️ Vider toutes les réservations
+                    �️ Vider toutes les réservations
                 </button>
                 <button class="action-btn btn-warning" onclick="clearTodayReservations()">
-                    📅 Libérer toutes les voitures aujourd'hui
-                </button>
-                <button class="action-btn btn-success" onclick="refreshData()">
-                    🔄 Actualiser les données
-                </button>
-                <button class="action-btn btn-success" onclick="testApiConnection()" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                    🔗 Tester la connexion API
+                    � Libérer toutes les voitures aujourd'hui
                 </button>
             `;
         }
@@ -1369,6 +1435,7 @@
                 const reservationModal = document.getElementById('reservationModal');
                 const editModal = document.getElementById('editReservationModal');
                 const viewDocsModal = document.getElementById('viewDocumentsModal');
+                const addCarModal = document.getElementById('addCarModal');
                 
                 if (event.target === reservationModal) {
                     closeReservationModal();
@@ -1378,6 +1445,9 @@
                 }
                 if (event.target === viewDocsModal) {
                     closeViewDocumentsModal();
+                }
+                if (event.target === addCarModal) {
+                    closeAddCarModal();
                 }
             });
             
@@ -1711,6 +1781,119 @@
         function closeViewDocumentsModal() {
             document.getElementById('viewDocumentsModal').style.display = 'none';
         }
+
+        // ============= GESTION DES VOITURES =============
+
+        // Ouvrir modal d'ajout de voiture
+        function openAddCarModal() {
+            document.getElementById('newCarName').value = '';
+            document.getElementById('newCarPrice').value = '';
+            document.getElementById('newCarImage').value = '';
+            document.getElementById('newCarImagePreview').innerHTML = '';
+            document.getElementById('addCarModal').style.display = 'flex';
+        }
+
+        // Fermer modal d'ajout de voiture
+        function closeAddCarModal() {
+            document.getElementById('addCarModal').style.display = 'none';
+        }
+
+        // Prévisualiser l'image de la nouvelle voiture
+        function previewNewCarImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('newCarImagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Aperçu" 
+                             style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+
+        // Soumettre nouvelle voiture
+        async function submitNewCar(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('newCarName').value.trim();
+            const price = parseFloat(document.getElementById('newCarPrice').value);
+            const imageFile = document.getElementById('newCarImage').files[0];
+
+            if (!name || !price || !imageFile) {
+                showStatus('Veuillez remplir tous les champs!', 'error');
+                return;
+            }
+
+            // Convertir l'image en base64
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageBase64 = e.target.result;
+
+                try {
+                    const response = await fetch(`${API_URL}/cars`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            price: price,
+                            image: imageBase64
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de l\'ajout de la voiture');
+                    }
+
+                    const newCar = await response.json();
+                    cars.push(newCar);
+                    
+                    closeAddCarModal();
+                    renderCarsAdmin();
+                    showStatus(`✅ Voiture "${name}" ajoutée avec succès!`, 'success');
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    showStatus('❌ Erreur lors de l\'ajout de la voiture!', 'error');
+                }
+            };
+            reader.readAsDataURL(imageFile);
+        }
+
+        // Supprimer une voiture
+        async function deleteCar(carId, carName) {
+            if (!confirm(`⚠️ Êtes-vous sûr de vouloir supprimer "${carName}"?\n\nToutes les réservations associées seront également supprimées!`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/cars/${carId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la suppression');
+                }
+
+                // Supprimer localement
+                cars = cars.filter(c => c.id !== carId);
+                reservations = reservations.filter(r => r.carId !== carId);
+                
+                renderCarsAdmin();
+                showStatus(`✅ Voiture "${carName}" supprimée avec succès!`, 'success');
+            } catch (error) {
+                console.error('Erreur:', error);
+                showStatus('❌ Erreur lors de la suppression de la voiture!', 'error');
+            }
+        }
+
+        // ============= FIN GESTION DES VOITURES =============
 
         // Calculer prix dans modal d'édition
         function updateEditModalPrice() {

@@ -28,6 +28,40 @@ app.get('/cars', async (req, res) => {
   }
 });
 
+// Add a new car
+app.post('/cars', async (req, res) => {
+  try {
+    const { name, price, image } = req.body;
+    if (!name || !price || !image) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const newCar = await Car.create({ name, price, image });
+    res.status(201).json(newCar);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add car' });
+  }
+});
+
+// Delete a car
+app.delete('/cars/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Delete all reservations for this car first
+    await Reservation.destroy({ where: { carId: id } });
+    
+    // Delete the car
+    await Car.destroy({ where: { id } });
+    
+    res.json({ message: 'Car and its reservations deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete car' });
+  }
+});
+
 // Get reservations (optional filter by carId)
 app.get('/reservations', async (req, res) => {
   try {
