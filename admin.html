@@ -210,6 +210,11 @@
         }
 
         /* Réservations existantes */
+        /* 
+         * Liste des réservations avec scroll interne
+         * Limite la hauteur pour éviter que la carte voiture s'agrandisse excessivement
+         * avec un grand nombre de réservations
+         */
         .reservations-list {
             margin-bottom: 2rem;
         }
@@ -218,6 +223,32 @@
             color: #667eea;
             margin-bottom: 1rem;
             font-size: 1.1rem;
+        }
+
+        /* Container scrollable pour les réservations */
+        .reservations-container {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Style de la barre de scroll - discret mais visible */
+        .reservations-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .reservations-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .reservations-container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .reservations-container::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
         }
 
         .reservation-item {
@@ -1334,7 +1365,9 @@
 
                         <div class="reservations-list">
                             <h4>📋 Réservations existantes (${carReservations.length})</h4>
-                            ${reservationsHTML}
+                            <div class="reservations-container">
+                                ${reservationsHTML}
+                            </div>
                         </div>
                     </div>
                 </div>
