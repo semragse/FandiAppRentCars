@@ -44,6 +44,31 @@
 
         .header-left {
             flex: 1;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .admin-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .header-right {
@@ -1143,7 +1168,8 @@
                 font-size: 1.3rem;
             }
 
-            .contact-link {
+            .contact-link,
+            .admin-link {
                 font-size: 0.75rem;
                 padding: 0.4rem 0.8rem;
             }
@@ -1386,8 +1412,12 @@
     <!-- Header avec logo centré et contact à droite -->
     <header class="header">
         <div class="header-content">
-            <!-- Espace vide à gauche pour équilibrer -->
-            <div class="header-left"></div>
+            <!-- Lien Admin à gauche -->
+            <div class="header-left">
+                <a href="admin.html" class="admin-link">
+                    🔐 Admin
+                </a>
+            </div>
             
             <!-- Logo centré -->
             <a href="#" class="logo">FandiApp</a>
@@ -2295,6 +2325,14 @@
             }
         });
 
+        // Bloquer aussi avec l'événement input (pour les saisies au clavier)
+        document.getElementById('searchStartDate').addEventListener('input', function() {
+            const today = new Date().toISOString().split('T')[0];
+            if (this.value && this.value < today) {
+                this.value = today;
+            }
+        });
+
         // Validation de la date de fin
         document.getElementById('searchEndDate').addEventListener('change', function() {
             const endDate = this.value;
@@ -2312,6 +2350,14 @@
             if (endDate && startDateInput.value && endDate <= startDateInput.value) {
                 alert('⚠️ La date de fin doit être après la date de début.');
                 this.value = '';
+            }
+        });
+
+        // Bloquer aussi avec l'événement input pour la date de fin
+        document.getElementById('searchEndDate').addEventListener('input', function() {
+            const today = new Date().toISOString().split('T')[0];
+            if (this.value && this.value < today) {
+                this.value = today;
             }
         });
 
@@ -2868,6 +2914,33 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard FandiApp initialisé avec base de données ✅');
             
+            // IMPORTANT: Définir les dates minimum IMMÉDIATEMENT
+            const today = new Date().toISOString().split('T')[0];
+            const searchStartDate = document.getElementById('searchStartDate');
+            const searchEndDate = document.getElementById('searchEndDate');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            
+            // Forcer les dates minimum
+            if (searchStartDate) {
+                searchStartDate.setAttribute('min', today);
+                searchStartDate.value = ''; // Reset toute valeur existante
+            }
+            if (searchEndDate) {
+                searchEndDate.setAttribute('min', today);
+                searchEndDate.value = '';
+            }
+            if (startDate) {
+                startDate.setAttribute('min', today);
+                startDate.value = '';
+            }
+            if (endDate) {
+                endDate.setAttribute('min', today);
+                endDate.value = '';
+            }
+            
+            console.log('📅 Dates minimum forcées à:', today);
+            
             // Vider le localStorage pour éviter les conflits
             localStorage.clear();
             
@@ -2882,32 +2955,6 @@
             
             // Ajouter l'indicateur de statut de connexion
             enhancedSync();
-            
-            // Fonction pour mettre à jour les dates minimums
-            function updateMinDates() {
-                const today = new Date().toISOString().split('T')[0];
-                const searchStartDate = document.getElementById('searchStartDate');
-                const searchEndDate = document.getElementById('searchEndDate');
-                const startDate = document.getElementById('startDate');
-                const endDate = document.getElementById('endDate');
-                
-                // Définir les dates minimum (empêche la sélection de dates passées)
-                if (searchStartDate) searchStartDate.min = today;
-                if (searchEndDate) searchEndDate.min = today;
-                if (startDate) startDate.min = today;
-                if (endDate) endDate.min = today;
-                
-                console.log('📅 Dates minimums mises à jour à:', today);
-            }
-            
-            // Définir la date minimum à aujourd'hui pour la recherche ET le modal de réservation
-            updateMinDates();
-            
-            // Mettre à jour les dates chaque jour (si la page reste ouverte)
-            setInterval(updateMinDates, 60000); // Toutes les minutes
-            
-            // Mettre à jour les dates minimums toutes les heures pour s'assurer qu'elles restent à jour
-            setInterval(updateMinDates, 60 * 60 * 1000); // 1 heure
             
             // Vérifier et mettre à jour les statuts pour aujourd'hui
             // checkTodayAvailability(); // Désactivé temporairement - les voitures s'affichent comme disponibles par défaut
