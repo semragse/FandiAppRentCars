@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - FandiRent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+        }
+        .info-box strong {
+            color: #667eea;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .current-config {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .current-config strong {
+            color: #667eea;
+        }
+        .quick-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .quick-link {
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .quick-link:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Configuration FandiRent</h1>
+        <p class="subtitle">Configurez l'URL de votre API backend</p>
+
+        <div id="status" class="status"></div>
+
+        <div class="current-config">
+            <strong>Configuration actuelle:</strong><br>
+            <code id="currentUrl">Chargement...</code>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 Quand utiliser cette page?</strong><br>
+            • Quand vous partagez l'app avec un tunnel (ngrok, localtunnel)<br>
+            • Quand vous déployez sur un serveur distant<br>
+            • Pour basculer entre développement et production
+        </div>
+
+        <div class="form-group">
+            <label for="apiUrl">🌐 URL de l'API Backend</label>
+            <input type="url" id="apiUrl" placeholder="https://votre-tunnel.loca.lt" />
+        </div>
+
+        <div class="form-group">
+            <label>⚡ Configurations rapides:</label>
+            <div style="display: grid; gap: 0.5rem; margin-top: 0.5rem;">
+                <button class="btn btn-secondary" onclick="setPreset('http://localhost:3001')" style="padding: 0.6rem;">
+                    🏠 Local (localhost:3001)
+                </button>
+                <button class="btn btn-secondary" onclick="askForTunnel()" style="padding: 0.6rem;">
+                    🌍 Tunnel LocalTunnel
+                </button>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="resetToDefault()">
+                🔄 Réinitialiser
+            </button>
+            <button class="btn btn-primary" onclick="saveConfig()">
+                💾 Enregistrer
+            </button>
+        </div>
+
+        <div class="quick-links">
+            <a href="admin.html" class="quick-link">🛠️ Admin</a>
+            <a href="index.html" class="quick-link">🏠 Accueil</a>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Afficher la config actuelle
+        function updateCurrentDisplay() {
+            const currentUrl = window.FandiConfig.getApiUrl();
+            document.getElementById('currentUrl').textContent = currentUrl;
+            document.getElementById('apiUrl').value = currentUrl;
+        }
+
+        // Afficher un message de status
+        function showStatus(message, type = 'success') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // Sauvegarder la configuration
+        function saveConfig() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            
+            if (!apiUrl) {
+                showStatus('❌ Veuillez entrer une URL valide', 'error');
+                return;
+            }
+
+            // Enlever le slash final si présent
+            const cleanUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+            
+            window.FandiConfig.setApiUrl(cleanUrl);
+            updateCurrentDisplay();
+            showStatus('✅ Configuration enregistrée avec succès!', 'success');
+        }
+
+        // Réinitialiser à la valeur par défaut
+        function resetToDefault() {
+            localStorage.removeItem('FANDIRENT_API_URL');
+            updateCurrentDisplay();
+            showStatus('✅ Configuration réinitialisée', 'success');
+        }
+
+        // Définir une configuration pré-définie
+        function setPreset(url) {
+            document.getElementById('apiUrl').value = url;
+        }
+
+        // Demander l'URL du tunnel
+        function askForTunnel() {
+            const url = prompt('Collez l\'URL de votre tunnel LocalTunnel/ngrok:', 'https://');
+            if (url && url.startsWith('http')) {
+                document.getElementById('apiUrl').value = url;
+            }
+        }
+
+        // Tester la connexion
+        async function testConnection() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            if (!apiUrl) return;
+
+            try {
+                showStatus('⏳ Test de connexion...', 'success');
+                const response = await fetch(`${apiUrl}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus('✅ Connexion réussie! Backend actif.', 'success');
+                } else {
+                    showStatus('⚠️ Backend trouvé mais erreur de réponse', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Impossible de se connecter au backend', 'error');
+            }
+        }
+
+        // Initialisation
+        updateCurrentDisplay();
+    </script>
+</body>
+</html>

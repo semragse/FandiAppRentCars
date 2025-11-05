@@ -1,0 +1,11 @@
+Faire commit :
+git add .
+git commit -m "ton message"
+git push
+
+Revenir a une commit:
+git log -5 --oneline
+
+
+Demmarer back-end :
+cd backend; npm start

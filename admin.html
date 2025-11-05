@@ -83,24 +83,104 @@
         }
 
         .car-admin-header {
+            position: relative;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1.5rem;
-            text-align: center;
+            padding: 0;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .car-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .car-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .car-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1rem 1.5rem;
+            color: white;
         }
 
         .car-admin-header h3 {
             font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .car-admin-header .car-price {
             font-size: 1.2rem;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
         .car-admin-content {
             padding: 1.5rem;
+        }
+
+        .car-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .car-details h4 {
+            color: #667eea;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        .edit-car-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-car-btn:hover {
+            background: #138496;
         }
 
         /* Réservations existantes */
@@ -339,6 +419,157 @@
         .car-admin-card {
             animation: fadeIn 0.5s ease;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 3% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .modal-form-group input,
+        .modal-form-group select,
+        .modal-form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-form-group input:focus,
+        .modal-form-group select:focus,
+        .modal-form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Price calculation styles */
+        .price-preview {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .price-preview.show {
+            display: block;
+        }
+
+        .price-preview-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-preview-details {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .price-preview-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -383,9 +614,187 @@
         </div>
     </div>
 
+    <!-- Modal de réservation -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📅 Nouvelle Réservation</h2>
+                <button class="close-modal" onclick="closeReservationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reservationForm" onsubmit="submitReservation(event)">
+                    <input type="hidden" id="modalCarId">
+                    
+                    <div class="modal-form-group">
+                        <label>Véhicule sélectionné</label>
+                        <input type="text" id="modalCarName" readonly style="background: #f8f9fa;">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Nom du client *</label>
+                        <input type="text" id="modalCustomerName" required placeholder="Ex: Ahmed Alami">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Email *</label>
+                        <input type="email" id="modalCustomerEmail" required placeholder="ahmed@example.com">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="modalCustomerPhone" placeholder="+212 6 00 00 00 00">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="modal-form-group">
+                            <label>Date de début *</label>
+                            <input type="date" id="modalStartDate" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label>Date de fin *</label>
+                            <input type="date" id="modalEndDate" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📄 Documents de Réservation</label>
+                        <div style="background: #f8f9fa; border: 2px dashed #667eea; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
+                            <div class="modal-form-group" style="margin-bottom: 1rem;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">🪪 CIN / Passeport</label>
+                                <input type="file" id="modalDocCIN" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <small style="color: #666; font-size: 0.75rem;">Formats: JPG, PNG, PDF</small>
+                            </div>
+                            <div class="modal-form-group" style="margin-bottom: 1rem;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">🚗 Permis de Conduire</label>
+                                <input type="file" id="modalDocPermis" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <small style="color: #666; font-size: 0.75rem;">Formats: JPG, PNG, PDF</small>
+                            </div>
+                            <div class="modal-form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">📎 Autre Document (optionnel)</label>
+                                <input type="file" id="modalDocAutre" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <small style="color: #666; font-size: 0.75rem;">Justificatif de domicile, etc.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📝 Notes / Commentaires</label>
+                        <textarea id="modalNotes" rows="3" placeholder="Notes sur la réservation..." style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.95rem; font-family: Arial, sans-serif; resize: vertical;"></textarea>
+                    </div>
+
+                    <div class="price-preview" id="pricePreview">
+                        <div class="price-preview-title">💰 Calcul du prix</div>
+                        <div class="price-preview-details" id="priceDetails"></div>
+                        <div class="price-preview-total" id="priceTotal"></div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeReservationModal()">
+                            Annuler
+                        </button>
+                        <button type="submit" class="modal-btn modal-btn-primary">
+                            ✓ Confirmer la réservation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'édition de réservation -->
+    <div id="editReservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ Modifier Réservation</h2>
+                <button class="close-modal" onclick="closeEditReservationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editReservationForm" onsubmit="updateReservation(event)">
+                    <input type="hidden" id="editReservationId">
+                    <input type="hidden" id="editCarId">
+                    
+                    <div class="modal-form-group">
+                        <label>Véhicule</label>
+                        <input type="text" id="editCarName" readonly style="background: #f8f9fa;">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Nom du client *</label>
+                        <input type="text" id="editCustomerName" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Email *</label>
+                        <input type="email" id="editCustomerEmail" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="editCustomerPhone">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="modal-form-group">
+                            <label>Date de début *</label>
+                            <input type="date" id="editStartDate" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label>Date de fin *</label>
+                            <input type="date" id="editEndDate" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📄 Documents de Réservation</label>
+                        <div style="background: #f8f9fa; border: 2px dashed #667eea; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
+                            <div class="modal-form-group" style="margin-bottom: 1rem;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">🪪 CIN / Passeport</label>
+                                <input type="file" id="editDocCIN" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <div id="editDocCINPreview" style="margin-top: 0.5rem; font-size: 0.8rem; color: #28a745;"></div>
+                            </div>
+                            <div class="modal-form-group" style="margin-bottom: 1rem;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">🚗 Permis de Conduire</label>
+                                <input type="file" id="editDocPermis" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <div id="editDocPermisPreview" style="margin-top: 0.5rem; font-size: 0.8rem; color: #28a745;"></div>
+                            </div>
+                            <div class="modal-form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.9rem; font-weight: normal;">📎 Autre Document (optionnel)</label>
+                                <input type="file" id="editDocAutre" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
+                                <div id="editDocAutrePreview" style="margin-top: 0.5rem; font-size: 0.8rem; color: #28a745;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📝 Notes / Commentaires</label>
+                        <textarea id="editNotes" rows="3" placeholder="Notes sur la réservation..." style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.95rem; font-family: Arial, sans-serif; resize: vertical;"></textarea>
+                    </div>
+
+                    <div class="price-preview" id="editPricePreview">
+                        <div class="price-preview-title">💰 Nouveau prix</div>
+                        <div class="price-preview-details" id="editPriceDetails"></div>
+                        <div class="price-preview-total" id="editPriceTotal"></div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeEditReservationModal()">
+                            Annuler
+                        </button>
+                        <button type="submit" class="modal-btn modal-btn-primary">
+                            ✓ Enregistrer les modifications
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Script -->
+    <script src="config.js"></script>
+
     <script>
-        // Configuration de l'API
-        const API_BASE_URL = 'http://localhost:3001';
+        // Configuration de l'API - Utilise la config dynamique
+        const API_BASE_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
         
         // Variables globales
         let cars = [];
@@ -696,12 +1105,23 @@
                                 👤 ${reservation.customerName}
                             </div>
                             <div class="reservation-customer">
-                                💰 ${reservation.totalPrice}€
+                                � ${reservation.customerEmail}
+                            </div>
+                            <div class="reservation-customer">
+                                📞 ${reservation.customerPhone || 'N/A'}
+                            </div>
+                            <div class="reservation-customer">
+                                �💰 ${reservation.totalPrice}€
                             </div>
                         </div>
-                        <button class="delete-reservation" onclick="deleteReservation('${reservation.id}')">
-                            🗑️ Supprimer
-                        </button>
+                        <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                            <button class="delete-reservation" onclick="editReservation('${reservation.id}')" style="background: #17a2b8;">
+                                ✏️ Modifier
+                            </button>
+                            <button class="delete-reservation" onclick="deleteReservation('${reservation.id}')">
+                                🗑️ Supprimer
+                            </button>
+                        </div>
                     </div>
                 `).join('')
                 : '<div class="no-reservations">🚫 Aucune réservation</div>';
@@ -709,34 +1129,42 @@
             return `
                 <div class="car-admin-card">
                     <div class="car-admin-header">
-                        <h3>${car.name}</h3>
-                        <div class="car-price">${car.price}€/jour</div>
+                        <div class="car-image-container">
+                            <img src="${car.image}" alt="${car.name}" onerror="this.src='images/placeholder.jpg'">
+                            <div class="car-image-overlay">
+                                <h3>${car.name}</h3>
+                                <div class="car-price">${car.price}€/jour</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="car-admin-content">
+                        <div class="car-details">
+                            <h4>� Détails du véhicule</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">ID:</span>
+                                <span class="detail-value">${car.id}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Nom:</span>
+                                <span class="detail-value">${car.name}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Prix/jour:</span>
+                                <span class="detail-value">${car.price}€</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Réservations:</span>
+                                <span class="detail-value">${carReservations.length}</span>
+                            </div>
+                        </div>
+
+                        <button class="edit-car-btn" onclick="openReservationModal('${car.id}', '${car.name}', ${car.price})">
+                            ➕ Nouvelle réservation
+                        </button>
+
                         <div class="reservations-list">
                             <h4>📋 Réservations existantes (${carReservations.length})</h4>
                             ${reservationsHTML}
-                        </div>
-
-                        <div class="add-reservation">
-                            <h4>➕ Ajouter une réservation</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Date de début:</label>
-                                    <input type="date" id="startDate-${car.id}" min="${new Date().toISOString().split('T')[0]}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Date de fin:</label>
-                                    <input type="date" id="endDate-${car.id}" min="${new Date().toISOString().split('T')[0]}">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Nom du client:</label>
-                                <input type="text" id="customerName-${car.id}" placeholder="Ex: Ahmed Alami">
-                            </div>
-                            <button class="add-btn" onclick="addReservation('${car.id}')">
-                                ➕ Ajouter la réservation
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -805,9 +1233,387 @@
                     }
                 }
             });
+
+            // Event listeners pour les modals
+            // Modal de nouvelle réservation
+            document.getElementById('modalStartDate').addEventListener('change', function() {
+                const endDateInput = document.getElementById('modalEndDate');
+                if (this.value) {
+                    endDateInput.min = this.value;
+                    if (endDateInput.value && endDateInput.value <= this.value) {
+                        endDateInput.value = '';
+                    }
+                }
+                updateModalPrice();
+            });
+            
+            document.getElementById('modalEndDate').addEventListener('change', updateModalPrice);
+
+            // Modal d'édition
+            document.getElementById('editStartDate').addEventListener('change', function() {
+                const endDateInput = document.getElementById('editEndDate');
+                if (this.value) {
+                    endDateInput.min = this.value;
+                    if (endDateInput.value && endDateInput.value <= this.value) {
+                        endDateInput.value = '';
+                    }
+                }
+                updateEditModalPrice();
+            });
+            
+            document.getElementById('editEndDate').addEventListener('change', updateEditModalPrice);
+
+            // Fermer modal en cliquant en dehors
+            window.addEventListener('click', function(event) {
+                const reservationModal = document.getElementById('reservationModal');
+                const editModal = document.getElementById('editReservationModal');
+                
+                if (event.target === reservationModal) {
+                    closeReservationModal();
+                }
+                if (event.target === editModal) {
+                    closeEditReservationModal();
+                }
+            });
             
             console.log('✅ Interface Admin FandiApp initialisée');
         });
+
+        // ============= MODAL FUNCTIONS =============
+
+        // Ouvrir modal de nouvelle réservation
+        function openReservationModal(carId, carName, carPrice) {
+            document.getElementById('modalCarId').value = carId;
+            document.getElementById('modalCarName').value = carName;
+            
+            // Stocker le prix pour le calcul
+            document.getElementById('reservationModal').setAttribute('data-car-price', carPrice);
+            
+            // Reset form
+            document.getElementById('modalCustomerName').value = '';
+            document.getElementById('modalCustomerEmail').value = '';
+            document.getElementById('modalCustomerPhone').value = '';
+            document.getElementById('modalNotes').value = '';
+            document.getElementById('modalDocCIN').value = '';
+            document.getElementById('modalDocPermis').value = '';
+            document.getElementById('modalDocAutre').value = '';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('modalStartDate').value = '';
+            document.getElementById('modalStartDate').min = today;
+            document.getElementById('modalEndDate').value = '';
+            document.getElementById('modalEndDate').min = today;
+            document.getElementById('pricePreview').classList.remove('show');
+            
+            document.getElementById('reservationModal').style.display = 'block';
+        }
+
+        // Fermer modal de nouvelle réservation
+        function closeReservationModal() {
+            document.getElementById('reservationModal').style.display = 'none';
+        }
+
+        // Calculer et afficher le prix dans la modal
+        function updateModalPrice() {
+            const startDate = document.getElementById('modalStartDate').value;
+            const endDate = document.getElementById('modalEndDate').value;
+            const pricePreview = document.getElementById('pricePreview');
+            const modal = document.getElementById('reservationModal');
+            const carPrice = parseInt(modal.getAttribute('data-car-price'), 10);
+            
+            if (!startDate || !endDate) {
+                pricePreview.classList.remove('show');
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            if (start >= end) {
+                pricePreview.classList.remove('show');
+                return;
+            }
+
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const total = carPrice * days;
+
+            document.getElementById('priceDetails').innerHTML = `
+                <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
+            `;
+            document.getElementById('priceTotal').innerHTML = `Total: ${total}€`;
+            pricePreview.classList.add('show');
+        }
+
+        // Soumettre nouvelle réservation
+        async function submitReservation(event) {
+            event.preventDefault();
+            
+            const carId = document.getElementById('modalCarId').value;
+            const startDate = document.getElementById('modalStartDate').value;
+            const endDate = document.getElementById('modalEndDate').value;
+            const customerName = document.getElementById('modalCustomerName').value.trim();
+            const customerEmail = document.getElementById('modalCustomerEmail').value.trim();
+            const customerPhone = document.getElementById('modalCustomerPhone').value.trim();
+            const notes = document.getElementById('modalNotes').value.trim();
+
+            if (!customerName || !customerEmail || !startDate || !endDate) {
+                showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
+                return;
+            }
+
+            if (new Date(startDate) >= new Date(endDate)) {
+                showStatus('La date de fin doit être postérieure à la date de début!', 'error');
+                return;
+            }
+
+            // Vérifier les conflits
+            const existingReservations = getCarReservations(carId);
+            const newStart = new Date(startDate);
+            const newEnd = new Date(endDate);
+
+            for (const reservation of existingReservations) {
+                const resStart = new Date(reservation.startDate);
+                const resEnd = new Date(reservation.endDate);
+
+                if (newStart <= resEnd && newEnd >= resStart) {
+                    showStatus('Conflit avec une réservation existante!', 'error');
+                    return;
+                }
+            }
+
+            // Gérer les documents (conversion en base64 pour stockage simple)
+            const documents = {};
+            const docCIN = document.getElementById('modalDocCIN').files[0];
+            const docPermis = document.getElementById('modalDocPermis').files[0];
+            const docAutre = document.getElementById('modalDocAutre').files[0];
+
+            try {
+                if (docCIN) documents.cin = await fileToBase64(docCIN);
+                if (docPermis) documents.permis = await fileToBase64(docPermis);
+                if (docAutre) documents.autre = await fileToBase64(docAutre);
+            } catch (error) {
+                showStatus('Erreur lors du traitement des documents!', 'error');
+                return;
+            }
+
+            const reservationData = {
+                carId,
+                startDate,
+                endDate,
+                customerName,
+                customerEmail,
+                customerPhone: customerPhone || '+212 6 00 00 00 00',
+                totalPrice: calculatePrice(carId, startDate, endDate),
+                notes: notes,
+                documents: JSON.stringify(documents),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await addReservationToAPI(reservationData);
+                await loadAllData();
+                renderCarsAdmin();
+                closeReservationModal();
+                showStatus('Réservation créée avec succès!', 'success');
+            } catch (error) {
+                showStatus('Erreur lors de la création de la réservation!', 'error');
+            }
+        }
+
+        // Convertir un fichier en base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve({
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    data: reader.result
+                });
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Ouvrir modal d'édition de réservation
+        function editReservation(reservationId) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            if (!reservation) {
+                showStatus('Réservation introuvable!', 'error');
+                return;
+            }
+
+            const car = cars.find(c => c.id === reservation.carId);
+            
+            document.getElementById('editReservationId').value = reservation.id;
+            document.getElementById('editCarId').value = reservation.carId;
+            document.getElementById('editCarName').value = car ? car.name : reservation.carId;
+            document.getElementById('editCustomerName').value = reservation.customerName;
+            document.getElementById('editCustomerEmail').value = reservation.customerEmail;
+            document.getElementById('editCustomerPhone').value = reservation.customerPhone || '';
+            document.getElementById('editStartDate').value = reservation.startDate;
+            document.getElementById('editEndDate').value = reservation.endDate;
+            document.getElementById('editNotes').value = reservation.notes || '';
+            
+            // Afficher les documents existants
+            if (reservation.documents) {
+                try {
+                    const docs = typeof reservation.documents === 'string' 
+                        ? JSON.parse(reservation.documents) 
+                        : reservation.documents;
+                    
+                    if (docs.cin) {
+                        document.getElementById('editDocCINPreview').innerHTML = 
+                            `✅ Document existant: ${docs.cin.name} <a href="${docs.cin.data}" download="${docs.cin.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                    }
+                    if (docs.permis) {
+                        document.getElementById('editDocPermisPreview').innerHTML = 
+                            `✅ Document existant: ${docs.permis.name} <a href="${docs.permis.data}" download="${docs.permis.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                    }
+                    if (docs.autre) {
+                        document.getElementById('editDocAutrePreview').innerHTML = 
+                            `✅ Document existant: ${docs.autre.name} <a href="${docs.autre.data}" download="${docs.autre.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                    }
+                } catch (e) {
+                    console.error('Erreur parsing documents:', e);
+                }
+            }
+            
+            // Stocker le prix de la voiture
+            document.getElementById('editReservationModal').setAttribute('data-car-price', car ? car.price : 0);
+            
+            updateEditModalPrice();
+            document.getElementById('editReservationModal').style.display = 'block';
+        }
+
+        // Fermer modal d'édition
+        function closeEditReservationModal() {
+            document.getElementById('editReservationModal').style.display = 'none';
+            // Clear previews
+            document.getElementById('editDocCINPreview').innerHTML = '';
+            document.getElementById('editDocPermisPreview').innerHTML = '';
+            document.getElementById('editDocAutrePreview').innerHTML = '';
+        }
+
+        // Calculer prix dans modal d'édition
+        function updateEditModalPrice() {
+            const startDate = document.getElementById('editStartDate').value;
+            const endDate = document.getElementById('editEndDate').value;
+            const pricePreview = document.getElementById('editPricePreview');
+            const modal = document.getElementById('editReservationModal');
+            const carPrice = parseInt(modal.getAttribute('data-car-price'), 10);
+            
+            if (!startDate || !endDate || !carPrice) {
+                pricePreview.classList.remove('show');
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            if (start >= end) {
+                pricePreview.classList.remove('show');
+                return;
+            }
+
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const total = carPrice * days;
+
+            document.getElementById('editPriceDetails').innerHTML = `
+                <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
+            `;
+            document.getElementById('editPriceTotal').innerHTML = `Total: ${total}€`;
+            pricePreview.classList.add('show');
+        }
+
+        // Mettre à jour une réservation
+        async function updateReservation(event) {
+            event.preventDefault();
+            
+            const reservationId = document.getElementById('editReservationId').value;
+            const carId = document.getElementById('editCarId').value;
+            const startDate = document.getElementById('editStartDate').value;
+            const endDate = document.getElementById('editEndDate').value;
+            const customerName = document.getElementById('editCustomerName').value.trim();
+            const customerEmail = document.getElementById('editCustomerEmail').value.trim();
+            const customerPhone = document.getElementById('editCustomerPhone').value.trim();
+            const notes = document.getElementById('editNotes').value.trim();
+
+            if (!customerName || !customerEmail || !startDate || !endDate) {
+                showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
+                return;
+            }
+
+            if (new Date(startDate) >= new Date(endDate)) {
+                showStatus('La date de fin doit être postérieure à la date de début!', 'error');
+                return;
+            }
+
+            // Vérifier les conflits (exclure la réservation actuelle)
+            const existingReservations = getCarReservations(carId).filter(r => r.id !== reservationId);
+            const newStart = new Date(startDate);
+            const newEnd = new Date(endDate);
+
+            for (const reservation of existingReservations) {
+                const resStart = new Date(reservation.startDate);
+                const resEnd = new Date(reservation.endDate);
+
+                if (newStart <= resEnd && newEnd >= resStart) {
+                    showStatus('Conflit avec une autre réservation!', 'error');
+                    return;
+                }
+            }
+
+            // Récupérer les documents existants
+            const oldReservation = reservations.find(r => r.id === reservationId);
+            let existingDocs = {};
+            if (oldReservation && oldReservation.documents) {
+                try {
+                    existingDocs = typeof oldReservation.documents === 'string' 
+                        ? JSON.parse(oldReservation.documents) 
+                        : oldReservation.documents;
+                } catch (e) {
+                    console.error('Erreur parsing documents:', e);
+                }
+            }
+
+            // Mettre à jour avec nouveaux documents si fournis
+            const docCIN = document.getElementById('editDocCIN').files[0];
+            const docPermis = document.getElementById('editDocPermis').files[0];
+            const docAutre = document.getElementById('editDocAutre').files[0];
+
+            try {
+                if (docCIN) existingDocs.cin = await fileToBase64(docCIN);
+                if (docPermis) existingDocs.permis = await fileToBase64(docPermis);
+                if (docAutre) existingDocs.autre = await fileToBase64(docAutre);
+            } catch (error) {
+                showStatus('Erreur lors du traitement des documents!', 'error');
+                return;
+            }
+
+            const reservationData = {
+                carId,
+                startDate,
+                endDate,
+                customerName,
+                customerEmail,
+                customerPhone: customerPhone || '+212 6 00 00 00 00',
+                totalPrice: calculatePrice(carId, startDate, endDate),
+                notes: notes,
+                documents: JSON.stringify(existingDocs)
+            };
+
+            try {
+                // Supprimer l'ancienne et créer la nouvelle (PUT endpoint n'existe pas encore)
+                await deleteReservationFromAPI(reservationId);
+                await addReservationToAPI(reservationData);
+                await loadAllData();
+                renderCarsAdmin();
+                closeEditReservationModal();
+                showStatus('Réservation mise à jour avec succès!', 'success');
+            } catch (error) {
+                showStatus('Erreur lors de la mise à jour de la réservation!', 'error');
+            }
+        }
     </script>
 </body>
 </html>
