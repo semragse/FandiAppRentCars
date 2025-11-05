@@ -128,7 +128,7 @@ git commit -m "Initialisation du dépôt public + .gitignore"
 git branch -M main
 
 # 5. Ajouter le remote
-git remote add origin https://github.com/semragse/FandiRent.git
+git remote add origin https://github.com/psgarmes_amadeus/FandiRent.git
 
 # 6. Envoyer le premier push
 git push -u origin main
