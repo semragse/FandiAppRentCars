@@ -110,3 +110,49 @@ Currently simple (daily rate * days) in backend; advanced progressive discount &
 - Postgres auth error: Verify credentials & that the service is running.
 
 Enjoy building FandiRent! 🚗
+
+## Publication sur GitHub
+Suivez ces étapes pour versionner et publier le projet:
+
+```powershell
+# 1. Vérifier l'état
+git status
+
+# 2. Ajouter uniquement ce que vous voulez (ici tout)
+git add .
+
+# 3. Créer un commit descriptif
+git commit -m "Initialisation du dépôt public + .gitignore"
+
+# 4. (Une seule fois) définir la branche principale sur 'main'
+git branch -M main
+
+# 5. Ajouter le remote (remplacez VOTRE_USER)
+git remote add origin https://github.com/VOTRE_USER/FandiRent.git
+
+# 6. Envoyer le premier push
+git push -u origin main
+
+# Commits suivants:
+# (modifier des fichiers)
+# puis
+git add <fichier(s)>
+git commit -m "Message clair"
+git push
+
+# Si le repo GitHub avait déjà un README initial
+# et qu'il y a un conflit d'historiques:
+# (utiliser)
+# git pull --allow-unrelated-histories origin main
+```
+
+Points clés:
+- Ne versionnez pas `backend/node_modules` (déjà dans `.gitignore`).
+- Ajoutez vos variables sensibles dans `.env` mais ne poussez jamais ce fichier (gardez `.env.example`).
+- Utilisez des messages de commit compréhensibles: verbe à l'infinitif + objet ("Ajouter paiement", "Corriger validation dates").
+
+Astuce: pour voir rapidement les derniers commits:
+```powershell
+git log --oneline -n 10
+```
+

@@ -1,0 +1,20 @@
+# Node backend
+backend/node_modules/
+backend/.env
+backend/npm-debug.log*
+backend/yarn-error.log
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Build / coverage (si ajoutés plus tard)
+dist/
+coverage/
+
+# Misc
+.env
+.env.*
