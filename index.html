@@ -1554,13 +1554,22 @@
                     </div>
                 </div>
                 <div id="quickPriceBox" style="background:#f8f9fa; border:2px solid #e9ecef; border-radius:14px; padding:.85rem .9rem; display:none;">
+                    <!-- Résumé rapide -->
                     <div style="display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:.4rem;">
                         <span style="color:#555;">Tarif journalier:</span>
                         <strong id="quickDailyRate">-</strong>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:.9rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:.6rem;">
                         <span style="color:#333;">Prix total:</span>
                         <strong id="quickTotalPrice" style="color:#28a745;">-</strong>
+                    </div>
+                    
+                    <!-- Détail jour par jour (pour Clio 5) -->
+                    <div id="quickBreakdown" style="display:none; margin-top:.8rem; padding-top:.8rem; border-top:2px solid #e9ecef;">
+                        <div style="font-weight:600; font-size:.8rem; color:#667eea; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.5px;">📊 Détail par jour</div>
+                        <div id="quickBreakdownDays" style="max-height:150px; overflow-y:auto;">
+                            <!-- Rempli dynamiquement -->
+                        </div>
                     </div>
                 </div>
                 <div id="quickError" style="display:none; background:#f8d7da; color:#721c24; padding:.55rem .7rem; border-radius:8px; font-size:.75rem; font-weight:600;"></div>
@@ -1760,8 +1769,9 @@
                 // Récupérer toutes les réservations pour cette voiture depuis l'API
                 const response = await fetch(`http://localhost:3001/reservations?carId=${carId}`);
                 if (!response.ok) {
-                    console.error('Erreur lors de la récupération des réservations:', response.status);
-                    return false;
+                    console.warn('⚠️ API non disponible, utilisation de la vérification locale');
+                    // Fallback: utiliser la vérification locale
+                    return isCarAvailable(carId, startDate, endDate);
                 }
                 
                 const reservations = await response.json();
@@ -1783,8 +1793,9 @@
                 console.log(`✅ Voiture ${carId} disponible pour ${startDate} - ${endDate}`);
                 return true;
             } catch (error) {
-                console.error('Erreur lors de la vérification de disponibilité via API:', error);
-                return false;
+                console.warn('⚠️ Erreur API, utilisation de la vérification locale:', error.message);
+                // Fallback: utiliser la vérification locale
+                return isCarAvailable(carId, startDate, endDate);
             }
         }
 
@@ -2101,14 +2112,55 @@
             const quickModal = document.getElementById('quickReservationModal');
             const box = document.getElementById('quickPriceBox');
             const err = document.getElementById('quickError');
+            const carId = quickModal.getAttribute('data-car-id');
+            const breakdownDiv = document.getElementById('quickBreakdown');
+            const breakdownDaysDiv = document.getElementById('quickBreakdownDays');
+            
             err.style.display='none';
             if (!qsVal || !qeVal) { box.style.display='none'; return; }
             const start = new Date(qsVal); const end = new Date(qeVal);
             if (start >= end) { box.style.display='none'; err.textContent='Dates invalides'; err.style.display='block'; return; }
+            
             const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
             const days = Math.ceil((end - start)/(1000*60*60*24));
+            
+            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend + afficher breakdown
+            if (typeof window.calculateCarPriceWithWeekend === 'function') {
+                try {
+                    const result = window.calculateCarPriceWithWeekend(carId, qsVal, qeVal);
+                    document.getElementById('quickTotalPrice').textContent = `${result.total}€ (${result.days}j, dont ${result.weekendExtra}€ weekend)`;
+                    
+                    // Afficher le détail jour par jour
+                    let breakdownHTML = '';
+                    result.breakdown.forEach(day => {
+                        const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
+                        const isWeekend = day.isWeekend;
+                        const bgColor = isWeekend ? '#fff3cd' : 'white';
+                        const borderColor = isWeekend ? '#fd7e14' : '#e9ecef';
+                        const badge = isWeekend ? '<span style="font-size:.65rem; color:#fd7e14; font-weight:600;">🔶 WEEKEND</span>' : '';
+                        breakdownHTML += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:.4rem .5rem; margin:.2rem 0; background:${bgColor}; border-left:3px solid ${borderColor}; border-radius:4px; font-size:.75rem;">
+                                <span style="text-transform:capitalize;">${dayName}</span>
+                                <div style="display:flex; align-items:center; gap:.4rem;">
+                                    ${badge}
+                                    <strong style="color:#333;">${day.price}€</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    breakdownDaysDiv.innerHTML = breakdownHTML;
+                    breakdownDiv.style.display = 'block';
+                    box.style.display='block';
+                    return;
+                } catch (error) {
+                    console.error('Erreur calcul prix weekend:', error);
+                    // Fallback vers calcul simple si erreur
+                }
+            }
+            
+            // Fallback: calcul simple sans breakdown (ne devrait plus arriver)
+            breakdownDiv.style.display = 'none';
             let total = pricePerDay * days;
-            if (days >= 31) total = Math.round(total * 0.6); else if (days >= 15) total = Math.round(total * 0.7); else if (days >= 8) total = Math.round(total * 0.8); else if (days >= 4) total = Math.round(total * 0.9);
             document.getElementById('quickTotalPrice').textContent = `${total}€ (${days}j)`;
             box.style.display='block';
         }
@@ -2131,11 +2183,23 @@
             // Vérifier disponibilité avant paiement
             const avail = await isCarAvailableAPI(carId, startDate, endDate);
             if (!avail) { err.textContent='Cette voiture est déjà réservée pour ces dates.'; err.style.display='block'; return; }
-            // Recalcul du total (même logique que updateQuickPrice)
+            
+            // Recalcul du total
             const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
             const days = Math.ceil((new Date(endDate) - new Date(startDate))/(1000*60*60*24));
             let total = pricePerDay * days;
-            if (days >= 31) total = Math.round(total * 0.6); else if (days >= 15) total = Math.round(total * 0.7); else if (days >= 8) total = Math.round(total * 0.8); else if (days >= 4) total = Math.round(total * 0.9);
+            
+            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend
+            if (typeof window.calculateCarPriceWithWeekend === 'function') {
+                try {
+                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
+                    total = result.total;
+                } catch (error) {
+                    console.error('Erreur calcul prix weekend pour paiement:', error);
+                    // Utiliser le calcul simple en fallback
+                }
+            }
+            
             const params = new URLSearchParams({ carId, start:startDate, end:endDate, days:String(days), total:String(total) });
             window.location.href = `payment.html?${params.toString()}`;
         });
@@ -3101,5 +3165,8 @@
        class="whatsapp-float" 
        title="Contactez-nous sur WhatsApp">
     </a>
+
+    <!-- Script de calcul prix Clio 5 avec majoration weekend -->
+    <script src="clio5Pricing.js"></script>
 </body>
 </html>

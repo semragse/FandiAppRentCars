@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendrier des Réservations - FandiRent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .car-section {
+      margin-bottom: 40px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .car-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .car-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    .car-price {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .reservations-list {
+      padding: 20px;
+    }
+    .reservation-item {
+      background: #f8f9fa;
+      border-left: 4px solid #28a745;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr 1fr;
+      gap: 15px;
+      align-items: center;
+    }
+    .reservation-item.past {
+      opacity: 0.6;
+      border-left-color: #6c757d;
+    }
+    .reservation-item.active {
+      border-left-color: #fd7e14;
+      background: #fff3cd;
+    }
+    .reservation-item.future {
+      border-left-color: #28a745;
+    }
+    .res-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .res-label {
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .res-value {
+      font-size: 0.95rem;
+      color: #333;
+      font-weight: 500;
+    }
+    .res-price {
+      color: #28a745;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .no-reservations {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-style: italic;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-past {
+      background: #e9ecef;
+      color: #6c757d;
+    }
+    .status-active {
+      background: #fd7e14;
+      color: white;
+    }
+    .status-future {
+      background: #28a745;
+      color: white;
+    }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+    .back-btn:hover {
+      background: #5a6268;
+    }
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+    @media (max-width: 768px) {
+      .reservation-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="admin.html" class="back-btn">← Retour Admin</a>
+    <h1>📅 Calendrier des Réservations</h1>
+    <p class="subtitle">Vue d'ensemble de toutes les réservations par voiture</p>
+    
+    <div id="content" class="loading">
+      Chargement des réservations...
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:3001';
+    const cars = [
+      { id: 'car1', name: 'Clio 5', price: 35 },
+      { id: 'car2', name: 'Audi A4', price: 85 },
+      { id: 'car3', name: 'Mercedes CLA 220', price: 120 },
+      { id: 'car4', name: 'Dacia Logan', price: 45 },
+      { id: 'car5', name: 'Peugeot 308', price: 65 }
+    ];
+
+    async function loadReservations() {
+      try {
+        const response = await fetch(`${API_BASE}/reservations`);
+        if (!response.ok) throw new Error('API non disponible');
+        
+        const allReservations = await response.json();
+        const today = new Date().toISOString().split('T')[0];
+        
+        let html = '';
+        
+        cars.forEach(car => {
+          const carReservations = allReservations.filter(r => r.carId === car.id);
+          
+          html += `
+            <div class="car-section">
+              <div class="car-header">
+                <div class="car-name">${car.name}</div>
+                <div class="car-price">${car.price}€/jour</div>
+              </div>
+              <div class="reservations-list">
+          `;
+          
+          if (carReservations.length === 0) {
+            html += `<div class="no-reservations">Aucune réservation pour cette voiture</div>`;
+          } else {
+            // Trier par date de début
+            carReservations.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+            
+            carReservations.forEach(res => {
+              const startDate = res.startDate;
+              const endDate = res.endDate;
+              let status = 'future';
+              let statusText = 'À venir';
+              
+              if (endDate < today) {
+                status = 'past';
+                statusText = 'Terminée';
+              } else if (startDate <= today && endDate >= today) {
+                status = 'active';
+                statusText = 'En cours';
+              }
+              
+              const formatDate = (dateStr) => {
+                return new Date(dateStr).toLocaleDateString('fr-FR', { 
+                  weekday: 'short', 
+                  day: '2-digit', 
+                  month: 'short',
+                  year: 'numeric'
+                });
+              };
+              
+              const days = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000*60*60*24));
+              
+              html += `
+                <div class="reservation-item ${status}">
+                  <div class="res-field">
+                    <div class="res-label">Client</div>
+                    <div class="res-value">${res.customerName}</div>
+                  </div>
+                  <div class="res-field">
+                    <div class="res-label">Période (${days} jours)</div>
+                    <div class="res-value">${formatDate(startDate)} → ${formatDate(endDate)}</div>
+                  </div>
+                  <div class="res-field">
+                    <div class="res-label">Prix Total</div>
+                    <div class="res-price">${res.totalPrice}€</div>
+                  </div>
+                  <div class="res-field">
+                    <div class="res-label">Statut</div>
+                    <span class="status-badge status-${status}">${statusText}</span>
+                  </div>
+                </div>
+              `;
+            });
+          }
+          
+          html += `
+              </div>
+            </div>
+          `;
+        });
+        
+        document.getElementById('content').innerHTML = html;
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('content').innerHTML = `
+          <div style="text-align:center; padding:50px; color:#dc3545;">
+            <h3>❌ Impossible de charger les réservations</h3>
+            <p>Le serveur backend n'est pas démarré.</p>
+            <p style="margin-top:20px;">
+              <strong>Pour démarrer le serveur:</strong><br>
+              <code style="background:#f8f9fa; padding:10px; border-radius:5px; display:inline-block; margin-top:10px;">
+                cd backend && npm start
+              </code>
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // Charger au démarrage
+    loadReservations();
+    
+    // Rafraîchir toutes les 10 secondes
+    setInterval(loadReservations, 10000);
+  </script>
+</body>
+</html>
