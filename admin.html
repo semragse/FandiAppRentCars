@@ -1004,6 +1004,16 @@
     </style>
 </head>
 <body>
+    <script>
+        // Helpers date locaux pour éviter décalage UTC
+        function todayLocal() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+    </script>
     <!-- Header Admin -->
     <header class="admin-header">
         <div class="admin-header-content">
@@ -1489,7 +1499,7 @@
         }
 
         async function clearTodayReservations() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             
             try {
                 // Trouver les réservations qui touchent aujourd'hui
@@ -1886,7 +1896,7 @@
             document.getElementById('modalDocCIN').value = '';
             document.getElementById('modalDocPermis').value = '';
             document.getElementById('modalDocAutre').value = '';
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             document.getElementById('modalStartDate').value = '';
             document.getElementById('modalStartDate').min = today;
             document.getElementById('modalEndDate').value = '';

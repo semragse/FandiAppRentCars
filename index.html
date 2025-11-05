@@ -1409,6 +1409,22 @@
     </style>
 </head>
 <body>
+    <script>
+        // Helpers date locaux centralisés (évite erreurs UTC toISOString)
+        function todayLocal() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+        function dateToLocalYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+    </script>
     <!-- Header avec logo centré et contact à droite -->
     <header class="header">
         <div class="header-content">
@@ -1907,7 +1923,7 @@
 
         // Fonction pour définir dynamiquement les min sur les inputs date
         function setDynamicMinDates() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             const dateInputs = ['searchStartDate','searchEndDate','startDate','endDate']
                 .map(id => document.getElementById(id))
                 .filter(el => !!el);
@@ -1944,7 +1960,7 @@
 
         // Appliquer statut réservé pour les voitures ayant une réservation aujourd'hui
         function applyTodayReservationsStatus() {
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = todayLocal();
             for (const carId in carsDatabase) {
                 const car = carsDatabase[carId];
                 const isReservedToday = car.reservations.some(r => todayStr >= r.startDate && todayStr <= r.endDate);
@@ -2237,7 +2253,7 @@
         document.getElementById('searchAvailability').addEventListener('click', async function() {
             const startDate = document.getElementById('searchStartDate').value;
             const endDate = document.getElementById('searchEndDate').value;
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
 
             if (!startDate || !endDate) {
                 alert('Veuillez sélectionner les dates de début et de fin.');
@@ -2302,10 +2318,32 @@
         // Seed button supprimé (suppression du listener)
 
         // Validation des dates de recherche
+        // Bloquer les dates passées en temps réel (événement input)
+        document.getElementById('searchStartDate').addEventListener('input', function() {
+            const today = todayLocal();
+            if (this.value && this.value < today) {
+                this.value = today;
+            }
+        });
+
+        document.getElementById('searchEndDate').addEventListener('input', function() {
+            const today = todayLocal();
+            const startDate = document.getElementById('searchStartDate').value;
+            
+            if (this.value && this.value < today) {
+                this.value = today;
+            }
+            
+            if (this.value && startDate && this.value <= startDate) {
+                this.value = '';
+            }
+        });
+
+        // Validation finale au changement (change event)
         document.getElementById('searchStartDate').addEventListener('change', function() {
             const startDate = this.value;
             const endDateInput = document.getElementById('searchEndDate');
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             
             // Bloquer la sélection de dates dans le passé
             if (startDate && startDate < today) {
@@ -2325,19 +2363,11 @@
             }
         });
 
-        // Bloquer aussi avec l'événement input (pour les saisies au clavier)
-        document.getElementById('searchStartDate').addEventListener('input', function() {
-            const today = new Date().toISOString().split('T')[0];
-            if (this.value && this.value < today) {
-                this.value = today;
-            }
-        });
-
         // Validation de la date de fin
         document.getElementById('searchEndDate').addEventListener('change', function() {
             const endDate = this.value;
             const startDateInput = document.getElementById('searchStartDate');
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             
             // Bloquer la sélection de dates dans le passé
             if (endDate && endDate < today) {
@@ -2350,14 +2380,6 @@
             if (endDate && startDateInput.value && endDate <= startDateInput.value) {
                 alert('⚠️ La date de fin doit être après la date de début.');
                 this.value = '';
-            }
-        });
-
-        // Bloquer aussi avec l'événement input pour la date de fin
-        document.getElementById('searchEndDate').addEventListener('input', function() {
-            const today = new Date().toISOString().split('T')[0];
-            if (this.value && this.value < today) {
-                this.value = today;
             }
         });
 
@@ -2374,7 +2396,7 @@
                 document.getElementById('quickCarName').textContent = `${carName}`;
                 document.getElementById('quickDailyRate').textContent = `${carPrice}€`; 
                 // Init dates
-                const today = new Date().toISOString().split('T')[0];
+                const today = todayLocal();
                 const qs = document.getElementById('quickStart');
                 const qe = document.getElementById('quickEnd');
                 qs.min = today; qe.min = today;
@@ -2524,7 +2546,7 @@
         document.getElementById('startDate').addEventListener('change', function() {
             const startDate = this.value;
             const endDateInput = document.getElementById('endDate');
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             
             // Vérifier si la date sélectionnée est dans le passé
             if (startDate && startDate < today) {
@@ -2724,7 +2746,7 @@
 
         // Vérifier le statut des voitures pour aujourd'hui
         function checkTodayAvailability() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             let availableToday = 0;
             
             Object.keys(carsDatabase).forEach((carId, index) => {
@@ -2914,33 +2936,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard FandiApp initialisé avec base de données ✅');
             
-            // IMPORTANT: Définir les dates minimum IMMÉDIATEMENT
-            const today = new Date().toISOString().split('T')[0];
-            const searchStartDate = document.getElementById('searchStartDate');
-            const searchEndDate = document.getElementById('searchEndDate');
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            
-            // Forcer les dates minimum
-            if (searchStartDate) {
-                searchStartDate.setAttribute('min', today);
-                searchStartDate.value = ''; // Reset toute valeur existante
-            }
-            if (searchEndDate) {
-                searchEndDate.setAttribute('min', today);
-                searchEndDate.value = '';
-            }
-            if (startDate) {
-                startDate.setAttribute('min', today);
-                startDate.value = '';
-            }
-            if (endDate) {
-                endDate.setAttribute('min', today);
-                endDate.value = '';
-            }
-            
-            console.log('📅 Dates minimum forcées à:', today);
-            
             // Vider le localStorage pour éviter les conflits
             localStorage.clear();
             
@@ -2955,6 +2950,32 @@
             
             // Ajouter l'indicateur de statut de connexion
             enhancedSync();
+            
+            // Fonction pour mettre à jour les dates minimums
+            function updateMinDates() {
+                const today = todayLocal();
+                const searchStartDate = document.getElementById('searchStartDate');
+                const searchEndDate = document.getElementById('searchEndDate');
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+                
+                // Définir les dates minimum (empêche la sélection de dates passées)
+                if (searchStartDate) searchStartDate.min = today;
+                if (searchEndDate) searchEndDate.min = today;
+                if (startDate) startDate.min = today;
+                if (endDate) endDate.min = today;
+                
+                console.log('📅 Dates minimums mises à jour à:', today);
+            }
+            
+            // Définir la date minimum à aujourd'hui pour la recherche ET le modal de réservation
+            updateMinDates();
+            
+            // Mettre à jour les dates chaque jour (si la page reste ouverte)
+            setInterval(updateMinDates, 60000); // Toutes les minutes
+            
+            // Mettre à jour les dates minimums toutes les heures pour s'assurer qu'elles restent à jour
+            setInterval(updateMinDates, 60 * 60 * 1000); // 1 heure
             
             // Vérifier et mettre à jour les statuts pour aujourd'hui
             // checkTodayAvailability(); // Désactivé temporairement - les voitures s'affichent comme disponibles par défaut
@@ -2972,7 +2993,7 @@
             document.getElementById('calculatePrice').addEventListener('click', function() {
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
-                const today = new Date().toISOString().split('T')[0];
+                const today = todayLocal();
                 
                 if (!startDate || !endDate) {
                     alert('Veuillez sélectionner les dates de début et de fin');
@@ -3275,7 +3296,7 @@
                 const dayElement = document.createElement('div');
                 dayElement.className = `calendar-day ${day.type}`;
                 dayElement.innerHTML = `
-                    <span class="day-label">${formatDateFrenchShort(day.date.toISOString().split('T')[0])}</span>
+                    <span class="day-label">${formatDateFrenchShort(dateToLocalYMD(day.date))}</span>
                     <span class="day-price">${day.price}€</span>
                     <span class="day-modifier">${day.modifier}</span>
                 `;
@@ -3366,7 +3387,7 @@
         }
 
         function checkTodayAvailabilityQuiet() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayLocal();
             let availableToday = 0;
             
             Object.keys(carsDatabase).forEach((carId, index) => {
