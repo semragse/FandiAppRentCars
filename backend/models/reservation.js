@@ -34,6 +34,14 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    notes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    documents: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

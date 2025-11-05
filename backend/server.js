@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Simple health check
 app.get('/health', (req, res) => {
@@ -43,7 +44,7 @@ app.get('/reservations', async (req, res) => {
 // Add a reservation with overlap validation
 app.post('/reservations', async (req, res) => {
   try {
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice } = req.body;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -91,6 +92,8 @@ app.post('/reservations', async (req, res) => {
       customerEmail,
       customerPhone: customerPhone || '',
       totalPrice: finalPrice,
+      notes: notes || '',
+      documents: documents || null,
     });
     res.status(201).json(reservation);
   } catch (err) {
@@ -112,6 +115,36 @@ app.delete('/reservations/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to delete reservation' });
+  }
+});
+
+// Update a reservation
+app.put('/reservations/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents } = req.body;
+    
+    const reservation = await Reservation.findByPk(id);
+    if (!reservation) {
+      return res.status(404).json({ error: 'Reservation not found' });
+    }
+
+    // Update fields
+    if (carId) reservation.carId = carId;
+    if (startDate) reservation.startDate = startDate;
+    if (endDate) reservation.endDate = endDate;
+    if (customerName) reservation.customerName = customerName;
+    if (customerEmail) reservation.customerEmail = customerEmail;
+    if (customerPhone !== undefined) reservation.customerPhone = customerPhone;
+    if (totalPrice !== undefined) reservation.totalPrice = totalPrice;
+    if (notes !== undefined) reservation.notes = notes;
+    if (documents !== undefined) reservation.documents = documents;
+
+    await reservation.save();
+    res.json(reservation);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update reservation' });
   }
 });
 
@@ -140,12 +173,30 @@ async function seedData() {
   ];
   await Car.bulkCreate(cars);
 
-  // Sample reservations (future dates)
+  // Sample reservations (future dates) - toutes les voitures
   const reservations = [
-    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', customerName: 'Test User', customerEmail: 'test1@example.com', customerPhone: '+212600000001', totalPrice: 35 * 2 },
-    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', customerName: 'Test User 2', customerEmail: 'test2@example.com', customerPhone: '+212600000002', totalPrice: 85 * 3 },
+    // Clio 5
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', customerName: 'Ahmed Alami', customerEmail: 'ahmed.alami@example.com', customerPhone: '+212 6 12 34 56 78', totalPrice: 35 * 2 },
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-20', endDate: '2025-11-22', customerName: 'Yasmine Benjelloun', customerEmail: 'yasmine.b@example.com', customerPhone: '+212 6 23 45 67 89', totalPrice: 35 * 2 },
+    
+    // Audi A4
+    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', customerName: 'Karim Tazi', customerEmail: 'karim.tazi@example.com', customerPhone: '+212 6 34 56 78 90', totalPrice: 85 * 3 },
+    { id: uuidv4(), carId: 'car2', startDate: '2025-12-01', endDate: '2025-12-03', customerName: 'Leila Fassi', customerEmail: 'leila.fassi@example.com', customerPhone: '+212 6 45 67 89 01', totalPrice: 85 * 2 },
+    
+    // Mercedes CLA 220
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-15', endDate: '2025-11-18', customerName: 'Omar Bennani', customerEmail: 'omar.bennani@example.com', customerPhone: '+212 6 56 78 90 12', totalPrice: 120 * 3 },
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-25', endDate: '2025-11-28', customerName: 'Salma Chraibi', customerEmail: 'salma.chraibi@example.com', customerPhone: '+212 6 67 89 01 23', totalPrice: 120 * 3 },
+    
+    // Dacia Logan
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-08', endDate: '2025-11-10', customerName: 'Hassan Idrissi', customerEmail: 'hassan.idrissi@example.com', customerPhone: '+212 6 78 90 12 34', totalPrice: 45 * 2 },
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-18', endDate: '2025-11-20', customerName: 'Nadia Lahlou', customerEmail: 'nadia.lahlou@example.com', customerPhone: '+212 6 89 01 23 45', totalPrice: 45 * 2 },
+    
+    // Peugeot 308
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-12', endDate: '2025-11-15', customerName: 'Youssef Kadiri', customerEmail: 'youssef.kadiri@example.com', customerPhone: '+212 6 90 12 34 56', totalPrice: 65 * 3 },
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-22', endDate: '2025-11-25', customerName: 'Fatima Zahra', customerEmail: 'fatima.zahra@example.com', customerPhone: '+212 6 01 23 45 67', totalPrice: 65 * 3 },
   ];
   await Reservation.bulkCreate(reservations);
+  console.log('✅ 10 réservations de test créées pour les 5 voitures');
 }
 
 (async () => {

@@ -789,6 +789,26 @@
         </div>
     </div>
 
+    <!-- Modal pour voir les documents -->
+    <div id="viewDocumentsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📄 Documents de la Réservation</h2>
+                <button class="close-modal" onclick="closeViewDocumentsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="documentsContent" style="display: grid; gap: 1.5rem;">
+                    <!-- Les documents seront affichés ici -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="closeViewDocumentsModal()">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Configuration Script -->
     <script src="config.js"></script>
 
@@ -1115,6 +1135,9 @@
                             </div>
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                            <button class="delete-reservation" onclick="viewDocuments('${reservation.id}')" style="background: #28a745;">
+                                📄 Voir Documents
+                            </button>
                             <button class="delete-reservation" onclick="editReservation('${reservation.id}')" style="background: #17a2b8;">
                                 ✏️ Modifier
                             </button>
@@ -1267,12 +1290,16 @@
             window.addEventListener('click', function(event) {
                 const reservationModal = document.getElementById('reservationModal');
                 const editModal = document.getElementById('editReservationModal');
+                const viewDocsModal = document.getElementById('viewDocumentsModal');
                 
                 if (event.target === reservationModal) {
                     closeReservationModal();
                 }
                 if (event.target === editModal) {
                     closeEditReservationModal();
+                }
+                if (event.target === viewDocsModal) {
+                    closeViewDocumentsModal();
                 }
             });
             
@@ -1494,6 +1521,119 @@
             document.getElementById('editDocAutrePreview').innerHTML = '';
         }
 
+        // Fonction pour voir les documents d'une réservation
+        function viewDocuments(reservationId) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            if (!reservation) {
+                showStatus('Réservation introuvable!', 'error');
+                return;
+            }
+
+            const documentsContent = document.getElementById('documentsContent');
+            let documents = {};
+
+            // Parser les documents
+            if (reservation.documents) {
+                try {
+                    documents = typeof reservation.documents === 'string' 
+                        ? JSON.parse(reservation.documents) 
+                        : reservation.documents;
+                } catch (e) {
+                    console.error('Erreur parsing documents:', e);
+                }
+            }
+
+            // Afficher les informations de la réservation
+            let html = `
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h3 style="margin: 0 0 0.5rem 0;">Informations de la réservation</h3>
+                    <p><strong>Client:</strong> ${reservation.customerName}</p>
+                    <p><strong>Email:</strong> ${reservation.customerEmail}</p>
+                    <p><strong>Téléphone:</strong> ${reservation.customerPhone || 'N/A'}</p>
+                    <p><strong>Période:</strong> ${formatDate(reservation.startDate)} → ${formatDate(reservation.endDate)}</p>
+                    <p><strong>Prix:</strong> ${reservation.totalPrice}€</p>
+                    ${reservation.notes ? `<p><strong>Notes:</strong> ${reservation.notes}</p>` : ''}
+                </div>
+            `;
+
+            // Vérifier s'il y a des documents
+            const hasDocuments = documents.cin || documents.permis || documents.autre;
+
+            if (!hasDocuments) {
+                html += `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <p style="font-size: 3rem; margin: 0;">📭</p>
+                        <p style="margin: 1rem 0 0 0;">Aucun document disponible pour cette réservation</p>
+                    </div>
+                `;
+            } else {
+                html += '<div style="display: grid; gap: 1.5rem;">';
+
+                // CIN
+                if (documents.cin) {
+                    html += createDocumentView('CIN (Carte d\'Identité Nationale)', documents.cin);
+                }
+
+                // Permis de conduire
+                if (documents.permis) {
+                    html += createDocumentView('Permis de Conduire', documents.permis);
+                }
+
+                // Autre document
+                if (documents.autre) {
+                    html += createDocumentView('Autre Document', documents.autre);
+                }
+
+                html += '</div>';
+            }
+
+            documentsContent.innerHTML = html;
+            document.getElementById('viewDocumentsModal').style.display = 'block';
+        }
+
+        // Créer la vue d'un document
+        function createDocumentView(title, docData) {
+            const doc = typeof docData === 'string' ? { data: docData } : docData;
+            const isImage = doc.data && (doc.data.startsWith('data:image/') || doc.type?.startsWith('image/'));
+            
+            return `
+                <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white;">
+                    <div style="background: #667eea; color: white; padding: 0.75rem 1rem; font-weight: bold;">
+                        ${title}
+                    </div>
+                    <div style="padding: 1rem;">
+                        ${isImage ? `
+                            <img src="${doc.data}" alt="${title}" 
+                                style="max-width: 100%; height: auto; border-radius: 4px; cursor: pointer;"
+                                onclick="window.open('${doc.data}', '_blank')">
+                            <div style="margin-top: 0.5rem; text-align: center;">
+                                <small style="color: #666;">Cliquez sur l'image pour l'agrandir</small>
+                            </div>
+                        ` : `
+                            <div style="text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 4px;">
+                                <p style="font-size: 2rem; margin: 0 0 0.5rem 0;">📄</p>
+                                <p style="margin: 0; color: #666;">Document disponible</p>
+                                ${doc.name ? `<p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #999;">${doc.name}</p>` : ''}
+                            </div>
+                        `}
+                        ${doc.name ? `
+                            <div style="margin-top: 1rem;">
+                                <a href="${doc.data}" download="${doc.name}" 
+                                    style="display: inline-block; padding: 0.5rem 1rem; background: #28a745; color: white; text-decoration: none; border-radius: 4px;">
+                                    💾 Télécharger
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fermer le modal de visualisation des documents
+        function closeViewDocumentsModal() {
+            document.getElementById('viewDocumentsModal').style.display = 'none';
+        }
+
         // Calculer prix dans modal d'édition
         function updateEditModalPrice() {
             const startDate = document.getElementById('editStartDate').value;
@@ -1603,14 +1743,25 @@
             };
 
             try {
-                // Supprimer l'ancienne et créer la nouvelle (PUT endpoint n'existe pas encore)
-                await deleteReservationFromAPI(reservationId);
-                await addReservationToAPI(reservationData);
+                // Utiliser l'endpoint PUT pour mettre à jour
+                const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reservationData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update reservation');
+                }
+                
                 await loadAllData();
                 renderCarsAdmin();
                 closeEditReservationModal();
                 showStatus('Réservation mise à jour avec succès!', 'success');
             } catch (error) {
+                console.error('Erreur:', error);
                 showStatus('Erreur lors de la mise à jour de la réservation!', 'error');
             }
         }

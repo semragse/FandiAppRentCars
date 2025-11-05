@@ -1,9 +1,9 @@
 Faire commit :
 git add .
-git commit -m "ton message"
+git commit -m "xxxxxx"
 git push
 
-Revenir a une commit:
+voir les commit:
 git log -5 --oneline
 
 
