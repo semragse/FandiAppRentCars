@@ -24,8 +24,20 @@ function isWeekend(date) {
  * @returns {object} breakdown
  */
 function calculateCarPriceWithWeekend(carId, startDate, endDate) {
-  const carInfo = CAR_RATES[carId];
+  let carInfo = CAR_RATES[carId];
+  
+  // Si la voiture n'est pas dans CAR_RATES (nouvelle voiture ajoutée dynamiquement),
+  // chercher dans window.cars si disponible (admin.html)
+  if (!carInfo && window.cars) {
+    const car = window.cars.find(c => c.id === carId);
+    if (car) {
+      carInfo = { name: car.name, baseRate: car.price };
+      console.log(`✅ Voiture dynamique trouvée: ${car.name} (${carId}) - ${car.price}€/jour`);
+    }
+  }
+  
   if (!carInfo) {
+    console.error(`❌ Voiture inconnue: ${carId}. CAR_RATES:`, Object.keys(CAR_RATES), 'window.cars:', window.cars);
     throw new Error(`Voiture inconnue: ${carId}`);
   }
   

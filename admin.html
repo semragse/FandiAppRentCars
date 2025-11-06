@@ -141,6 +141,32 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.4);
         }
 
+        .edit-car-icon-btn {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .edit-car-icon-btn:hover {
+            background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
         .car-admin-header h3 {
             font-size: 1.4rem;
             margin-bottom: 0.3rem;
@@ -600,13 +626,22 @@
                 padding: 0.9rem;
             }
 
-            /* Delete car button */
+            /* Delete car button responsive */
             .delete-car-btn {
                 width: 35px;
                 height: 35px;
                 font-size: 1rem;
                 top: 8px;
                 right: 8px;
+            }
+
+            /* Edit car icon button responsive */
+            .edit-car-icon-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+                top: 8px;
+                right: 50px;
             }
         }
 
@@ -825,6 +860,7 @@
             .global-actions,
             .edit-car-btn,
             .delete-car-btn,
+            .edit-car-icon-btn,
             .delete-reservation,
             .whatsapp-btn,
             .modal {
@@ -942,17 +978,18 @@
             display: flex;
             gap: 1rem;
             margin-top: 2rem;
+            justify-content: flex-end;
         }
 
         .modal-btn {
-            flex: 1;
-            padding: 0.9rem;
+            padding: 0.9rem 1.5rem;
             border: none;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.3s ease;
+            min-width: 120px;
         }
 
         .modal-btn-primary {
@@ -1308,8 +1345,52 @@
         </div>
     </div>
 
+    <!-- Modal pour modifier une voiture -->
+    <div id="editCarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier la voiture</h2>
+                <button class="close-modal" onclick="closeEditCarModal()">&times;</button>
+            </div>
+            <form onsubmit="submitEditCar(event)">
+                <input type="hidden" id="editCarModalId">
+                <div class="modal-body">
+                    <div class="modal-form-group">
+                        <label>🚗 Nom de la voiture *</label>
+                        <input type="text" id="editCarModalName" placeholder="Ex: Renault Clio 5" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>💰 Prix par jour (€) *</label>
+                        <input type="number" id="editCarModalPrice" placeholder="Ex: 35" min="1" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>🖼️ Image de la voiture (optionnel - laisser vide pour garder l'image actuelle)</label>
+                        <input type="file" id="editCarModalImage" accept="image/*" onchange="previewEditCarImage(event)">
+                        <div id="editCarModalImagePreview" style="margin-top: 1rem; text-align: center;">
+                            <!-- Aperçu de l'image actuelle -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn modal-btn-secondary" onclick="closeEditCarModal()">
+                        Annuler
+                    </button>
+                    <button type="submit" class="modal-btn modal-btn-primary">
+                        ✓ Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Configuration Script -->
     <script src="config.js"></script>
+    
+    <!-- Script de calcul prix avec majoration weekend -->
+    <script src="clio5Pricing.js"></script>
 
     <script>
         // Configuration de l'API - Utilise la config dynamique
@@ -1320,6 +1401,9 @@
         // Variables globales
         let cars = [];
         let reservations = [];
+        
+        // Exposer cars globalement pour clio5Pricing.js (initialement vide)
+        window.cars = cars;
 
         // Fonctions API
         async function fetchCars() {
@@ -1469,11 +1553,30 @@
             }
         }
 
-        // Calculer le prix d'une réservation
+        // Calculer le prix d'une réservation avec majoration weekend
         function calculatePrice(carId, startDate, endDate) {
             const car = cars.find(c => c.id === carId);
-            if (!car) return 0;
+            if (!car) {
+                console.error('❌ Voiture non trouvée:', carId);
+                return 0;
+            }
 
+            // Utiliser le calcul dynamique avec weekend si disponible
+            if (window.calculateCarPriceWithWeekend) {
+                try {
+                    console.log(`🔢 Calcul prix pour ${carId} (${car.name}) du ${startDate} au ${endDate}`);
+                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
+                    console.log(`✅ Résultat: ${result.total}€ (dont ${result.weekendExtra}€ weekend)`);
+                    return result.total;
+                } catch (error) {
+                    console.error('❌ Erreur calcul weekend pour', carId, ':', error);
+                    console.warn('Utilisation du calcul basique comme fallback');
+                }
+            } else {
+                console.warn('⚠️ clio5Pricing.js non chargé - calcul basique utilisé');
+            }
+
+            // Fallback: calcul basique (si clio5Pricing.js non chargé)
             const start = new Date(startDate);
             const end = new Date(endDate);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
@@ -1537,6 +1640,10 @@
             try {
                 cars = await fetchCars();
                 reservations = await fetchReservations();
+                
+                // Exposer cars globalement pour clio5Pricing.js
+                window.cars = cars;
+                
                 console.log('✅ Données chargées depuis l\'API');
                 return true;
             } catch (error) {
@@ -1723,6 +1830,9 @@
                             <button class="delete-car-btn" onclick="deleteCar('${car.id}', '${car.name}')" title="Supprimer cette voiture">
                                 🗑️
                             </button>
+                            <button class="edit-car-icon-btn" onclick="openEditCarModal('${car.id}')" title="Modifier cette voiture">
+                                ✏️
+                            </button>
                             <img src="${car.image}" alt="${car.name}" onerror="this.src='images/placeholder.jpg'">
                             <div class="car-image-overlay">
                                 <h3>${car.name}</h3>
@@ -1861,6 +1971,7 @@
                 const editModal = document.getElementById('editReservationModal');
                 const viewDocsModal = document.getElementById('viewDocumentsModal');
                 const addCarModal = document.getElementById('addCarModal');
+                const editCarModal = document.getElementById('editCarModal');
                 
                 if (event.target === reservationModal) {
                     closeReservationModal();
@@ -1873,6 +1984,9 @@
                 }
                 if (event.target === addCarModal) {
                     closeAddCarModal();
+                }
+                if (event.target === editCarModal) {
+                    closeEditCarModal();
                 }
             });
             
@@ -1920,6 +2034,7 @@
             const manualPrice = document.getElementById('modalManualPrice').value.trim();
             const pricePreview = document.getElementById('pricePreview');
             const modal = document.getElementById('reservationModal');
+            const carId = document.getElementById('modalCarId').value;
             const carPrice = parseInt(modal.getAttribute('data-car-price'), 10);
             
             if (!startDate || !endDate) {
@@ -1942,21 +2057,77 @@
                 // Prix manuel saisi
                 const finalPrice = parseFloat(manualPrice);
                 document.getElementById('priceDetails').innerHTML = `
-                    <div style="color: #667eea; font-weight: 600;">
+                    <div style="margin-bottom:0.5rem; color:#667eea; font-weight:600;">
                         💵 Prix manuel saisi par l'administrateur
+                    </div>
+                    <div style="font-size:0.85rem; color:#666; margin-top:0.3rem;">
+                        ${days} jour${days > 1 ? 's' : ''}
                     </div>
                 `;
                 document.getElementById('priceTotal').innerHTML = `
-                    <strong style="color: #667eea;">Total: ${finalPrice.toFixed(2)}€</strong>
+                    <strong style="font-size:1.1rem; color:#667eea;">Total: ${finalPrice.toFixed(2)}€</strong>
                 `;
             } else {
-                // Prix calculé automatiquement
+                // Prix calculé automatiquement avec majoration weekend - Format détaillé
+                if (typeof window.calculateCarPriceWithWeekend === 'function') {
+                    try {
+                        const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
+                        
+                        // En-tête avec tarif journalier et prix total
+                        let detailsHTML = `
+                            <div style="margin-bottom:0.8rem;">
+                                <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Tarif journalier:</div>
+                                <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                            </div>
+                            <div style="margin-bottom:0.8rem;">
+                                <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Prix total:</div>
+                                <div style="font-size:1.3rem; font-weight:700; color:#28a745;">${result.total}€ <span style="font-size:0.8rem; font-weight:400; color:#666;">(${result.days}j${result.weekendExtra > 0 ? ', dont ' + result.weekendExtra + '€ weekend' : ''})</span></div>
+                            </div>
+                        `;
+                        
+                        // Détail jour par jour
+                        detailsHTML += `<div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
+                        
+                        result.breakdown.forEach(day => {
+                            const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
+                            const isWeekend = day.isWeekend;
+                            const bgColor = isWeekend ? '#fff3cd' : 'white';
+                            const borderColor = isWeekend ? '#fd7e14' : '#e9ecef';
+                            const badge = isWeekend ? '<span style="font-size:0.65rem; color:#fd7e14; font-weight:600;">🔶 WEEKEND</span>' : '';
+                            
+                            detailsHTML += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.5rem; margin:0.2rem 0; background:${bgColor}; border-left:3px solid ${borderColor}; border-radius:4px; font-size:0.75rem;">
+                                    <span style="text-transform:capitalize;">${dayName}</span>
+                                    <div style="display:flex; align-items:center; gap:0.4rem;">
+                                        ${badge}
+                                        <strong style="color:#333;">${day.price}€</strong>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        document.getElementById('priceDetails').innerHTML = detailsHTML;
+                        document.getElementById('priceTotal').innerHTML = '';
+                        pricePreview.classList.add('show');
+                        return;
+                    } catch (error) {
+                        console.error('Erreur calcul prix weekend:', error);
+                    }
+                }
+                
+                // Fallback: calcul simple
                 const total = carPrice * days;
                 document.getElementById('priceDetails').innerHTML = `
-                    🤖 <strong>Calcul automatique</strong><br>
-                    <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
+                    <div style="margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Tarif journalier:</div>
+                        <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                    </div>
+                    <div style="margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Prix total:</div>
+                        <div style="font-size:1.3rem; font-weight:700; color:#28a745;">${total}€ <span style="font-size:0.8rem; font-weight:400; color:#666;">(${days}j)</span></div>
+                    </div>
                 `;
-                document.getElementById('priceTotal').innerHTML = `Total: ${total}€`;
+                document.getElementById('priceTotal').innerHTML = '';
             }
             
             pricePreview.classList.add('show');
@@ -2270,14 +2441,14 @@
             const preview = document.getElementById('newCarImagePreview');
             
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" alt="Aperçu" 
-                             style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-                    `;
-                };
-                reader.readAsDataURL(file);
+                preview.innerHTML = `
+                    <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px dashed #667eea; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📷</div>
+                        <div style="font-weight: bold; color: #667eea;">Fichier sélectionné:</div>
+                        <div style="color: #333; margin-top: 0.5rem;">${file.name}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-top: 0.3rem;">${(file.size / 1024).toFixed(2)} KB</div>
+                    </div>
+                `;
             } else {
                 preview.innerHTML = '';
             }
@@ -2321,6 +2492,9 @@
                     const newCar = await response.json();
                     cars.push(newCar);
                     
+                    // Mettre à jour window.cars pour clio5Pricing.js
+                    window.cars = cars;
+                    
                     closeAddCarModal();
                     renderCarsAdmin();
                     showStatus(`✅ Voiture "${name}" ajoutée avec succès!`, 'success');
@@ -2330,6 +2504,142 @@
                 }
             };
             reader.readAsDataURL(imageFile);
+        }
+
+        // ===== MODIFICATION DE VOITURE =====
+
+        // Ouvrir modal de modification de voiture
+        function openEditCarModal(carId) {
+            const car = cars.find(c => c.id === carId);
+            if (!car) {
+                showStatus('❌ Voiture introuvable!', 'error');
+                return;
+            }
+
+            console.log('📝 Ouverture modal édition pour:', car);
+
+            // Remplir le formulaire avec les données actuelles
+            document.getElementById('editCarModalId').value = car.id;
+            document.getElementById('editCarModalName').value = car.name;
+            document.getElementById('editCarModalPrice').value = car.price;
+            document.getElementById('editCarModalImage').value = '';
+            
+            // Afficher l'image actuelle
+            document.getElementById('editCarModalImagePreview').innerHTML = `
+                <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px solid #667eea; text-align: center;">
+                    <div style="font-weight: bold; color: #667eea; margin-bottom: 0.5rem;">Image actuelle:</div>
+                    <img src="${car.image}" alt="${car.name}" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Sélectionnez une nouvelle image pour la remplacer</div>
+                </div>
+            `;
+            
+            document.getElementById('editCarModal').style.display = 'flex';
+        }
+
+        // Fermer modal de modification de voiture
+        function closeEditCarModal() {
+            document.getElementById('editCarModal').style.display = 'none';
+        }
+
+        // Prévisualiser la nouvelle image de la voiture
+        function previewEditCarImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('editCarModalImagePreview');
+            
+            if (file) {
+                preview.innerHTML = `
+                    <div style="background: #fff3cd; padding: 1rem; border-radius: 8px; border: 2px dashed #fd7e14; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🆕 📷</div>
+                        <div style="font-weight: bold; color: #fd7e14;">Nouvelle image sélectionnée:</div>
+                        <div style="color: #333; margin-top: 0.5rem;">${file.name}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-top: 0.3rem;">${(file.size / 1024).toFixed(2)} KB</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Soumettre la modification de voiture
+        async function submitEditCar(event) {
+            event.preventDefault();
+            
+            const carId = document.getElementById('editCarModalId').value;
+            const name = document.getElementById('editCarModalName').value.trim();
+            const price = parseFloat(document.getElementById('editCarModalPrice').value);
+            const imageFile = document.getElementById('editCarModalImage').files[0];
+
+            console.log('🔧 Modification voiture:', { carId, name, price, hasImage: !!imageFile });
+
+            if (!name || !price) {
+                showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
+                return;
+            }
+
+            // Préparer les données de mise à jour
+            const updateData = {
+                name: name,
+                price: price
+            };
+
+            // Si une nouvelle image a été sélectionnée, la convertir en base64
+            if (imageFile) {
+                console.log('📷 Conversion de l\'image en base64...');
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    updateData.image = e.target.result;
+                    console.log('✅ Image convertie');
+                    await performCarUpdate(carId, updateData, name);
+                };
+                reader.onerror = function(error) {
+                    console.error('❌ Erreur lecture fichier:', error);
+                    showStatus('❌ Erreur lors de la lecture de l\'image!', 'error');
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                // Pas de nouvelle image, mettre à jour directement
+                console.log('ℹ️ Pas de nouvelle image');
+                await performCarUpdate(carId, updateData, name);
+            }
+        }
+
+        // Effectuer la mise à jour de la voiture via l'API
+        async function performCarUpdate(carId, updateData, carName) {
+            try {
+                console.log('🌐 PUT à:', `${API_BASE_URL}/cars/${carId}`, updateData);
+                
+                const response = await fetch(`${API_BASE_URL}/cars/${carId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                console.log('📨 Status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Erreur serveur:', errorText);
+                    throw new Error('Erreur lors de la modification de la voiture');
+                }
+
+                const updatedCar = await response.json();
+                console.log('✅ Voiture mise à jour:', updatedCar);
+                
+                // Mettre à jour la voiture dans le tableau local
+                const index = cars.findIndex(c => c.id === carId);
+                if (index !== -1) {
+                    cars[index] = updatedCar;
+                    window.cars = cars;
+                    console.log('✅ Tableau local mis à jour');
+                }
+                
+                closeEditCarModal();
+                renderCarsAdmin();
+                showStatus(`✅ Voiture "${carName}" modifiée avec succès!`, 'success');
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showStatus('❌ Erreur lors de la modification de la voiture!', 'error');
+            }
         }
 
         // Supprimer une voiture
@@ -2368,12 +2678,13 @@
 
         // ============= FIN GESTION DES VOITURES =============
 
-        // Calculer prix dans modal d'édition
+        // Calculer prix dans modal d'édition avec majoration weekend
         function updateEditModalPrice() {
             const startDate = document.getElementById('editStartDate').value;
             const endDate = document.getElementById('editEndDate').value;
             const pricePreview = document.getElementById('editPricePreview');
             const modal = document.getElementById('editReservationModal');
+            const carId = document.getElementById('editCarId').value;
             const carPrice = parseInt(modal.getAttribute('data-car-price'), 10);
             
             if (!startDate || !endDate || !carPrice) {
@@ -2390,12 +2701,67 @@
             }
 
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            const total = carPrice * days;
 
+            // Utiliser le calcul avec majoration weekend - Format détaillé
+            if (typeof window.calculateCarPriceWithWeekend === 'function') {
+                try {
+                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
+                    
+                    // En-tête avec tarif journalier et prix total
+                    let detailsHTML = `
+                        <div style="margin-bottom:0.8rem;">
+                            <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Tarif journalier:</div>
+                            <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                        </div>
+                        <div style="margin-bottom:0.8rem;">
+                            <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Prix total:</div>
+                            <div style="font-size:1.3rem; font-weight:700; color:#28a745;">${result.total}€ <span style="font-size:0.8rem; font-weight:400; color:#666;">(${result.days}j${result.weekendExtra > 0 ? ', dont ' + result.weekendExtra + '€ weekend' : ''})</span></div>
+                        </div>
+                    `;
+                    
+                    // Détail jour par jour
+                    detailsHTML += `<div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
+                    
+                    result.breakdown.forEach(day => {
+                        const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
+                        const isWeekend = day.isWeekend;
+                        const bgColor = isWeekend ? '#fff3cd' : 'white';
+                        const borderColor = isWeekend ? '#fd7e14' : '#e9ecef';
+                        const badge = isWeekend ? '<span style="font-size:0.65rem; color:#fd7e14; font-weight:600;">🔶 WEEKEND</span>' : '';
+                        
+                        detailsHTML += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.5rem; margin:0.2rem 0; background:${bgColor}; border-left:3px solid ${borderColor}; border-radius:4px; font-size:0.75rem;">
+                                <span style="text-transform:capitalize;">${dayName}</span>
+                                <div style="display:flex; align-items:center; gap:0.4rem;">
+                                    ${badge}
+                                    <strong style="color:#333;">${day.price}€</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('editPriceDetails').innerHTML = detailsHTML;
+                    document.getElementById('editPriceTotal').innerHTML = '';
+                    pricePreview.classList.add('show');
+                    return;
+                } catch (error) {
+                    console.error('Erreur calcul prix weekend:', error);
+                }
+            }
+            
+            // Fallback: calcul simple
+            const total = carPrice * days;
             document.getElementById('editPriceDetails').innerHTML = `
-                <strong>${days}</strong> jour${days > 1 ? 's' : ''} × <strong>${carPrice}€</strong>/jour
+                <div style="margin-bottom:0.5rem;">
+                    <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Tarif journalier:</div>
+                    <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                </div>
+                <div style="margin-bottom:0.5rem;">
+                    <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Prix total:</div>
+                    <div style="font-size:1.3rem; font-weight:700; color:#28a745;">${total}€ <span style="font-size:0.8rem; font-weight:400; color:#666;">(${days}j)</span></div>
+                </div>
             `;
-            document.getElementById('editPriceTotal').innerHTML = `Total: ${total}€`;
+            document.getElementById('editPriceTotal').innerHTML = '';
             pricePreview.classList.add('show');
         }
 

@@ -46,6 +46,39 @@ app.post('/cars', async (req, res) => {
   }
 });
 
+// Update a car
+app.put('/cars/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, image } = req.body;
+    
+    console.log('📝 PUT /cars/' + id);
+    console.log('📦 Données reçues:', { name, price, hasImage: !!image });
+    
+    const car = await Car.findByPk(id);
+    if (!car) {
+      console.log('❌ Voiture non trouvée:', id);
+      return res.status(404).json({ error: 'Car not found' });
+    }
+
+    console.log('📌 Voiture avant modification:', { name: car.name, price: car.price });
+
+    // Update fields (only update if provided)
+    if (name !== undefined) car.name = name;
+    if (price !== undefined) car.price = price;
+    if (image !== undefined) car.image = image;
+
+    await car.save();
+    
+    console.log('✅ Voiture après modification:', { name: car.name, price: car.price });
+    
+    res.json(car);
+  } catch (err) {
+    console.error('❌ Erreur:', err);
+    res.status(500).json({ error: 'Failed to update car' });
+  }
+});
+
 // Delete a car
 app.delete('/cars/:id', async (req, res) => {
   try {
