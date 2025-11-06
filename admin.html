@@ -1313,7 +1313,9 @@
 
     <script>
         // Configuration de l'API - Utilise la config dynamique
-        const API_BASE_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
+    const API_BASE_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
+    // Alias pour compatibilité avec anciens appels
+    const API_URL = API_BASE_URL;
         
         // Variables globales
         let cars = [];
@@ -2300,7 +2302,7 @@
                 const imageBase64 = e.target.result;
 
                 try {
-                    const response = await fetch(`${API_URL}/cars`, {
+                    const response = await fetch(`${API_BASE_URL}/cars`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -2336,24 +2338,31 @@
                 return;
             }
 
+            if (!carId) {
+                showStatus('❌ Erreur: ID de voiture manquant!', 'error');
+                console.error('ID voiture invalide:', carId);
+                return;
+            }
+
             try {
-                const response = await fetch(`${API_URL}/cars/${carId}`, {
+                console.log(`🗑️ Suppression voiture ID: ${carId}, Nom: ${carName}`);
+                const response = await fetch(`${API_BASE_URL}/cars/${carId}`, {
                     method: 'DELETE'
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erreur lors de la suppression');
+                    const errorText = await response.text();
+                    console.error('Erreur serveur:', response.status, errorText);
+                    throw new Error(`Erreur ${response.status}`);
                 }
 
-                // Supprimer localement
-                cars = cars.filter(c => c.id !== carId);
-                reservations = reservations.filter(r => r.carId !== carId);
-                
+                // Recharger les données depuis l'API
+                await loadAllData();
                 renderCarsAdmin();
                 showStatus(`✅ Voiture "${carName}" supprimée avec succès!`, 'success');
             } catch (error) {
-                console.error('Erreur:', error);
-                showStatus('❌ Erreur lors de la suppression de la voiture!', 'error');
+                console.error('❌ Erreur suppression:', error);
+                showStatus(`❌ Erreur: ${error.message}`, 'error');
             }
         }
 

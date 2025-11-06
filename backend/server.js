@@ -36,7 +36,9 @@ app.post('/cars', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const newCar = await Car.create({ name, price, image });
+    // Generate unique ID (format: car + timestamp)
+    const carId = 'car' + Date.now();
+    const newCar = await Car.create({ id: carId, name, price, image });
     res.status(201).json(newCar);
   } catch (err) {
     console.error(err);
