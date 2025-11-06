@@ -31,6 +31,9 @@ const CONFIG = {
 // Export pour utilisation dans d'autres fichiers
 window.FandiConfig = CONFIG;
 
+// Export API_URL pour compatibilité avec les pages existantes
+window.API_URL = CONFIG.getApiUrl();
+
 // Afficher la configuration au chargement
 console.log('🔧 FandiRent Config:', {
     environment: CONFIG.isDevelopment ? 'Development' : 'Production',

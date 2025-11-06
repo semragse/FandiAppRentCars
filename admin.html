@@ -4,8 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - FandiApp</title>
+    
+    <!-- Protection admin: Vérifier l'authentification avant de charger la page -->
+    <script>
+        // Vérifier si l'utilisateur est authentifié
+        if (localStorage.getItem('isAdmin') !== 'true') {
+            // Rediriger vers la page de login si non authentifié
+            window.location.href = 'admin-login.html';
+        }
+    </script>
+    
     <style>
-        /* Reset et configuration de base */
+        /* ================================
+           THEME VARIABLES - Dark/Light Mode
+           ================================ */
+        
+        /* Variables CSS pour le thème Light (par défaut) */
+        :root {
+            /* Couleurs de base */
+            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8f9fa;
+            
+            /* Couleurs de texte */
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            
+            /* Couleurs d'accentuation */
+            --accent-primary: #667eea;
+            --accent-secondary: #764ba2;
+            
+            /* Header gradient */
+            --header-gradient-start: #667eea;
+            --header-gradient-end: #764ba2;
+            
+            /* Cards et surfaces */
+            --card-bg: #ffffff;
+            --card-border: #e9ecef;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            
+            /* Inputs et forms */
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --input-focus-border: #667eea;
+            
+            /* Boutons */
+            --btn-primary-bg: #667eea;
+            --btn-primary-hover: #5568d3;
+            --btn-danger-bg: #e74c3c;
+            --btn-danger-hover: #c0392b;
+            --btn-success-bg: #27ae60;
+            --btn-success-hover: #229954;
+            
+            /* Modals */
+            --modal-bg: #ffffff;
+            --modal-overlay: rgba(0, 0, 0, 0.5);
+            
+            /* Tables */
+            --table-header-bg: #f8f9fa;
+            --table-row-hover: #f1f3f5;
+            --table-border: #dee2e6;
+        }
+        
+        /* Variables CSS pour le thème Dark */
+        body.dark-theme {
+            /* Couleurs de base */
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            
+            /* Couleurs de texte */
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            
+            /* Couleurs d'accentuation */
+            --accent-primary: #7c8ff5;
+            --accent-secondary: #8b68c5;
+            
+            /* Header gradient */
+            --header-gradient-start: #5a67d8;
+            --header-gradient-end: #7c4dbd;
+            
+            /* Cards et surfaces */
+            --card-bg: #2d2d2d;
+            --card-border: #404040;
+            --card-shadow: rgba(0, 0, 0, 0.4);
+            
+            /* Inputs et forms */
+            --input-bg: #3a3a3a;
+            --input-border: #555555;
+            --input-focus-border: #7c8ff5;
+            
+            /* Boutons */
+            --btn-primary-bg: #7c8ff5;
+            --btn-primary-hover: #6b7ee0;
+            --btn-danger-bg: #e05555;
+            --btn-danger-hover: #c44444;
+            --btn-success-bg: #2ecc71;
+            --btn-success-hover: #27ae60;
+            
+            /* Modals */
+            --modal-bg: #2d2d2d;
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+            
+            /* Tables */
+            --table-header-bg: #3a3a3a;
+            --table-row-hover: #404040;
+            --table-border: #555555;
+        }
+        
+        /* ================================
+           RESET ET CONFIGURATION DE BASE
+           ================================ */
         * {
             margin: 0;
             padding: 0;
@@ -15,9 +127,11 @@
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-primary);
+            background: var(--bg-primary);
             min-height: 100vh;
+            /* Transition smooth pour le changement de thème */
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Header admin */
@@ -42,6 +156,58 @@
             font-weight: bold;
         }
 
+        .admin-header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* ================================
+           THEME TOGGLE BUTTON (Admin)
+           ================================ */
+        #theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            position: relative;
+        }
+
+        #theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #theme-toggle-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Icônes SVG pour le thème */
+        #theme-toggle-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+            position: absolute;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #sun-icon {
+            display: none; /* Caché par défaut (light mode) */
+        }
+
+        #moon-icon {
+            display: block; /* Visible par défaut (light mode) */
+        }
+
         .back-link {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -53,6 +219,28 @@
 
         .back-link:hover {
             background: rgba(255,255,255,0.3);
+        }
+
+        .logout-btn {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220, 53, 69, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
         /* Container principal */
@@ -71,11 +259,11 @@
         }
 
         .car-admin-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px var(--card-shadow);
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .car-admin-card:hover {
@@ -184,14 +372,15 @@
         }
 
         .car-details {
-            background: #f8f9fa;
+            background: var(--bg-tertiary);
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1.5rem;
+            transition: background-color 0.3s ease;
         }
 
         .car-details h4 {
-            color: #667eea;
+            color: var(--accent-primary);
             font-size: 1rem;
             margin-bottom: 0.8rem;
         }
@@ -200,7 +389,7 @@
             display: flex;
             justify-content: space-between;
             padding: 0.4rem 0;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--card-border);
         }
 
         .detail-row:last-child {
@@ -209,12 +398,12 @@
 
         .detail-label {
             font-weight: 600;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.85rem;
         }
 
         .detail-value {
-            color: #333;
+            color: var(--text-primary);
             font-size: 0.85rem;
         }
 
@@ -264,28 +453,29 @@
         }
 
         .reservations-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-tertiary);
             border-radius: 10px;
         }
 
         .reservations-container::-webkit-scrollbar-thumb {
-            background: #667eea;
+            background: var(--accent-primary);
             border-radius: 10px;
         }
 
         .reservations-container::-webkit-scrollbar-thumb:hover {
-            background: #5568d3;
+            background: var(--btn-primary-hover);
         }
 
         .reservation-item {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-primary);
             padding: 1rem;
             margin-bottom: 0.8rem;
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s ease;
         }
 
         .reservation-info {
@@ -294,12 +484,12 @@
 
         .reservation-dates {
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 0.3rem;
         }
 
         .reservation-customer {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -517,8 +707,17 @@
                 font-size: 1.8rem;
             }
 
-            .back-link {
-                align-self: center;
+            .admin-header-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .back-link,
+            .logout-btn {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
             }
 
             /* Container */
@@ -901,7 +1100,7 @@
         }
 
         .modal-content {
-            background-color: #fefefe;
+            background-color: var(--modal-bg);
             margin: 3% auto;
             padding: 0;
             border-radius: 15px;
@@ -909,10 +1108,11 @@
             max-width: 600px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             overflow: hidden;
+            transition: background-color 0.3s ease;
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
             color: white;
             padding: 1.5rem;
             display: flex;
@@ -952,7 +1152,7 @@
             display: block;
             font-weight: bold;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .modal-form-group input,
@@ -960,17 +1160,19 @@
         .modal-form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            border: 2px solid #e9ecef;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 0.95rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .modal-form-group input:focus,
         .modal-form-group select:focus,
         .modal-form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--input-focus-border);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
@@ -1055,7 +1257,24 @@
     <header class="admin-header">
         <div class="admin-header-content">
             <h1 class="admin-title">🛠️ Admin FandiApp</h1>
-            <a href="../index.html" class="back-link">← Retour au site</a>
+            <div class="admin-header-actions">
+                <!-- Bouton de changement de thème Dark/Light -->
+                <button id="theme-toggle-btn" aria-label="Toggle dark/light theme">
+                    <!-- Icône Soleil (visible en dark mode pour passer en light) -->
+                    <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 17.5C9.5 17.5 7.5 15.5 7.5 13S9.5 8.5 12 8.5 16.5 10.5 16.5 13 14.5 17.5 12 17.5M12 7C8.7 7 6 9.7 6 13S8.7 19 12 19 18 16.3 18 13 15.3 7 12 7M12 2L14.4 5.6 18.7 4.4 18.2 8.8 22 11L18.2 13.2 18.7 17.6 14.4 16.4 12 20 9.6 16.4 5.3 17.6 5.8 13.2 2 11 5.8 8.8 5.3 4.4 9.6 5.6 12 2Z"/>
+                    </svg>
+                    <!-- Icône Lune (visible en light mode pour passer en dark) -->
+                    <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z"/>
+                    </svg>
+                </button>
+                
+                <a href="../index.html" class="back-link">← Retour au site</a>
+                <button onclick="logout()" class="logout-btn">
+                    🚪 Déconnexion
+                </button>
+            </div>
         </div>
     </header>
 
@@ -1459,6 +1678,24 @@
             return reservations.filter(reservation => reservation.carId === carId);
         }
 
+        // ============= FONCTIONS UTILITAIRES =============
+
+        // Déconnexion admin
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                // Supprimer la session admin
+                localStorage.removeItem('isAdmin');
+                
+                // Afficher un message de confirmation
+                showStatus('Déconnexion en cours...', 'success');
+                
+                // Rediriger vers la page d'accueil après un court délai
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            }
+        }
+
         // Afficher un message de status
         function showStatus(message, type = 'success') {
             const statusElement = document.getElementById('statusMessage');
@@ -1561,12 +1798,12 @@
                 return 0;
             }
 
-            // Utiliser le calcul dynamique avec weekend si disponible
+            // Utiliser le calcul dynamique avec weekend + réductions longue durée si disponible
             if (window.calculateCarPriceWithWeekend) {
                 try {
                     console.log(`🔢 Calcul prix pour ${carId} (${car.name}) du ${startDate} au ${endDate}`);
-                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
-                    console.log(`✅ Résultat: ${result.total}€ (dont ${result.weekendExtra}€ weekend)`);
+                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate, true); // true = appliquer réductions
+                    console.log(`✅ Résultat: ${result.total}€ (weekend: +${result.weekendExtra}€, réduction: -${result.discountAmount}€)`);
                     return result.total;
                 } catch (error) {
                     console.error('❌ Erreur calcul weekend pour', carId, ':', error);
@@ -2054,7 +2291,9 @@
 
             // Déterminer quel prix afficher
             if (manualPrice && parseFloat(manualPrice) > 0) {
-                // Prix manuel saisi
+                // ========================================
+                // PRIX MANUEL: Réductions désactivées
+                // ========================================
                 const finalPrice = parseFloat(manualPrice);
                 document.getElementById('priceDetails').innerHTML = `
                     <div style="margin-bottom:0.5rem; color:#667eea; font-weight:600;">
@@ -2063,30 +2302,62 @@
                     <div style="font-size:0.85rem; color:#666; margin-top:0.3rem;">
                         ${days} jour${days > 1 ? 's' : ''}
                     </div>
+                    <div style="background:#fff3cd; border:2px solid #ffc107; border-radius:8px; padding:0.5rem; margin-top:0.5rem; font-size:0.75rem; color:#856404;">
+                        ⚠️ Les réductions automatiques sont désactivées avec un prix manuel
+                    </div>
                 `;
                 document.getElementById('priceTotal').innerHTML = `
                     <strong style="font-size:1.1rem; color:#667eea;">Total: ${finalPrice.toFixed(2)}€</strong>
                 `;
             } else {
-                // Prix calculé automatiquement avec majoration weekend - Format détaillé
+                // ========================================
+                // PRIX AUTOMATIQUE: Avec réductions longue durée
+                // ========================================
                 if (typeof window.calculateCarPriceWithWeekend === 'function') {
                     try {
-                        const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
+                        const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate, true); // true = appliquer réductions
                         
-                        // En-tête avec tarif journalier et prix total
+                        // En-tête avec tarif journalier
                         let detailsHTML = `
                             <div style="margin-bottom:0.8rem;">
                                 <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Tarif journalier:</div>
-                                <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                                <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€/jour</div>
                             </div>
-                            <div style="margin-bottom:0.8rem;">
-                                <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Prix total:</div>
-                                <div style="font-size:1.3rem; font-weight:700; color:#28a745;">${result.total}€ <span style="font-size:0.8rem; font-weight:400; color:#666;">(${result.days}j${result.weekendExtra > 0 ? ', dont ' + result.weekendExtra + '€ weekend' : ''})</span></div>
+                        `;
+                        
+                        // Sous-total (avant réduction)
+                        detailsHTML += `
+                            <div style="margin-bottom:0.5rem;">
+                                <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Sous-total (${result.days}j${result.weekendExtra > 0 ? ' + weekend' : ''}):</div>
+                                <div style="font-size:1.1rem; font-weight:600; color:#333;">${result.subtotal}€</div>
+                            </div>
+                        `;
+                        
+                        // Afficher la réduction si applicable
+                        if (result.hasDiscount) {
+                            detailsHTML += `
+                                <div style="background:#d4edda; border:2px solid #28a745; border-radius:8px; padding:0.6rem; margin-bottom:0.6rem;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <div>
+                                            <div style="font-size:0.75rem; color:#155724; font-weight:600; text-transform:uppercase;">🎉 Réduction longue durée</div>
+                                            <div style="font-size:0.7rem; color:#155724; margin-top:0.15rem;">${result.discountLabel}</div>
+                                        </div>
+                                        <strong style="color:#28a745; font-size:1.1rem;">-${result.discountAmount}€</strong>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        // Prix final
+                        detailsHTML += `
+                            <div style="border-top:2px solid #dee2e6; padding-top:0.8rem; margin-top:0.8rem;">
+                                <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Prix final:</div>
+                                <div style="font-size:1.4rem; font-weight:700; color:#28a745;">${result.total}€</div>
                             </div>
                         `;
                         
                         // Détail jour par jour
-                        detailsHTML += `<div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
+                        detailsHTML += `<div style="margin-top:1rem; padding-top:1rem; border-top:2px solid #e9ecef;"><div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
                         
                         result.breakdown.forEach(day => {
                             const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
@@ -2105,6 +2376,8 @@
                                 </div>
                             `;
                         });
+                        
+                        detailsHTML += `</div>`;
                         
                         document.getElementById('priceDetails').innerHTML = detailsHTML;
                         document.getElementById('priceTotal').innerHTML = '';
@@ -2866,5 +3139,8 @@
             }
         }
     </script>
+    
+    <!-- Script de gestion du thème Dark/Light -->
+    <script src="theme.js"></script>
 </body>
 </html>

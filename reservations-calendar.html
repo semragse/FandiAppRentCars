@@ -162,16 +162,16 @@
 
   <script>
     const API_BASE = 'http://localhost:3001';
-    const cars = [
-      { id: 'car1', name: 'Clio 5', price: 35 },
-      { id: 'car2', name: 'Audi A4', price: 85 },
-      { id: 'car3', name: 'Mercedes CLA 220', price: 120 },
-      { id: 'car4', name: 'Dacia Logan', price: 45 },
-      { id: 'car5', name: 'Peugeot 308', price: 65 }
-    ];
+    let cars = []; // Sera chargé dynamiquement depuis l'API
 
     async function loadReservations() {
       try {
+        // Charger les voitures depuis l'API
+        const carsResponse = await fetch(`${API_BASE}/cars`);
+        if (!carsResponse.ok) throw new Error('API non disponible');
+        cars = await carsResponse.json();
+        
+        // Charger les réservations
         const response = await fetch(`${API_BASE}/reservations`);
         if (!response.ok) throw new Error('API non disponible');
         

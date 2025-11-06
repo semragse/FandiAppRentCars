@@ -5,7 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <style>
-        /* Reset et configuration de base */
+        /* ================================
+           THEME VARIABLES - Dark/Light Mode
+           ================================ */
+        
+        /* Variables CSS pour le thème Light (par défaut) */
+        :root {
+            /* Couleurs de base */
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f3f5;
+            
+            /* Couleurs de texte */
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            
+            /* Couleurs d'accentuation */
+            --accent-primary: #3498db;
+            --accent-secondary: #2c3e50;
+            
+            /* Header gradient */
+            --header-gradient-start: #2c3e50;
+            --header-gradient-end: #3498db;
+            
+            /* Cards et surfaces */
+            --card-bg: #ffffff;
+            --card-border: #e9ecef;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            
+            /* Inputs et forms */
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --input-focus-border: #3498db;
+            
+            /* Boutons */
+            --btn-primary-bg: #3498db;
+            --btn-primary-hover: #2980b9;
+            --btn-danger-bg: #e74c3c;
+            --btn-danger-hover: #c0392b;
+            
+            /* Modals */
+            --modal-bg: #ffffff;
+            --modal-overlay: rgba(0, 0, 0, 0.5);
+            
+            /* Sidebar */
+            --sidebar-bg: #ffffff;
+            
+            /* Tables */
+            --table-header-bg: #f8f9fa;
+            --table-row-hover: #f1f3f5;
+        }
+        
+        /* Variables CSS pour le thème Dark */
+        body.dark-theme {
+            /* Couleurs de base */
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            
+            /* Couleurs de texte */
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            
+            /* Couleurs d'accentuation */
+            --accent-primary: #4da6e0;
+            --accent-secondary: #3d5a80;
+            
+            /* Header gradient */
+            --header-gradient-start: #1e2a38;
+            --header-gradient-end: #2c5282;
+            
+            /* Cards et surfaces */
+            --card-bg: #2d2d2d;
+            --card-border: #404040;
+            --card-shadow: rgba(0, 0, 0, 0.4);
+            
+            /* Inputs et forms */
+            --input-bg: #3a3a3a;
+            --input-border: #555555;
+            --input-focus-border: #4da6e0;
+            
+            /* Boutons */
+            --btn-primary-bg: #4da6e0;
+            --btn-primary-hover: #3d8bc4;
+            --btn-danger-bg: #e05555;
+            --btn-danger-hover: #c44444;
+            
+            /* Modals */
+            --modal-bg: #2d2d2d;
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+            
+            /* Sidebar */
+            --sidebar-bg: #2d2d2d;
+            
+            /* Tables */
+            --table-header-bg: #3a3a3a;
+            --table-row-hover: #404040;
+        }
+        
+        /* ================================
+           RESET ET CONFIGURATION DE BASE
+           ================================ */
         * {
             margin: 0;
             padding: 0;
@@ -15,8 +117,10 @@
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            /* Transition smooth pour le changement de thème */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Header fixe - Navigation professionnelle */
@@ -75,6 +179,8 @@
             flex: 1;
             display: flex;
             justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
         }
 
         .contact-link {
@@ -95,6 +201,52 @@
             color: white;
             transform: translateY(-1px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ================================
+           THEME TOGGLE BUTTON
+           ================================ */
+        #theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            position: relative;
+        }
+
+        #theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #theme-toggle-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Icônes SVG pour le thème */
+        #theme-toggle-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            position: absolute;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #sun-icon {
+            display: none; /* Caché par défaut (light mode) */
+        }
+
+        #moon-icon {
+            display: block; /* Visible par défaut (light mode) */
         }
 
         /* Logo/Nom du site - MODIFIEZ ICI pour changer le nom */
@@ -171,17 +323,18 @@
         /* Sidebar de recherche */
         .search-sidebar {
             width: 300px;
-            background: white;
+            background: var(--sidebar-bg);
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px var(--card-shadow);
             padding: 2rem;
             height: fit-content;
             position: sticky;
             top: 100px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .search-sidebar h3 {
-            color: #667eea;
+            color: var(--accent-primary);
             margin-bottom: 1.5rem;
             font-size: 1.3rem;
         }
@@ -194,21 +347,23 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .date-group input {
             width: 100%;
             padding: 0.8rem;
-            border: 2px solid #e9ecef;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .date-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--input-focus-border);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
@@ -654,16 +809,16 @@
 
         /* Carte de voiture */
         .car-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px var(--card-shadow);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .car-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px var(--card-shadow);
         }
 
         /* Image de la voiture - REMPLACEZ les URLs des images ici */
@@ -672,11 +827,11 @@
             height: 200px;
             background-size: cover;
             background-position: center;
-            background-color: #e9ecef;
+            background-color: var(--bg-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #666;
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
@@ -695,11 +850,11 @@
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .car-details {
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 1rem;
             font-size: 0.95rem;
         }
@@ -707,7 +862,7 @@
         .car-price {
             font-size: 1.4rem;
             font-weight: bold;
-            color: #667eea;
+            color: var(--accent-primary);
             margin-bottom: 1rem;
         }
 
@@ -908,7 +1063,7 @@
         }
 
         .modal-content {
-            background-color: white;
+            background-color: var(--modal-bg);
             margin: 2rem auto;
             padding: 2rem;
             border-radius: 15px;
@@ -919,6 +1074,7 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideIn 0.3s ease;
             position: relative;
+            transition: background-color 0.3s ease;
         }
 
         .modal-header {
@@ -929,7 +1085,7 @@
         }
 
         .modal-title {
-            color: #333;
+            color: var(--text-primary);
             font-size: 1.5rem;
             font-weight: bold;
         }
@@ -939,17 +1095,18 @@
             border: none;
             font-size: 2rem;
             cursor: pointer;
-            color: #666;
+            color: var(--text-secondary);
             padding: 0;
             width: 30px;
             height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: color 0.3s ease;
         }
 
         .close-btn:hover {
-            color: #333;
+            color: var(--text-primary);
         }
 
         /* Formulaire */
@@ -961,21 +1118,23 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .form-group input {
             width: 100%;
             padding: 0.8rem;
-            border: 2px solid #e9ecef;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--input-focus-border);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
@@ -1428,18 +1587,23 @@
     <!-- Header avec logo centré et contact à droite -->
     <header class="header">
         <div class="header-content">
-            <!-- Lien Admin à gauche -->
-            <div class="header-left">
-                <a href="admin.html" class="admin-link">
-                    🔐 Admin
-                </a>
-            </div>
-            
             <!-- Logo centré -->
             <a href="#" class="logo">FandiApp</a>
             
-            <!-- Contact à droite -->
+            <!-- Contact à droite + Theme Toggle -->
             <div class="header-right">
+                <!-- Bouton de changement de thème Dark/Light -->
+                <button id="theme-toggle-btn" aria-label="Toggle dark/light theme">
+                    <!-- Icône Soleil (visible en dark mode pour passer en light) -->
+                    <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 17.5C9.5 17.5 7.5 15.5 7.5 13S9.5 8.5 12 8.5 16.5 10.5 16.5 13 14.5 17.5 12 17.5M12 7C8.7 7 6 9.7 6 13S8.7 19 12 19 18 16.3 18 13 15.3 7 12 7M12 2L14.4 5.6 18.7 4.4 18.2 8.8 22 11L18.2 13.2 18.7 17.6 14.4 16.4 12 20 9.6 16.4 5.3 17.6 5.8 13.2 2 11 5.8 8.8 5.3 4.4 9.6 5.6 12 2Z"/>
+                    </svg>
+                    <!-- Icône Lune (visible en light mode pour passer en dark) -->
+                    <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z"/>
+                    </svg>
+                </button>
+                
                 <a href="pages/contact.html" class="contact-link">Contact Us</a>
             </div>
         </div>
@@ -1495,79 +1659,11 @@
                     </div>
                 </section>
 
-                <!-- Grille des voitures -->
+                <!-- Grille des voitures - dynamically populated from backend + static cars -->
             <section class="cars-grid">
-                <!-- Voiture 1 -->
-                <article class="car-card" data-car-id="car1">
-                    <!-- CHANGEZ la classe "car-1" et ajoutez votre image ici -->
-                    <div class="car-image car-1">
-                        <span style="display: none;">Remplacer par votre image</span>
-                    </div>
-                    <div class="car-content">
-                        <h3 class="car-name">Clio 5</h3>
-                        <div class="car-price">35€/jour</div>
-                        <span class="car-status status-available">Disponible</span>
-                        <button class="reserve-btn" data-car="Clio 5" data-price="35">Réserver</button>
-                    </div>
-                </article>
-
-                <!-- Voiture 2 -->
-                <article class="car-card" data-car-id="car2">
-                    <!-- CHANGEZ la classe "car-2" et ajoutez votre image ici -->
-                    <div class="car-image car-2">
-                        <span style="display: none;">Remplacer par votre image</span>
-                    </div>
-                    <div class="car-content">
-                        <h3 class="car-name">Audi A4</h3>
-                        <div class="car-price">85€/jour</div>
-                        <span class="car-status status-available">Disponible</span>
-                        <button class="reserve-btn" data-car="Audi A4" data-price="85">Réserver</button>
-                    </div>
-                </article>
-
-                <!-- Voiture 3 -->
-                <article class="car-card" data-car-id="car3">
-                    <!-- CHANGEZ la classe "car-3" et ajoutez votre image ici -->
-                    <div class="car-image car-3">
-                        <span style="display: none;">Remplacer par votre image</span>
-                    </div>
-                    <div class="car-content">
-                        <h3 class="car-name">Mercedes CLA 220</h3>
-                        <div class="car-price">120€/jour</div>
-                        <span class="car-status status-available">Disponible</span>
-                        <button class="reserve-btn" data-car="Mercedes CLA 220" data-price="120">Réserver</button>
-                    </div>
-                </article>
-
-                <!-- Voiture 4 -->
-                <article class="car-card" data-car-id="car4">
-                    <!-- CHANGEZ la classe "car-4" et ajoutez votre image ici -->
-                    <div class="car-image car-4">
-                        <span style="display: none;">Remplacer par votre image</span>
-                    </div>
-                    <div class="car-content">
-                        <h3 class="car-name">Dacia Logan</h3>
-                        <div class="car-price">45€/jour</div>
-                        <span class="car-status status-available">Disponible</span>
-                        <button class="reserve-btn" data-car="Dacia Logan" data-price="45">Réserver</button>
-                    </div>
-                </article>
-
-                <!-- Voiture 5 -->
-                <article class="car-card" data-car-id="car5">
-                    <!-- CHANGEZ la classe "car-5" et ajoutez votre image ici -->
-                    <div class="car-image car-5">
-                        <span style="display: none;">Remplacer par votre image</span>
-                    </div>
-                    <div class="car-content">
-                        <h3 class="car-name">Peugeot 308</h3>
-                        <div class="car-price">65€/jour</div>
-                        <span class="car-status status-available">Disponible</span>
-                        <button class="reserve-btn" data-car="Peugeot 308" data-price="65">Réserver</button>
-                    </div>
-                </article>
-
-                <!-- Voitures supplémentaires (non disponibles à la réservation) -->
+                <!-- Car cards will be loaded dynamically from the backend API -->
+                
+                <!-- Voitures supplémentaires (non disponibles à la réservation - statiques) -->
                 
                 <!-- Voiture 6 - BMW X3 -->
                 <article class="car-card static-car" data-car-name="BMW X3">
@@ -1834,9 +1930,28 @@
                         <span style="color:#555;">Tarif journalier:</span>
                         <strong id="quickDailyRate">-</strong>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:.6rem;">
-                        <span style="color:#333;">Prix total:</span>
-                        <strong id="quickTotalPrice" style="color:#28a745;">-</strong>
+                    
+                    <!-- Sous-total (avant réduction) -->
+                    <div id="quickSubtotal" style="display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:.4rem;">
+                        <span style="color:#555;">Sous-total:</span>
+                        <strong id="quickSubtotalPrice" style="color:#333;">-</strong>
+                    </div>
+                    
+                    <!-- Réduction longue durée (si applicable) -->
+                    <div id="quickDiscountRow" style="display:none; background:#d4edda; border:2px solid #28a745; border-radius:8px; padding:.6rem; margin-bottom:.6rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-size:.75rem; color:#155724; font-weight:600; text-transform:uppercase;">🎉 Réduction longue durée</div>
+                                <div id="quickDiscountLabel" style="font-size:.7rem; color:#155724; margin-top:.15rem;">-</div>
+                            </div>
+                            <strong id="quickDiscountAmount" style="color:#28a745; font-size:1rem;">-</strong>
+                        </div>
+                    </div>
+                    
+                    <!-- Prix final -->
+                    <div style="display:flex; justify-content:space-between; font-size:.95rem; margin-bottom:.6rem; padding-top:.4rem; border-top:2px solid #dee2e6;">
+                        <span style="color:#333; font-weight:600;">Prix final:</span>
+                        <strong id="quickTotalPrice" style="color:#28a745; font-size:1.15rem;">-</strong>
                     </div>
                     
                     <!-- Détail jour par jour (pour Clio 5) -->
@@ -1872,54 +1987,203 @@
         };
 
         // Base de données des voitures avec réservations (mise à jour: toutes les dates futures)
-        const carsDatabase = {
-            car1: {
-                id: 'car1',
-                name: 'Clio 5',
-                price: 35,
-                image: 'images/clio5.jpg',
-                reservations: [
-                    { id: 'r1c1', startDate: '2025-11-10', endDate: '2025-11-12' },
-                    { id: 'r2c1', startDate: '2025-11-18', endDate: '2025-11-19' }
-                ]
-            },
-            car2: {
-                id: 'car2',
-                name: 'Audi A4',
-                price: 85,
-                image: 'images/audia4.jpg',
-                reservations: [
-                    { id: 'r1c2', startDate: '2025-11-13', endDate: '2025-11-16' }
-                ]
-            },
-            car3: {
-                id: 'car3',
-                name: 'Mercedes CLA 220',
-                price: 120,
-                image: 'images/Mercedes CLA 220.jpg',
-                reservations: [
-                    { id: 'r1c3', startDate: '2025-11-20', endDate: '2025-11-25' }
-                ]
-            },
-            car4: {
-                id: 'car4',
-                name: 'Dacia Logan',
-                price: 45,
-                image: 'images/Dacia Logan.jpg',
-                reservations: [
-                    { id: 'r1c4', startDate: '2025-11-06', endDate: '2025-11-08' }
-                ]
-            },
-            car5: {
-                id: 'car5',
-                name: 'Peugeot 308',
-                price: 65,
-                image: 'images/Peugeot 308.jpg',
-                reservations: [
-                    { id: 'r1c5', startDate: '2025-12-05', endDate: '2025-12-10' }
-                ]
+        // Base de données des voitures (sera chargée dynamiquement depuis l'API)
+        // Rendue globale pour être accessible par carPricing.js
+        window.carsDatabase = {};
+        let carsDatabase = window.carsDatabase; // Alias local pour faciliter l'accès
+
+        /**
+         * Charge les voitures depuis l'API backend
+         * Synchronise automatiquement avec les voitures ajoutées via le panneau admin
+         */
+        async function loadCarsFromAPI() {
+            try {
+                console.log('🔄 Chargement des voitures depuis l\'API...');
+                const response = await fetch('http://localhost:3001/cars');
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status}`);
+                }
+                
+                const cars = await response.json();
+                console.log(`✅ ${cars.length} voitures chargées depuis l'API`);
+                
+                // Charger aussi les réservations
+                const reservationsResponse = await fetch('http://localhost:3001/reservations');
+                const allReservations = reservationsResponse.ok ? await reservationsResponse.json() : [];
+                
+                // Convertir le format API vers le format carsDatabase
+                // Vider l'objet existant au lieu de créer un nouveau (pour garder la référence window.carsDatabase)
+                Object.keys(carsDatabase).forEach(key => delete carsDatabase[key]);
+                
+                cars.forEach(car => {
+                    // Filtrer les réservations pour cette voiture
+                    const carReservations = allReservations
+                        .filter(res => res.carId === car.id)
+                        .map(res => ({
+                            id: res.id,
+                            startDate: res.startDate,
+                            endDate: res.endDate
+                        }));
+                    
+                    carsDatabase[car.id] = {
+                        id: car.id,
+                        name: car.name,
+                        price: car.price,
+                        image: car.image || `images/${car.name.toLowerCase().replace(/ /g, '')}.jpg`,
+                        reservations: carReservations
+                    };
+                });
+                
+                console.log('📊 Base de données locale mise à jour:', carsDatabase);
+                
+                // Mettre à jour l'affichage des voitures
+                updateCarsDisplay();
+                
+                return carsDatabase;
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des voitures:', error);
+                
+                // Fallback: utiliser des données par défaut si l'API n'est pas disponible
+                console.warn('⚠️ Utilisation des données par défaut (API non disponible)');
+                
+                // Vider l'objet existant
+                Object.keys(carsDatabase).forEach(key => delete carsDatabase[key]);
+                
+                // Ajouter les voitures par défaut
+                Object.assign(carsDatabase, {
+                    car1: {
+                        id: 'car1',
+                        name: 'Clio 5',
+                        price: 35,
+                        image: 'images/clio5.jpg',
+                        reservations: []
+                    },
+                    car2: {
+                        id: 'car2',
+                        name: 'Audi A4',
+                        price: 85,
+                        image: 'images/audia4.jpg',
+                        reservations: []
+                    },
+                    car3: {
+                        id: 'car3',
+                        name: 'Mercedes CLA 220',
+                        price: 120,
+                        image: 'images/Mercedes CLA 220.jpg',
+                        reservations: []
+                    },
+                    car4: {
+                        id: 'car4',
+                        name: 'Dacia Logan',
+                        price: 45,
+                        image: 'images/Dacia Logan.jpg',
+                        reservations: []
+                    },
+                    car5: {
+                        id: 'car5',
+                        name: 'Peugeot 308',
+                        price: 65,
+                        image: 'images/Peugeot 308.jpg',
+                        reservations: []
+                    }
+                });
+                updateCarsDisplay();
+                return carsDatabase;
             }
-        };
+        }
+
+        /**
+         * Met à jour l'affichage des cartes de voitures dans le DOM
+         * Préserve les voitures statiques (non synchronisées avec le backend)
+         */
+        function updateCarsDisplay() {
+            const carsGrid = document.querySelector('.cars-grid');
+            if (!carsGrid) {
+                console.warn('⚠️ Élément .cars-grid non trouvé');
+                return;
+            }
+            
+            // Sauvegarder les voitures statiques (celles qui ne sont pas dans le backend)
+            const staticCars = Array.from(carsGrid.querySelectorAll('.static-car'));
+            
+            // Supprimer uniquement les voitures dynamiques (pas les static-car)
+            const dynamicCars = carsGrid.querySelectorAll('.car-card:not(.static-car)');
+            dynamicCars.forEach(card => card.remove());
+            
+            // Créer un fragment pour les nouvelles voitures dynamiques
+            const fragment = document.createDocumentFragment();
+            
+            // Générer les cartes pour chaque voiture du backend
+            for (const carId in carsDatabase) {
+                const car = carsDatabase[carId];
+                const carCard = createCarCard(car);
+                fragment.appendChild(carCard);
+            }
+            
+            // Insérer les voitures dynamiques AVANT les voitures statiques
+            if (staticCars.length > 0) {
+                carsGrid.insertBefore(fragment, staticCars[0]);
+            } else {
+                carsGrid.appendChild(fragment);
+            }
+            
+            console.log(`✅ ${Object.keys(carsDatabase).length} voitures dynamiques + ${staticCars.length} voitures statiques affichées`);
+            
+            // Appliquer le statut des réservations (uniquement sur les voitures dynamiques)
+            applyTodayReservationsStatus();
+        }
+
+        /**
+         * Crée une carte de voiture (élément DOM)
+         */
+        function createCarCard(car) {
+            const card = document.createElement('article');
+            card.className = 'car-card';
+            card.setAttribute('data-car-id', car.id);
+            
+            // Utiliser l'image de la base de données (déjà stockée lors de l'ajout dans l'admin)
+            const imagePath = car.image || `images/${car.name}.jpg`;
+            
+            // Créer l'élément image avec gestion du placeholder
+            const carImageDiv = document.createElement('div');
+            carImageDiv.className = 'car-image';
+            carImageDiv.style.cssText = `background-image: url('${imagePath}'); background-size: cover; background-position: center; background-color: #f0f0f0;`;
+            
+            // Tester si l'image existe
+            const img = new Image();
+            img.onload = function() {
+                // L'image existe, on l'affiche normalement
+                carImageDiv.style.backgroundImage = `url('${imagePath}')`;
+            };
+            img.onerror = function() {
+                // L'image n'existe pas, afficher un placeholder
+                carImageDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 1.2rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <span style="color: white; font-weight: bold;">� ${car.name}</span>
+                    </div>
+                `;
+            };
+            img.src = imagePath;
+            
+            // Contenu de la carte
+            const carContent = document.createElement('div');
+            carContent.className = 'car-content';
+            carContent.innerHTML = `
+                <h3 class="car-name">${car.name}</h3>
+                <p class="car-details">Véhicule de qualité, disponible à la location</p>
+                <div class="car-price">${car.price}€<span style="font-size: 0.9rem; font-weight: normal;">/jour</span></div>
+                <span class="car-status status-available">Disponible</span>
+                <button class="reserve-btn" data-car="${car.name}" data-price="${car.price}">
+                    Réserver cette voiture
+                </button>
+            `;
+            
+            card.appendChild(carImageDiv);
+            card.appendChild(carContent);
+            
+            return card;
+        }
 
         // Fonction pour définir dynamiquement les min sur les inputs date
         function setDynamicMinDates() {
@@ -2012,8 +2276,13 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             setDynamicMinDates();
+            
+            // Charger les voitures depuis l'API
+            await loadCarsFromAPI();
+            
+            // Appliquer le statut des réservations après chargement
             applyTodayReservationsStatus();
         });
 
@@ -2434,8 +2703,12 @@
             const carId = quickModal.getAttribute('data-car-id');
             const breakdownDiv = document.getElementById('quickBreakdown');
             const breakdownDaysDiv = document.getElementById('quickBreakdownDays');
+            const discountRow = document.getElementById('quickDiscountRow');
+            const subtotalRow = document.getElementById('quickSubtotal');
             
             err.style.display='none';
+            discountRow.style.display='none'; // Cacher la réduction par défaut
+            
             if (!qsVal || !qeVal) { box.style.display='none'; return; }
             const start = new Date(qsVal); const end = new Date(qeVal);
             if (start >= end) { box.style.display='none'; err.textContent='Dates invalides'; err.style.display='block'; return; }
@@ -2443,11 +2716,30 @@
             const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
             const days = Math.ceil((end - start)/(1000*60*60*24));
             
-            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend + afficher breakdown
+            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend + réduction longue durée
             if (typeof window.calculateCarPriceWithWeekend === 'function') {
                 try {
-                    const result = window.calculateCarPriceWithWeekend(carId, qsVal, qeVal);
-                    document.getElementById('quickTotalPrice').textContent = `${result.total}€ (${result.days}j, dont ${result.weekendExtra}€ weekend)`;
+                    const result = window.calculateCarPriceWithWeekend(carId, qsVal, qeVal, true); // true = appliquer réductions
+                    
+                    // Afficher le tarif journalier de base
+                    document.getElementById('quickDailyRate').textContent = `${result.baseRate}€/jour`;
+                    
+                    // Afficher le sous-total (base + weekend)
+                    document.getElementById('quickSubtotalPrice').textContent = `${result.subtotal}€ (${result.days}j)`;
+                    
+                    // Afficher la réduction si applicable
+                    if (result.hasDiscount) {
+                        document.getElementById('quickDiscountLabel').textContent = result.discountLabel;
+                        document.getElementById('quickDiscountAmount').textContent = `-${result.discountAmount}€`;
+                        discountRow.style.display = 'block';
+                        subtotalRow.style.display = 'flex'; // Afficher le sous-total si réduction
+                    } else {
+                        subtotalRow.style.display = 'none'; // Cacher le sous-total si pas de réduction
+                    }
+                    
+                    // Afficher le prix final
+                    const weekendInfo = result.weekendExtra > 0 ? ` (dont ${result.weekendExtra}€ weekend)` : '';
+                    document.getElementById('quickTotalPrice').textContent = `${result.total}€${weekendInfo}`;
                     
                     // Afficher le détail jour par jour
                     let breakdownHTML = '';
@@ -2479,6 +2771,7 @@
             
             // Fallback: calcul simple sans breakdown (ne devrait plus arriver)
             breakdownDiv.style.display = 'none';
+            subtotalRow.style.display = 'none';
             let total = pricePerDay * days;
             document.getElementById('quickTotalPrice').textContent = `${total}€ (${days}j)`;
             box.style.display='block';
@@ -2503,16 +2796,16 @@
             const avail = await isCarAvailableAPI(carId, startDate, endDate);
             if (!avail) { err.textContent='Cette voiture est déjà réservée pour ces dates.'; err.style.display='block'; return; }
             
-            // Recalcul du total
+            // Recalcul du total avec réduction longue durée
             const pricePerDay = parseInt(quickModal.getAttribute('data-car-price'),10);
             const days = Math.ceil((new Date(endDate) - new Date(startDate))/(1000*60*60*24));
             let total = pricePerDay * days;
             
-            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend
+            // TOUTES LES VOITURES : utiliser le calcul avec majoration weekend + réduction
             if (typeof window.calculateCarPriceWithWeekend === 'function') {
                 try {
-                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate);
-                    total = result.total;
+                    const result = window.calculateCarPriceWithWeekend(carId, startDate, endDate, true); // true = appliquer réductions
+                    total = result.total; // Prix final avec réduction appliquée
                 } catch (error) {
                     console.error('Erreur calcul prix weekend pour paiement:', error);
                     // Utiliser le calcul simple en fallback
@@ -3497,5 +3790,8 @@
 
     <!-- Script de calcul prix avec majoration weekend -->
     <script src="carPricing.js"></script>
+    
+    <!-- Script de gestion du thème Dark/Light -->
+    <script src="theme.js"></script>
 </body>
 </html>

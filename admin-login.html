@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - FandiApp</title>
+    <style>
+        /* ================================
+           THEME VARIABLES - Dark/Light Mode
+           ================================ */
+        
+        /* Variables CSS pour le thème Light (par défaut) */
+        :root {
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --input-bg: #ffffff;
+            --input-border: #e0e0e0;
+            --input-focus-border: #667eea;
+            --btn-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --btn-hover: linear-gradient(135deg, #5568d3 0%, #6a3f94 100%);
+            --card-bg: #ffffff;
+            --error-bg: #ffe5e5;
+            --error-border: #ff4444;
+            --error-text: #cc0000;
+            --success-text: #27ae60;
+        }
+        
+        /* Variables CSS pour le thème Dark */
+        body.dark-theme {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --input-bg: #3a3a3a;
+            --input-border: #555555;
+            --input-focus-border: #7c8ff5;
+            --btn-bg: linear-gradient(135deg, #7c8ff5 0%, #8b68c5 100%);
+            --btn-hover: linear-gradient(135deg, #6b7ee0 0%, #7a57b4 100%);
+            --card-bg: #2d2d2d;
+            --error-bg: #3a2222;
+            --error-border: #e05555;
+            --error-text: #ff6b6b;
+            --success-text: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .login-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            animation: slideIn 0.5s ease-out;
+            transition: background-color 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--btn-bg);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 2px solid var(--error-border);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            transition: all 0.3s ease;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .back-link a {
+            color: var(--input-focus-border);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: var(--success-text);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .lock-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="lock-icon">🔐</div>
+            <h1>FandiApp</h1>
+            <p>Administration Panel</p>
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            ❌ Mot de passe incorrect
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Entrez le mot de passe admin"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="login-btn">
+                🔓 Se connecter
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html">← Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ CONFIGURATION: Modifier le mot de passe ici
+        const ADMIN_PASSWORD = 'FandiCars2025';
+        
+        // Vérifier si déjà connecté
+        if (localStorage.getItem('isAdmin') === 'true') {
+            window.location.href = 'admin.html';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                // Authentification réussie
+                localStorage.setItem('isAdmin', 'true');
+                
+                // Animation de succès
+                loginForm.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+                        <h2 style="color: #28a745; margin-bottom: 0.5rem;">Connexion réussie !</h2>
+                        <p style="color: #666;">Redirection en cours...</p>
+                    </div>
+                `;
+                
+                // Redirection après 1 seconde
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+            } else {
+                // Mot de passe incorrect
+                errorMessage.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Masquer le message d'erreur après 3 secondes
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Focus automatique sur le champ password
+        passwordInput.focus();
+    </script>
+    
+    <!-- Script de gestion du thème Dark/Light -->
+    <script src="theme.js"></script>
+</body>
+</html>

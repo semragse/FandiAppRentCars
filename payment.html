@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finaliser la réservation - FandiRent</title>
     <style>
+        /* ================================
+           THEME VARIABLES - Dark/Light Mode
+           ================================ */
+        
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-primary: #ffffff;
+            --bg-secondary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --accent-primary: #667eea;
+        }
+        
+        body.dark-theme {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-primary: #2d2d2d;
+            --bg-secondary: linear-gradient(135deg, #2d2d2d 0%, #1a1a2e 100%);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #555555;
+            --card-bg: #2d2d2d;
+            --input-bg: #3a3a3a;
+            --input-border: #555555;
+            --accent-primary: #7c8ff5;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,18 +43,20 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
             padding: 2rem 1rem;
+            transition: background 0.3s ease;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            transition: background-color 0.3s ease;
         }
 
         .header {
@@ -72,8 +104,9 @@
             gap: 1rem;
             margin-bottom: 1rem;
             padding: 1rem;
-            background: white;
+            background: var(--card-bg);
             border-radius: 10px;
+            transition: background-color 0.3s ease;
         }
 
         .car-icon {
@@ -81,13 +114,13 @@
         }
 
         .car-details h3 {
-            color: #333;
+            color: var(--text-primary);
             font-size: 1.3rem;
             margin-bottom: 0.3rem;
         }
 
         .car-details p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -99,21 +132,22 @@
         }
 
         .summary-item {
-            background: white;
+            background: var(--card-bg);
             padding: 0.8rem;
             border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--accent-primary);
+            transition: background-color 0.3s ease;
         }
 
         .summary-item label {
             font-size: 0.8rem;
-            color: #666;
+            color: var(--text-secondary);
             display: block;
             margin-bottom: 0.3rem;
         }
 
         .summary-item strong {
-            color: #333;
+            color: var(--text-primary);
             font-size: 1.1rem;
         }
 
@@ -739,5 +773,8 @@
             selectPaymentOption('later');
         });
     </script>
+    
+    <!-- Script de gestion du thème Dark/Light -->
+    <script src="theme.js"></script>
 </body>
 </html>

@@ -9,3 +9,5 @@ git log -5 --oneline
 
 Demmarer back-end :
 cd backend; npm start
+
+ADMIN_PASSWORD = 'FandiCars2025';
