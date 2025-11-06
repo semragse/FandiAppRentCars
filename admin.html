@@ -1390,7 +1390,7 @@
     <script src="config.js"></script>
     
     <!-- Script de calcul prix avec majoration weekend -->
-    <script src="clio5Pricing.js"></script>
+    <script src="carPricing.js"></script>
 
     <script>
         // Configuration de l'API - Utilise la config dynamique
@@ -1402,7 +1402,7 @@
         let cars = [];
         let reservations = [];
         
-        // Exposer cars globalement pour clio5Pricing.js (initialement vide)
+        // Exposer cars globalement pour carPricing.js (initialement vide)
         window.cars = cars;
 
         // Fonctions API
@@ -1573,10 +1573,10 @@
                     console.warn('Utilisation du calcul basique comme fallback');
                 }
             } else {
-                console.warn('⚠️ clio5Pricing.js non chargé - calcul basique utilisé');
+                console.warn('⚠️ carPricing.js non chargé - calcul basique utilisé');
             }
 
-            // Fallback: calcul basique (si clio5Pricing.js non chargé)
+            // Fallback: calcul basique (si carPricing.js non chargé)
             const start = new Date(startDate);
             const end = new Date(endDate);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
@@ -1641,7 +1641,7 @@
                 cars = await fetchCars();
                 reservations = await fetchReservations();
                 
-                // Exposer cars globalement pour clio5Pricing.js
+                // Exposer cars globalement pour carPricing.js
                 window.cars = cars;
                 
                 console.log('✅ Données chargées depuis l\'API');
@@ -2492,7 +2492,7 @@
                     const newCar = await response.json();
                     cars.push(newCar);
                     
-                    // Mettre à jour window.cars pour clio5Pricing.js
+                    // Mettre à jour window.cars pour carPricing.js
                     window.cars = cars;
                     
                     closeAddCarModal();

@@ -1,5 +1,7 @@
-// Script pour calcul de prix avec majoration weekend pour TOUTES les voitures
+// carPricing.js
+// Script de calcul de prix avec majoration weekend pour TOUTES les voitures
 // Tarifs de base par voiture + majoration weekend 20%
+// Support des voitures dynamiques ajoutées via l'interface admin
 
 const CAR_RATES = {
   car1: { name: 'Clio 5', baseRate: 35 },
@@ -76,12 +78,12 @@ function calculateCarPriceWithWeekend(carId, startDate, endDate) {
   };
 }
 
-// Garder la compatibilité avec l'ancien nom (pour Clio 5)
+// Garder la compatibilité avec l'ancien nom de fonction
 function calculateClio5PriceForUI(startDate, endDate) {
   return calculateCarPriceWithWeekend('car1', startDate, endDate);
 }
 
-// Export pour utilisation dans index.html
+// Export global pour utilisation dans index.html et admin.html
 window.calculateCarPriceWithWeekend = calculateCarPriceWithWeekend;
 window.calculateClio5PriceForUI = calculateClio5PriceForUI;
 
