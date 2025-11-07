@@ -3,7 +3,8 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
-const { sequelize, Car, Reservation, Setting } = require('./models');
+const stripe = require('./config/stripe');
+const { sequelize, Car, Reservation, Setting, PaymentSettings } = require('./models');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -429,6 +430,117 @@ app.post('/settings/contact', async (req, res) => {
 });
 
 // ============= END SETTINGS ENDPOINTS =============
+
+// ============= PAYMENT ENDPOINTS =============
+
+// Create a payment intent
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency = 'eur' } = req.body;
+
+    if (!amount) {
+      return res.status(400).json({ error: 'Amount is required' });
+    }
+
+    // Create payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount), // Stripe expects amount in smallest currency unit (cents)
+      currency,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (err) {
+    console.error('❌ Error creating payment intent:', err);
+    res.status(500).json({ error: 'Failed to create payment intent' });
+  }
+});
+
+// ============= END PAYMENT ENDPOINTS =============
+
+// ============= PAYMENT SETTINGS ENDPOINTS =============
+
+// Get payment settings
+app.get('/payment-settings', async (req, res) => {
+  try {
+    let settings = await PaymentSettings.findOne();
+    
+    // If no settings exist, create default ones
+    if (!settings) {
+      settings = await PaymentSettings.create({
+        bankName: 'Banque Exemple',
+        accountHolderName: 'FANDIAUTO',
+        iban: 'DZ00 0000 0000 0000 0000 0000',
+        bicSwift: 'XXXXDZXX',
+        stripePublicKey: 'pk_test_51QzoteKoPCrvfoFnpEmPEDWk4CNDnH4wyE8gD0wkuy9tkDqViHylV5GaKbVaveaQedHmxfxw6MmVAXiGiDoNZ8u400jaiF65qv',
+        stripeSecretKey: '',
+        paypalBusinessEmail: '',
+        paypalInstructions: 'Envoyez votre paiement à notre compte PayPal et incluez votre numéro de réservation dans la note.',
+        bankTransferEnabled: true,
+        stripeEnabled: true,
+        paypalEnabled: false
+      });
+    }
+    
+    res.json(settings);
+  } catch (err) {
+    console.error('❌ Error fetching payment settings:', err);
+    res.status(500).json({ error: 'Failed to fetch payment settings' });
+  }
+});
+
+// Update payment settings
+app.put('/payment-settings', async (req, res) => {
+  try {
+    const {
+      bankName,
+      accountHolderName,
+      iban,
+      bicSwift,
+      stripePublicKey,
+      stripeSecretKey,
+      paypalBusinessEmail,
+      paypalInstructions,
+      bankTransferEnabled,
+      stripeEnabled,
+      paypalEnabled
+    } = req.body;
+
+    let settings = await PaymentSettings.findOne();
+    
+    if (!settings) {
+      // Create new settings
+      settings = await PaymentSettings.create(req.body);
+    } else {
+      // Update existing settings
+      await settings.update({
+        bankName,
+        accountHolderName,
+        iban,
+        bicSwift,
+        stripePublicKey,
+        stripeSecretKey,
+        paypalBusinessEmail,
+        paypalInstructions,
+        bankTransferEnabled,
+        stripeEnabled,
+        paypalEnabled
+      });
+    }
+    
+    console.log('✅ Payment settings updated successfully');
+    res.json(settings);
+  } catch (err) {
+    console.error('❌ Error updating payment settings:', err);
+    res.status(500).json({ error: 'Failed to update payment settings', details: err.message });
+  }
+});
+
+// ============= END PAYMENT SETTINGS ENDPOINTS =============
 
 // Seed endpoint (optional, for development)
 app.post('/seed', async (req, res) => {
