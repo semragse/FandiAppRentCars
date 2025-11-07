@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
@@ -13,12 +14,23 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Serve static files (HTML, CSS, JS, images)
+app.use(express.static(path.join(__dirname)));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/pages', express.static(path.join(__dirname, 'pages')));
+
 // Add cache control headers to prevent caching issues
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   res.set('Pragma', 'no-cache');
   res.set('Expires', '0');
   next();
+});
+
+// Root route - serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Simple health check
@@ -612,16 +624,20 @@ async function seedData() {
 
 (async () => {
   try {
-  await sequelize.sync();
+    await sequelize.sync();
     // Auto-seed if empty
     const carCount = await Car.count();
     if (carCount === 0) {
       await seedData();
       console.log('Seeded initial data');
     }
-    app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
+    // Listen on 0.0.0.0 to accept connections from outside (required for Railway, Docker, etc.)
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`✅ API running on http://0.0.0.0:${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
   } catch (err) {
-    console.error('Failed to start server:', err);
+    console.error('❌ Failed to start server:', err);
     process.exit(1);
   }
 })();
