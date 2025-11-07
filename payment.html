@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finaliser la réservation - FandiRent</title>
+    <title>Finaliser la réservation - FANDIAUTO</title>
     <style>
         /* ================================
            THEME VARIABLES - Dark/Light Mode
            ================================ */
         
         :root {
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-gradient: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             --bg-primary: #ffffff;
             --bg-secondary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             --text-primary: #333333;
@@ -19,7 +19,7 @@
             --card-bg: #ffffff;
             --input-bg: #ffffff;
             --input-border: #ced4da;
-            --accent-primary: #667eea;
+            --accent-primary: #2A90A8;
         }
         
         body.dark-theme {
@@ -60,7 +60,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -86,11 +86,11 @@
             border-radius: 15px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            border: 2px solid #667eea;
+            border: 2px solid #2A90A8;
         }
 
         .summary-card h2 {
-            color: #667eea;
+            color: #2A90A8;
             font-size: 1.3rem;
             margin-bottom: 1rem;
             display: flex;
@@ -205,7 +205,7 @@
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2A90A8;
         }
 
         .form-group textarea {
@@ -237,13 +237,13 @@
         }
 
         .payment-option:hover {
-            border-color: #667eea;
+            border-color: #2A90A8;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
         }
 
         .payment-option.selected {
-            border-color: #667eea;
+            border-color: #2A90A8;
             background: linear-gradient(135deg, #f5f7fa 0%, #e6eaf6 100%);
         }
 
@@ -332,7 +332,7 @@
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
         }
 
@@ -423,7 +423,7 @@
         .spinner {
             display: none;
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #2A90A8;
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -506,7 +506,7 @@
 
                     <div class="form-group">
                         <label>Téléphone</label>
-                        <input type="tel" id="customerPhone" name="customerPhone" placeholder="+212 6 00 00 00 00">
+                        <input type="tel" id="customerPhone" name="customerPhone" placeholder="+213 771 39 14 80">
                     </div>
 
                     <div class="form-group">
@@ -700,13 +700,13 @@
                     endDate: reservationData.endDate,
                     customerName: customerName,
                     customerEmail: customerEmail,
-                    customerPhone: customerPhone || '+212 6 00 00 00 00',
-                    totalPrice: reservationData.total,
-                    notes: notes + (paymentMethod !== 'card' ? `\n\nMode de paiement: ${paymentMethod === 'transfer' ? 'Virement bancaire' : 'Paiement ultérieur'}` : ''),
-                    paymentMethod: paymentMethod,
-                    paymentStatus: paymentMethod === 'card' ? 'pending' : 'unpaid',
-                    createdAt: new Date().toISOString()
+                    customerPhone: customerPhone || '+213 771 39 14 80',
+                    totalPrice: parseInt(reservationData.total, 10), // S'assurer que c'est un entier
+                    notes: notes + (paymentMethod !== 'card' ? `\n\nMode de paiement: ${paymentMethod === 'transfer' ? 'Virement bancaire' : 'Paiement ultérieur'}` : '')
                 };
+
+                console.log('📤 Envoi de la réservation:', reservationPayload);
+                console.log('🌐 API_URL:', API_URL);
 
                 // Envoyer la réservation au backend
                 const response = await fetch(`${API_URL}/reservations`, {
@@ -717,12 +717,20 @@
                     body: JSON.stringify(reservationPayload)
                 });
 
+                console.log('📥 Réponse HTTP:', response.status, response.statusText);
+
                 if (!response.ok) {
                     const error = await response.json();
+                    console.error('❌ Erreur backend:', error);
                     throw new Error(error.error || 'Erreur lors de la création de la réservation');
                 }
 
                 const result = await response.json();
+                console.log('✅ Réservation créée:', result);
+
+                // Réactiver le bouton
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
 
                 // Gérer selon le mode de paiement
                 if (paymentMethod === 'card') {
@@ -740,12 +748,18 @@
                         window.location.href = 'index.html';
                     }, 2000);
                 } else {
-                    // Réservation sans paiement
-                    showAlert('✅ Réservation enregistrée! Nous vous contacterons pour la validation.', 'success');
-                    setTimeout(() => {
-                        alert(`Réservation créée avec succès!\n\nNous vous contacterons sous 24h à:\n- Email: ${customerEmail}\n- Téléphone: ${customerPhone || 'Non fourni'}\n\nPour finaliser votre réservation et confirmer le paiement.`);
-                        window.location.href = 'index.html';
-                    }, 2000);
+                    // Réservation sans paiement - AFFICHER ET REDIRIGER
+                    console.log('🎯 Mode paiement ultérieur - Affichage du message');
+                    showAlert('✅ Réservation enregistrée avec succès!', 'success');
+                    
+                    // Alert bloque l'exécution, donc la redirection se fera après que l'utilisateur clique OK
+                    alert(`🙏 Merci pour votre confiance!\n\n✅ Votre réservation a été enregistrée avec succès.\n\nNous vous appellerons le plus tôt possible pour finaliser votre réservation.\n\n📧 Email: ${customerEmail}\n📞 Téléphone: ${customerPhone || 'Non fourni'}\n\nÀ très bientôt! 🚗`);
+                    
+                    console.log('🔄 Redirection vers index.html');
+                    // Redirection immédiate après que l'utilisateur ferme l'alert
+                    const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
+                    console.log('🌐 Base URL:', baseUrl);
+                    window.location.href = baseUrl + 'index.html';
                 }
 
             } catch (error) {

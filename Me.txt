@@ -7,6 +7,9 @@ voir les commit:
 git log -5 --oneline
 
 
+git checkout id 8634d4a
+
+
 Demmarer back-end :
 cd backend; npm start
 

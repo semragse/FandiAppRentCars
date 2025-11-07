@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - FandiApp</title>
+    <title>Admin - FANDIAUTO</title>
     
     <!-- Protection admin: Vérifier l'authentification avant de charger la page -->
     <script>
@@ -32,12 +32,12 @@
             --text-muted: #999999;
             
             /* Couleurs d'accentuation */
-            --accent-primary: #667eea;
-            --accent-secondary: #764ba2;
+            --accent-primary: #2A90A8;
+            --accent-secondary: #7CC6D7;
             
             /* Header gradient */
-            --header-gradient-start: #667eea;
-            --header-gradient-end: #764ba2;
+            --header-gradient-start: #2A90A8;
+            --header-gradient-end: #7CC6D7;
             
             /* Cards et surfaces */
             --card-bg: #ffffff;
@@ -47,12 +47,12 @@
             /* Inputs et forms */
             --input-bg: #ffffff;
             --input-border: #ced4da;
-            --input-focus-border: #667eea;
+            --input-focus-border: #2A90A8;
             
             /* Boutons */
-            --btn-primary-bg: #667eea;
+            --btn-primary-bg: #2A90A8;
             --btn-primary-hover: #5568d3;
-            --btn-danger-bg: #e74c3c;
+            --btn-danger-bg: #D05B5B;
             --btn-danger-hover: #c0392b;
             --btn-success-bg: #27ae60;
             --btn-success-hover: #229954;
@@ -102,7 +102,7 @@
             --btn-primary-hover: #6b7ee0;
             --btn-danger-bg: #e05555;
             --btn-danger-hover: #c44444;
-            --btn-success-bg: #2ecc71;
+            --btn-success-bg: #4CAF78;
             --btn-success-hover: #27ae60;
             
             /* Modals */
@@ -136,7 +136,7 @@
 
         /* Header admin */
         .admin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -272,7 +272,7 @@
 
         .car-admin-header {
             position: relative;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             padding: 0;
             overflow: hidden;
@@ -435,7 +435,7 @@
         }
 
         .reservations-list h4 {
-            color: #667eea;
+            color: #2A90A8;
             margin-bottom: 1rem;
             font-size: 1.1rem;
         }
@@ -570,7 +570,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2A90A8;
             box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
         }
 
@@ -602,7 +602,7 @@
         }
 
         .global-actions h3 {
-            color: #667eea;
+            color: #2A90A8;
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             font-weight: bold;
@@ -1195,7 +1195,7 @@
         }
 
         .modal-btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
         }
 
@@ -1212,7 +1212,7 @@
         /* Price calculation styles */
         .price-preview {
             background: #e7f3ff;
-            border: 2px solid #667eea;
+            border: 2px solid #2A90A8;
             border-radius: 10px;
             padding: 1rem;
             margin-top: 1rem;
@@ -1225,7 +1225,7 @@
 
         .price-preview-title {
             font-weight: bold;
-            color: #667eea;
+            color: #2A90A8;
             margin-bottom: 0.5rem;
         }
 
@@ -1256,7 +1256,7 @@
     <!-- Header Admin -->
     <header class="admin-header">
         <div class="admin-header-content">
-            <h1 class="admin-title">🛠️ Admin FandiApp</h1>
+            <h1 class="admin-title">🛠️ Admin FANDIAUTO</h1>
             <div class="admin-header-actions">
                 <!-- Bouton de changement de thème Dark/Light -->
                 <button id="theme-toggle-btn" aria-label="Toggle dark/light theme">
@@ -1349,7 +1349,7 @@
 
                     <div class="modal-form-group">
                         <label>📄 Documents de Réservation</label>
-                        <div style="background: #f8f9fa; border: 2px dashed #667eea; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
+                        <div style="background: #f8f9fa; border: 2px dashed #2A90A8; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
                             <div class="modal-form-group" style="margin-bottom: 1rem;">
                                 <label style="font-size: 0.9rem; font-weight: normal;">🪪 CIN / Passeport</label>
                                 <input type="file" id="modalDocCIN" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
@@ -1374,8 +1374,8 @@
                     </div>
 
                     <!-- Champ Prix Manuel (optionnel) -->
-                    <div class="modal-form-group" style="background: #f0f7ff; border: 2px solid #667eea; border-radius: 10px; padding: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #667eea;">
+                    <div class="modal-form-group" style="background: #f0f7ff; border: 2px solid #2A90A8; border-radius: 10px; padding: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #2A90A8;">
                             💵 Prix Manuel (optionnel)
                             <span style="font-size: 0.75rem; font-weight: normal; color: #666; background: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
                                 ℹ️ Laissez vide pour calcul automatique
@@ -1461,7 +1461,7 @@
 
                     <div class="modal-form-group">
                         <label>📄 Documents de Réservation</label>
-                        <div style="background: #f8f9fa; border: 2px dashed #667eea; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
+                        <div style="background: #f8f9fa; border: 2px dashed #2A90A8; border-radius: 10px; padding: 1rem; margin-top: 0.5rem;">
                             <div class="modal-form-group" style="margin-bottom: 1rem;">
                                 <label style="font-size: 0.9rem; font-weight: normal;">🪪 CIN / Passeport</label>
                                 <input type="file" id="editDocCIN" accept="image/*,.pdf" style="padding: 0.5rem; font-size: 0.85rem;">
@@ -1765,7 +1765,7 @@
                 startDate,
                 endDate,
                 customerName,
-                customerEmail: 'admin@fandirent.ma', // Email par défaut pour l'admin
+                customerEmail: 'admin@fandiauto.dz', // Email par défaut pour l'admin
                 customerPhone: '+212 6 00 00 00 00', // Téléphone par défaut
                 totalPrice: calculatePrice(carId, startDate, endDate),
                 createdAt: new Date().toISOString()
@@ -2144,7 +2144,7 @@
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🛠️ Initialisation de l\'interface Admin FandiApp...');
+            console.log('🛠️ Initialisation de l\'interface Admin FANDIAUTO...');
             
             // Mettre à jour l'interface
             updateGlobalActions();
@@ -2227,7 +2227,7 @@
                 }
             });
             
-            console.log('✅ Interface Admin FandiApp initialisée');
+            console.log('✅ Interface Admin FANDIAUTO initialisée');
         });
 
         // ============= MODAL FUNCTIONS =============
@@ -2296,7 +2296,7 @@
                 // ========================================
                 const finalPrice = parseFloat(manualPrice);
                 document.getElementById('priceDetails').innerHTML = `
-                    <div style="margin-bottom:0.5rem; color:#667eea; font-weight:600;">
+                    <div style="margin-bottom:0.5rem; color:#2A90A8; font-weight:600;">
                         💵 Prix manuel saisi par l'administrateur
                     </div>
                     <div style="font-size:0.85rem; color:#666; margin-top:0.3rem;">
@@ -2307,7 +2307,7 @@
                     </div>
                 `;
                 document.getElementById('priceTotal').innerHTML = `
-                    <strong style="font-size:1.1rem; color:#667eea;">Total: ${finalPrice.toFixed(2)}€</strong>
+                    <strong style="font-size:1.1rem; color:#2A90A8;">Total: ${finalPrice.toFixed(2)}€</strong>
                 `;
             } else {
                 // ========================================
@@ -2321,7 +2321,7 @@
                         let detailsHTML = `
                             <div style="margin-bottom:0.8rem;">
                                 <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Tarif journalier:</div>
-                                <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€/jour</div>
+                                <div style="font-size:1.1rem; font-weight:600; color:#2A90A8;">${carPrice}€/jour</div>
                             </div>
                         `;
                         
@@ -2357,7 +2357,7 @@
                         `;
                         
                         // Détail jour par jour
-                        detailsHTML += `<div style="margin-top:1rem; padding-top:1rem; border-top:2px solid #e9ecef;"><div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
+                        detailsHTML += `<div style="margin-top:1rem; padding-top:1rem; border-top:2px solid #e9ecef;"><div style="font-weight:600; font-size:0.8rem; color:#2A90A8; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
                         
                         result.breakdown.forEach(day => {
                             const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
@@ -2393,7 +2393,7 @@
                 document.getElementById('priceDetails').innerHTML = `
                     <div style="margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Tarif journalier:</div>
-                        <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                        <div style="font-size:1.1rem; font-weight:600; color:#2A90A8;">${carPrice}€</div>
                     </div>
                     <div style="margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Prix total:</div>
@@ -2548,15 +2548,15 @@
                     
                     if (docs.cin) {
                         document.getElementById('editDocCINPreview').innerHTML = 
-                            `✅ Document existant: ${docs.cin.name} <a href="${docs.cin.data}" download="${docs.cin.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                            `✅ Document existant: ${docs.cin.name} <a href="${docs.cin.data}" download="${docs.cin.name}" style="color: #2A90A8; margin-left: 10px;">📥 Télécharger</a>`;
                     }
                     if (docs.permis) {
                         document.getElementById('editDocPermisPreview').innerHTML = 
-                            `✅ Document existant: ${docs.permis.name} <a href="${docs.permis.data}" download="${docs.permis.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                            `✅ Document existant: ${docs.permis.name} <a href="${docs.permis.data}" download="${docs.permis.name}" style="color: #2A90A8; margin-left: 10px;">📥 Télécharger</a>`;
                     }
                     if (docs.autre) {
                         document.getElementById('editDocAutrePreview').innerHTML = 
-                            `✅ Document existant: ${docs.autre.name} <a href="${docs.autre.data}" download="${docs.autre.name}" style="color: #667eea; margin-left: 10px;">📥 Télécharger</a>`;
+                            `✅ Document existant: ${docs.autre.name} <a href="${docs.autre.data}" download="${docs.autre.name}" style="color: #2A90A8; margin-left: 10px;">📥 Télécharger</a>`;
                     }
                 } catch (e) {
                     console.error('Erreur parsing documents:', e);
@@ -2656,7 +2656,7 @@
             
             return `
                 <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white;">
-                    <div style="background: #667eea; color: white; padding: 0.75rem 1rem; font-weight: bold;">
+                    <div style="background: #2A90A8; color: white; padding: 0.75rem 1rem; font-weight: bold;">
                         ${title}
                     </div>
                     <div style="padding: 1rem;">
@@ -2715,9 +2715,9 @@
             
             if (file) {
                 preview.innerHTML = `
-                    <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px dashed #667eea; text-align: center;">
+                    <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px dashed #2A90A8; text-align: center;">
                         <div style="font-size: 2rem; margin-bottom: 0.5rem;">📷</div>
-                        <div style="font-weight: bold; color: #667eea;">Fichier sélectionné:</div>
+                        <div style="font-weight: bold; color: #2A90A8;">Fichier sélectionné:</div>
                         <div style="color: #333; margin-top: 0.5rem;">${file.name}</div>
                         <div style="color: #666; font-size: 0.9rem; margin-top: 0.3rem;">${(file.size / 1024).toFixed(2)} KB</div>
                     </div>
@@ -2799,8 +2799,8 @@
             
             // Afficher l'image actuelle
             document.getElementById('editCarModalImagePreview').innerHTML = `
-                <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px solid #667eea; text-align: center;">
-                    <div style="font-weight: bold; color: #667eea; margin-bottom: 0.5rem;">Image actuelle:</div>
+                <div style="background: #f0f7ff; padding: 1rem; border-radius: 8px; border: 2px solid #2A90A8; text-align: center;">
+                    <div style="font-weight: bold; color: #2A90A8; margin-bottom: 0.5rem;">Image actuelle:</div>
                     <img src="${car.image}" alt="${car.name}" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     <div style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Sélectionnez une nouvelle image pour la remplacer</div>
                 </div>
@@ -2984,7 +2984,7 @@
                     let detailsHTML = `
                         <div style="margin-bottom:0.8rem;">
                             <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Tarif journalier:</div>
-                            <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                            <div style="font-size:1.1rem; font-weight:600; color:#2A90A8;">${carPrice}€</div>
                         </div>
                         <div style="margin-bottom:0.8rem;">
                             <div style="font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.3rem;">Prix total:</div>
@@ -2993,7 +2993,7 @@
                     `;
                     
                     // Détail jour par jour
-                    detailsHTML += `<div style="font-weight:600; font-size:0.8rem; color:#667eea; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
+                    detailsHTML += `<div style="font-weight:600; font-size:0.8rem; color:#2A90A8; margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">📊 Détail par jour</div>`;
                     
                     result.breakdown.forEach(day => {
                         const dayName = new Date(day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
@@ -3027,7 +3027,7 @@
             document.getElementById('editPriceDetails').innerHTML = `
                 <div style="margin-bottom:0.5rem;">
                     <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Tarif journalier:</div>
-                    <div style="font-size:1.1rem; font-weight:600; color:#667eea;">${carPrice}€</div>
+                    <div style="font-size:1.1rem; font-weight:600; color:#2A90A8;">${carPrice}€</div>
                 </div>
                 <div style="margin-bottom:0.5rem;">
                     <div style="font-size:0.75rem; color:#666; margin-bottom:0.3rem;">Prix total:</div>

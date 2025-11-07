@@ -6,99 +6,99 @@
     <title></title>
     <style>
         /* ================================
-           THEME VARIABLES - Dark/Light Mode
+           THEME VARIABLES - Ocean Breeze Light Theme
            ================================ */
         
-        /* Variables CSS pour le thème Light (par défaut) */
+        /* Variables CSS pour le thème Light (par défaut) - Ocean Breeze */
         :root {
-            /* Couleurs de base */
-            --bg-primary: #f8f9fa;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #f1f3f5;
+            /* Couleurs de base - Ocean Breeze */
+            --bg-primary: #F6FBFD;
+            --bg-secondary: #E9F5F8;
+            --bg-tertiary: #E9F5F8;
             
             /* Couleurs de texte */
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --text-muted: #999999;
+            --text-primary: #0A2F35;
+            --text-secondary: #6B858C;
+            --text-muted: #6B858C;
             
             /* Couleurs d'accentuation */
-            --accent-primary: #3498db;
-            --accent-secondary: #2c3e50;
+            --accent-primary: #2A90A8;
+            --accent-secondary: #7CC6D7;
             
             /* Header gradient */
-            --header-gradient-start: #2c3e50;
-            --header-gradient-end: #3498db;
+            --header-gradient-start: #2A90A8;
+            --header-gradient-end: #7CC6D7;
             
             /* Cards et surfaces */
-            --card-bg: #ffffff;
-            --card-border: #e9ecef;
-            --card-shadow: rgba(0, 0, 0, 0.1);
+            --card-bg: #E9F5F8;
+            --card-border: #D7E9EE;
+            --card-shadow: rgba(42, 144, 168, 0.1);
             
             /* Inputs et forms */
-            --input-bg: #ffffff;
-            --input-border: #ced4da;
-            --input-focus-border: #3498db;
+            --input-bg: #FFFFFF;
+            --input-border: #D7E9EE;
+            --input-focus-border: #2A90A8;
             
             /* Boutons */
-            --btn-primary-bg: #3498db;
-            --btn-primary-hover: #2980b9;
-            --btn-danger-bg: #e74c3c;
-            --btn-danger-hover: #c0392b;
+            --btn-primary-bg: #2A90A8;
+            --btn-primary-hover: #1f6d82;
+            --btn-danger-bg: #D05B5B;
+            --btn-danger-hover: #b34545;
             
             /* Modals */
-            --modal-bg: #ffffff;
-            --modal-overlay: rgba(0, 0, 0, 0.5);
+            --modal-bg: #E9F5F8;
+            --modal-overlay: rgba(4, 40, 49, 0.5);
             
             /* Sidebar */
-            --sidebar-bg: #ffffff;
+            --sidebar-bg: #E9F5F8;
             
             /* Tables */
-            --table-header-bg: #f8f9fa;
-            --table-row-hover: #f1f3f5;
+            --table-header-bg: #E9F5F8;
+            --table-row-hover: #F6FBFD;
         }
         
         /* Variables CSS pour le thème Dark */
         body.dark-theme {
             /* Couleurs de base */
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2d2d2d;
-            --bg-tertiary: #3a3a3a;
+            --bg-primary: #042831;
+            --bg-secondary: #0A2F35;
+            --bg-tertiary: #0f3a42;
             
             /* Couleurs de texte */
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --text-muted: #808080;
+            --text-primary: #E9F5F8;
+            --text-secondary: #7CC6D7;
+            --text-muted: #6B858C;
             
             /* Couleurs d'accentuation */
-            --accent-primary: #4da6e0;
-            --accent-secondary: #3d5a80;
+            --accent-primary: #2A90A8;
+            --accent-secondary: #7CC6D7;
             
             /* Header gradient */
-            --header-gradient-start: #1e2a38;
-            --header-gradient-end: #2c5282;
+            --header-gradient-start: #0A2F35;
+            --header-gradient-end: #2A90A8;
             
             /* Cards et surfaces */
-            --card-bg: #2d2d2d;
-            --card-border: #404040;
+            --card-bg: #0A2F35;
+            --card-border: #1a4a55;
             --card-shadow: rgba(0, 0, 0, 0.4);
             
             /* Inputs et forms */
-            --input-bg: #3a3a3a;
-            --input-border: #555555;
-            --input-focus-border: #4da6e0;
+            --input-bg: #0f3a42;
+            --input-border: #1a4a55;
+            --input-focus-border: #2A90A8;
             
             /* Boutons */
-            --btn-primary-bg: #4da6e0;
-            --btn-primary-hover: #3d8bc4;
-            --btn-danger-bg: #e05555;
-            --btn-danger-hover: #c44444;
+            --btn-primary-bg: #2A90A8;
+            --btn-primary-hover: #7CC6D7;
+            --btn-danger-bg: #D05B5B;
+            --btn-danger-hover: #b34545;
             
             /* Modals */
-            --modal-bg: #2d2d2d;
-            --modal-overlay: rgba(0, 0, 0, 0.8);
+            --modal-bg: #0A2F35;
+            --modal-overlay: rgba(4, 40, 49, 0.8);
             
             /* Sidebar */
-            --sidebar-bg: #2d2d2d;
+            --sidebar-bg: #0A2F35;
             
             /* Tables */
             --table-header-bg: #3a3a3a;
@@ -129,10 +129,10 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             padding: 0.75rem 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 20px rgba(42, 144, 168, 0.15);
             z-index: 1000;
             backdrop-filter: blur(10px);
         }
@@ -370,7 +370,7 @@
         .search-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -383,7 +383,7 @@
 
         .search-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(42, 144, 168, 0.4);
         }
 
         .reset-btn {
@@ -405,7 +405,7 @@
         .seed-btn {
             width: 100%;
             padding: 0.8rem;
-            background: linear-gradient(135deg, #FFA500 0%, #FF7A00 100%);
+            background: linear-gradient(135deg, #E7A84B 0%, #d99535 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -417,22 +417,22 @@
         }
 
         .seed-btn:hover {
-            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+            box-shadow: 0 5px 15px rgba(231, 168, 75, 0.4);
             transform: translateY(-2px);
         }
 
         .availability-info {
-            background: #f8f9fa;
+            background: #E9F5F8;
             border-radius: 8px;
             padding: 1rem;
             margin-top: 1.5rem;
             font-size: 0.9rem;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #2A90A8;
             transition: all 0.3s ease;
         }
 
         .availability-info h4 {
-            color: #667eea;
+            color: #2A90A8;
             margin-bottom: 0.5rem;
             font-size: 1rem;
         }
@@ -608,7 +608,7 @@
         }
 
         .calculate-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #4CAF78 0%, #3a9260 100%);
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -621,7 +621,7 @@
 
         .calculate-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 4px 12px rgba(76, 175, 120, 0.3);
         }
 
         .price-details {
@@ -662,18 +662,18 @@
         }
 
         .price-line.total {
-            border-top: 2px solid #dee2e6;
+            border-top: 2px solid #D7E9EE;
             margin-top: 0.5rem;
             padding-top: 1rem;
             font-size: 1.1rem;
-            color: #28a745;
+            color: #4CAF78;
         }
 
         .price-calendar {
             background: white;
             border-radius: 6px;
             padding: 1rem;
-            border: 1px solid #e9ecef;
+            border: 1px solid #D7E9EE;
             max-height: 200px;
             overflow-y: auto;
         }
@@ -689,18 +689,18 @@
         }
 
         .calendar-day.normal {
-            background: #e8f5e8;
-            border-left: 3px solid #28a745;
+            background: #e8f5f8;
+            border-left: 3px solid #4CAF78;
         }
 
         .calendar-day.weekend {
-            background: #fff3cd;
-            border-left: 3px solid #fd7e14;
+            background: #fef5ec;
+            border-left: 3px solid #E7A84B;
         }
 
         .calendar-day.high-season {
-            background: #f8d7da;
-            border-left: 3px solid #dc3545;
+            background: #ffe8e8;
+            border-left: 3px solid #D05B5B;
         }
 
         .calendar-day.holiday {
@@ -738,12 +738,12 @@
         .page-title h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            color: #667eea;
+            color: #2A90A8;
         }
 
         .page-title p {
             font-size: 1.1rem;
-            color: #666;
+            color: #6B858C;
         }
 
         /* Message d'excuse */
@@ -754,30 +754,30 @@
         }
 
         .apologize-card {
-            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
-            border: 2px solid #f56565;
+            background: linear-gradient(135deg, #ffe8e8 0%, #ffd5d5 100%);
+            border: 2px solid #D05B5B;
             border-radius: 15px;
             padding: 2rem;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(245, 101, 101, 0.2);
+            box-shadow: 0 5px 20px rgba(208, 91, 91, 0.2);
             animation: apologizeSlide 0.6s ease-out;
         }
 
         .apologize-card h3 {
-            color: #c53030;
+            color: #D05B5B;
             font-size: 1.4rem;
             margin-bottom: 1rem;
         }
 
         .apologize-card p {
-            color: #744210;
+            color: #0A2F35;
             margin-bottom: 0.8rem;
             font-size: 1rem;
             line-height: 1.5;
         }
 
         .apologize-card a {
-            color: #667eea;
+            color: #2A90A8;
             text-decoration: none;
             font-weight: bold;
         }
@@ -876,19 +876,19 @@
         }
 
         .status-available {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #e8f8f0;
+            color: #4CAF78;
         }
 
         .status-reserved {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #ffe8e8;
+            color: #D05B5B;
         }
 
         .reserve-btn {
             width: 100%;
             padding: 0.8rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -900,11 +900,11 @@
 
         .reserve-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(42, 144, 168, 0.4);
         }
 
         .reserve-btn:disabled {
-            background: #6c757d;
+            background: #6B858C;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -912,7 +912,7 @@
 
         /* Footer professionnel */
         .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #0A2F35 0%, #042831 100%);
             color: white;
             padding: 3rem 0 1.5rem 0;
             margin-top: auto;
@@ -932,7 +932,7 @@
         }
 
         .footer-section h3 {
-            color: #3498db;
+            color: #7CC6D7;
             margin-bottom: 1rem;
             font-size: 1.2rem;
             font-weight: 600;
@@ -954,7 +954,7 @@
         }
 
         .footer-section a:hover {
-            color: #3498db;
+            color: #7CC6D7;
         }
 
         .footer-section p {
@@ -983,7 +983,7 @@
         }
 
         .social-links a:hover {
-            background: #3498db;
+            background: #2A90A8;
             transform: translateY(-2px);
         }
 
@@ -996,7 +996,7 @@
         }
 
         .footer-bottom a {
-            color: #3498db;
+            color: #7CC6D7;
             text-decoration: none;
         }
 
@@ -1155,13 +1155,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(42, 144, 168, 0.4);
         }
 
         .btn-secondary {
@@ -1588,7 +1588,7 @@
     <header class="header">
         <div class="header-content">
             <!-- Logo centré -->
-            <a href="#" class="logo">FandiApp</a>
+            <a href="#" class="logo">FANDIAUTO</a>
             
             <!-- Contact à droite + Theme Toggle -->
             <div class="header-right">
@@ -1654,7 +1654,7 @@
                             <h3>🚗 Nous nous excusons</h3>
                             <p>Toutes nos voitures sont actuellement <strong>réservées pour aujourd'hui</strong> (28/10/2025).</p>
                             <p>📅 Veuillez utiliser notre <strong>recherche par dates</strong> pour voir la disponibilité à partir de <strong>demain</strong>.</p>
-                            <p>📞 Pour toute urgence, contactez-nous au <a href="tel:+212677889988"><strong>+212 6 77 88 99 88</strong></a></p>
+                            <p>📞 Pour toute urgence, contactez-nous au <a href="tel:+213771391480"><strong>+213 771 39 14 80</strong></a></p>
                         </div>
                     </div>
                 </section>
@@ -1774,23 +1774,23 @@
             
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p>📍 123 Avenue Mohammed V, Casablanca</p>
-                <p>📞 <a href="tel:+212677889988">+212 6 77 88 99 88</a></p>
-                <p>✉️ <a href="mailto:contact@fandirent.ma">contact@fandirent.ma</a></p>
+                <p>📍 47 Riat Makhoukh, mansourah Tlemcen 13000 Algérie</p>
+                <p>📞 <a href="tel:+213771391480">+213 771 39 14 80</a></p>
+                <p>✉️ <a href="mailto:contact@fandiauto.dz">contact@fandiauto.dz</a></p>
                 <p>🕒 Lun-Dim: 8h00 - 20h00</p>
                 
                 <div class="social-links">
-                    <a href="https://facebook.com/fandirent" target="_blank" title="Facebook">📘</a>
-                    <a href="https://instagram.com/fandirent" target="_blank" title="Instagram">📷</a>
-                    <a href="https://wa.me/212677889988?text=Bonjour,%20je%20souhaite%20louer%20une%20voiture" target="_blank" title="WhatsApp">💬</a>
-                    <a href="https://linkedin.com/company/fandirent" target="_blank" title="LinkedIn">💼</a>
+                    <a href="https://facebook.com/fandiauto" target="_blank" title="Facebook">📘</a>
+                    <a href="https://instagram.com/fandiauto" target="_blank" title="Instagram">📷</a>
+                    <a href="https://wa.me/213771391480?text=Bonjour,%20je%20souhaite%20louer%20une%20voiture" target="_blank" title="WhatsApp">💬</a>
+                    <a href="https://linkedin.com/company/fandiauto" target="_blank" title="LinkedIn">💼</a>
                 </div>
             </div>
 
             
             <div class="footer-section">
-                <h3>FandiRent</h3>
-                <p>Leader de la location de véhicules au Maroc depuis 2020. Notre flotte moderne et nos services personnalisés garantissent votre satisfaction.</p>
+                <h3>FANDIAUTO</h3>
+                <p>Leader de la location de véhicules en Algérie depuis 2020. Notre flotte moderne et nos services personnalisés garantissent votre satisfaction.</p>
                 <ul>
                     <li><a href="apropos.html">Notre histoire</a></li>
                     <li><a href="apropos.html">Notre équipe</a></li>
@@ -1801,7 +1801,7 @@
         </div>
                 -->
         <div class="footer-bottom">
-            <p>&copy; 2025 FandiRent - Tous droits réservés</p>
+            <p>&copy; 2025 FANDIAUTO - Tous droits réservés</p>
         </div>
     </footer>
 
@@ -1908,7 +1908,7 @@
     <div id="quickReservationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2500;">
         <div style="background:#ffffff; width:94%; max-width:400px; margin:6% auto; padding:1.4rem 1.6rem 1.6rem; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25); position:relative; font-family:Arial,sans-serif;">
             <button id="quickCloseBtn" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
-            <h3 style="margin:0 0 1rem 0; color:#667eea; font-size:1.25rem; font-weight:700;">⚡ Réservation</h3>
+            <h3 style="margin:0 0 1rem 0; color:#2A90A8; font-size:1.25rem; font-weight:700;">⚡ Réservation</h3>
             <div style="display:flex; flex-direction:column; gap:.95rem;">
                 <div>
                     <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Véhicule</label>
@@ -1956,7 +1956,7 @@
                     
                     <!-- Détail jour par jour (pour Clio 5) -->
                     <div id="quickBreakdown" style="display:none; margin-top:.8rem; padding-top:.8rem; border-top:2px solid #e9ecef;">
-                        <div style="font-weight:600; font-size:.8rem; color:#667eea; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.5px;">📊 Détail par jour</div>
+                        <div style="font-weight:600; font-size:.8rem; color:#2A90A8; margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.5px;">📊 Détail par jour</div>
                         <div id="quickBreakdownDays" style="max-height:150px; overflow-y:auto;">
                             <!-- Rempli dynamiquement -->
                         </div>
@@ -1965,7 +1965,7 @@
                 <div id="quickError" style="display:none; background:#f8d7da; color:#721c24; padding:.55rem .7rem; border-radius:8px; font-size:.75rem; font-weight:600;"></div>
                 <div style="display:flex; gap:.75rem; margin-top:.2rem;">
                     <button type="button" id="quickCancelBtn" style="flex:1; padding:.65rem .9rem; background:#6c757d; color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer;">Annuler</button>
-                    <button type="button" id="quickPayBtn" style="flex:1; padding:.65rem .9rem; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer;">Aller au paiement →</button>
+                    <button type="button" id="quickPayBtn" style="flex:1; padding:.65rem .9rem; background:linear-gradient(135deg,#2A90A8 0%,#7CC6D7 100%); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer;">Aller au paiement →</button>
                 </div>
             </div>
         </div>
@@ -2159,7 +2159,7 @@
             img.onerror = function() {
                 // L'image n'existe pas, afficher un placeholder
                 carImageDiv.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 1.2rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 1.2rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);">
                         <span style="color: white; font-weight: bold;">� ${car.name}</span>
                     </div>
                 `;
@@ -2489,7 +2489,7 @@
                     endDate,
                     customerName,
                     customerEmail,
-                    customerPhone: '+212 6 00 00 00 00', // Valeur par défaut
+                    customerPhone: '+213 771 39 14 80', // Valeur par défaut
                     totalPrice,
                     createdAt: new Date().toISOString()
                 };
@@ -3148,14 +3148,14 @@
                     position: fixed;
                     top: 20px;
                     right: 20px;
-                    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                    background: linear-gradient(135deg, #4CAF78 0%, #3a9260 100%);
                     color: white;
                     padding: 0.8rem 1.2rem;
                     border-radius: 25px;
                     font-size: 0.85rem;
                     font-weight: 600;
                     z-index: 1001;
-                    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+                    box-shadow: 0 4px 15px rgba(76, 175, 120, 0.4);
                     transform: translateX(300px);
                     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
                     display: flex;
@@ -3635,14 +3635,14 @@
                 encouragementDiv = document.createElement('div');
                 encouragementDiv.id = 'encouragementMessage';
                 encouragementDiv.style.cssText = `
-                    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+                    background: linear-gradient(135deg, #E7A84B 0%, #d99535 100%);
                     color: white;
                     padding: 0.8rem;
                     border-radius: 8px;
                     margin: 1rem 0;
                     text-align: center;
                     font-weight: 600;
-                    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+                    box-shadow: 0 4px 15px rgba(231, 168, 75, 0.3);
                 `;
                 
                 // Insérer après le résumé de prix
