@@ -22,11 +22,19 @@ if (process.env.DATABASE_URL) {
 } else {
   // Development: Use SQLite
   console.log('📁 Using SQLite database');
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: process.env.SQLITE_STORAGE || 'fandicars.db',
-    logging: false,
-  });
+  try {
+    // Try to load sqlite3, it might not be available in production
+    require('sqlite3');
+    sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: process.env.SQLITE_STORAGE || 'fandicars.db',
+      logging: false,
+    });
+  } catch (error) {
+    console.error('⚠️ SQLite3 not available and DATABASE_URL not set');
+    console.error('Please set DATABASE_URL environment variable for PostgreSQL');
+    process.exit(1);
+  }
 }
 
 const Car = require('./car')(sequelize);
