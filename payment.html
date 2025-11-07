@@ -467,6 +467,14 @@
 
                 <div class="summary-grid">
                     <div class="summary-item">
+                        <label>🏢 Agence de départ</label>
+                        <strong id="departureAgency">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <label>🏢 Agence de retour</label>
+                        <strong id="returnAgency">-</strong>
+                    </div>
+                    <div class="summary-item">
                         <label>📅 Date de début</label>
                         <strong id="startDate">-</strong>
                     </div>
@@ -482,6 +490,13 @@
                         <label>💵 Prix/jour</label>
                         <strong id="pricePerDay">-</strong>
                     </div>
+                </div>
+                
+                <!-- Message d'information sur le trajet -->
+                <div id="tripInfo" style="display:none; margin-top:1rem; padding:0.8rem; background:#fff3cd; border-left:4px solid #ffc107; border-radius:8px;">
+                    <p style="margin:0; color:#856404; font-size:0.85rem; font-weight:600;">
+                        ℹ️ <span id="tripInfoText"></span>
+                    </p>
                 </div>
 
                 <div class="total-price">
@@ -579,7 +594,9 @@
             startDate: urlParams.get('start'),
             endDate: urlParams.get('end'),
             days: parseInt(urlParams.get('days')) || 0,
-            total: parseFloat(urlParams.get('total')) || 0
+            total: parseFloat(urlParams.get('total')) || 0,
+            departureAgency: urlParams.get('departureAgency') || '',
+            returnAgency: urlParams.get('returnAgency') || ''
         };
 
         // Charger les données de la voiture
@@ -618,6 +635,34 @@
 
         // Afficher les informations de réservation
         function displayReservationInfo() {
+            const depAgency = reservationData.departureAgency || 'Non spécifié';
+            const retAgency = reservationData.returnAgency || 'Non spécifié';
+            
+            document.getElementById('departureAgency').textContent = depAgency;
+            document.getElementById('returnAgency').textContent = retAgency;
+            
+            // Ajouter une indication si les agences sont différentes
+            if (depAgency !== 'Non spécifié' && retAgency !== 'Non spécifié' && depAgency !== retAgency) {
+                const returnAgencyElement = document.getElementById('returnAgency');
+                const parentDiv = returnAgencyElement.closest('.summary-item');
+                parentDiv.style.borderLeft = '4px solid #ffc107';
+                parentDiv.innerHTML += '<small style="display:block; margin-top:0.3rem; color:#856404; font-size:0.75rem;">⚠️ Retour à une agence différente</small>';
+                
+                // Afficher le message d'information sur le trajet
+                const tripInfo = document.getElementById('tripInfo');
+                const tripInfoText = document.getElementById('tripInfoText');
+                tripInfoText.textContent = `Vous récupérez le véhicule à ${depAgency} et le retournez à ${retAgency}. Des frais supplémentaires peuvent s'appliquer.`;
+                tripInfo.style.display = 'block';
+            } else if (depAgency !== 'Non spécifié' && retAgency !== 'Non spécifié' && depAgency === retAgency) {
+                const tripInfo = document.getElementById('tripInfo');
+                const tripInfoText = document.getElementById('tripInfoText');
+                tripInfoText.textContent = `Vous récupérez et retournez le véhicule à ${depAgency}.`;
+                tripInfo.style.display = 'block';
+                tripInfo.style.background = '#d4edda';
+                tripInfo.style.borderLeft = '4px solid #28a745';
+                tripInfoText.style.color = '#155724';
+            }
+            
             document.getElementById('startDate').textContent = formatDate(reservationData.startDate);
             document.getElementById('endDate').textContent = formatDate(reservationData.endDate);
             document.getElementById('duration').textContent = `${reservationData.days} jour${reservationData.days > 1 ? 's' : ''}`;
@@ -698,6 +743,8 @@
                     carId: reservationData.carId,
                     startDate: reservationData.startDate,
                     endDate: reservationData.endDate,
+                    departureAgency: reservationData.departureAgency,
+                    returnAgency: reservationData.returnAgency,
                     customerName: customerName,
                     customerEmail: customerEmail,
                     customerPhone: customerPhone || '+213 771 39 14 80',
@@ -743,8 +790,13 @@
                 } else if (paymentMethod === 'transfer') {
                     // Afficher les informations de virement
                     showAlert('✅ Réservation créée! Vous allez recevoir les coordonnées bancaires par email.', 'success');
+                    
+                    const agencyInfo = reservationData.departureAgency && reservationData.returnAgency 
+                        ? `\n🏢 Départ: ${reservationData.departureAgency}\n🏢 Retour: ${reservationData.returnAgency}` 
+                        : '';
+                    
                     setTimeout(() => {
-                        alert(`Réservation confirmée!\n\nVous recevrez un email à ${customerEmail} avec:\n- Coordonnées bancaires\n- Référence de paiement\n- Instructions de virement\n\nVotre réservation sera validée dès réception du paiement.`);
+                        alert(`Réservation confirmée!\n\nVous recevrez un email à ${customerEmail} avec:\n- Coordonnées bancaires\n- Référence de paiement\n- Instructions de virement${agencyInfo}\n\nVotre réservation sera validée dès réception du paiement.`);
                         window.location.href = 'index.html';
                     }, 2000);
                 } else {
@@ -752,8 +804,13 @@
                     console.log('🎯 Mode paiement ultérieur - Affichage du message');
                     showAlert('✅ Réservation enregistrée avec succès!', 'success');
                     
+                    // Préparer le texte avec les agences
+                    const agencyInfo = reservationData.departureAgency && reservationData.returnAgency 
+                        ? `\n🏢 Départ: ${reservationData.departureAgency}\n🏢 Retour: ${reservationData.returnAgency}` 
+                        : '';
+                    
                     // Alert bloque l'exécution, donc la redirection se fera après que l'utilisateur clique OK
-                    alert(`🙏 Merci pour votre confiance!\n\n✅ Votre réservation a été enregistrée avec succès.\n\nNous vous appellerons le plus tôt possible pour finaliser votre réservation.\n\n📧 Email: ${customerEmail}\n📞 Téléphone: ${customerPhone || 'Non fourni'}\n\nÀ très bientôt! 🚗`);
+                    alert(`🙏 Merci pour votre confiance!\n\n✅ Votre réservation a été enregistrée avec succès.\n\nNous vous appellerons le plus tôt possible pour finaliser votre réservation.${agencyInfo}\n\n📧 Email: ${customerEmail}\n📞 Téléphone: ${customerPhone || 'Non fourni'}\n\nÀ très bientôt! 🚗`);
                     
                     console.log('🔄 Redirection vers index.html');
                     // Redirection immédiate après que l'utilisateur ferme l'alert

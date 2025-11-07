@@ -1592,6 +1592,16 @@
                             <!-- Aperçu de l'image -->
                         </div>
                     </div>
+
+                    <div class="modal-form-group">
+                        <label>📍 Agence de localisation *</label>
+                        <select id="newCarLocationAgency" required>
+                            <option value="">-- Sélectionnez --</option>
+                            <option value="Aéroport Tlemcen">Aéroport Tlemcen</option>
+                            <option value="Aéroport Oran">Aéroport Oran</option>
+                            <option value="Agence Tlemcen">Agence Tlemcen</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -1632,6 +1642,16 @@
                         <div id="editCarModalImagePreview" style="margin-top: 1rem; text-align: center;">
                             <!-- Aperçu de l'image actuelle -->
                         </div>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📍 Agence de localisation *</label>
+                        <select id="editCarModalLocationAgency" required>
+                            <option value="">-- Sélectionnez --</option>
+                            <option value="Aéroport Tlemcen">Aéroport Tlemcen</option>
+                            <option value="Aéroport Oran">Aéroport Oran</option>
+                            <option value="Agence Tlemcen">Agence Tlemcen</option>
+                        </select>
                     </div>
                 </div>
 
@@ -2792,8 +2812,9 @@
             const name = document.getElementById('newCarName').value.trim();
             const price = parseFloat(document.getElementById('newCarPrice').value);
             const imageFile = document.getElementById('newCarImage').files[0];
+            const locationAgency = document.getElementById('newCarLocationAgency').value;
 
-            if (!name || !price || !imageFile) {
+            if (!name || !price || !imageFile || !locationAgency) {
                 showStatus('Veuillez remplir tous les champs!', 'error');
                 return;
             }
@@ -2812,7 +2833,8 @@
                         body: JSON.stringify({
                             name: name,
                             price: price,
-                            image: imageBase64
+                            image: imageBase64,
+                            locationAgency: locationAgency
                         })
                     });
 
@@ -2853,6 +2875,7 @@
             document.getElementById('editCarModalId').value = car.id;
             document.getElementById('editCarModalName').value = car.name;
             document.getElementById('editCarModalPrice').value = car.price;
+            document.getElementById('editCarModalLocationAgency').value = car.locationAgency || '';
             document.getElementById('editCarModalImage').value = '';
             
             // Afficher l'image actuelle
@@ -2896,11 +2919,12 @@
             const carId = document.getElementById('editCarModalId').value;
             const name = document.getElementById('editCarModalName').value.trim();
             const price = parseFloat(document.getElementById('editCarModalPrice').value);
+            const locationAgency = document.getElementById('editCarModalLocationAgency').value;
             const imageFile = document.getElementById('editCarModalImage').files[0];
 
-            console.log('🔧 Modification voiture:', { carId, name, price, hasImage: !!imageFile });
+            console.log('🔧 Modification voiture:', { carId, name, price, locationAgency, hasImage: !!imageFile });
 
-            if (!name || !price) {
+            if (!name || !price || !locationAgency) {
                 showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
                 return;
             }
@@ -2908,7 +2932,8 @@
             // Préparer les données de mise à jour
             const updateData = {
                 name: name,
-                price: price
+                price: price,
+                locationAgency: locationAgency
             };
 
             // Si une nouvelle image a été sélectionnée, la convertir en base64

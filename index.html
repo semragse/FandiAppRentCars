@@ -1977,14 +1977,32 @@
     </div>
 
     <!-- Popup rapide de réservation (simplifié pour paiement) -->
-    <div id="quickReservationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2500;">
-        <div style="background:#ffffff; width:94%; max-width:400px; margin:6% auto; padding:1.4rem 1.6rem 1.6rem; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25); position:relative; font-family:Arial,sans-serif;">
-            <button id="quickCloseBtn" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
+    <div id="quickReservationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2500; overflow-y:auto;">
+        <div style="background:#ffffff; width:94%; max-width:400px; margin:6% auto 6% auto; padding:1.4rem 1.6rem 1.6rem; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25); position:relative; font-family:Arial,sans-serif; max-height:90vh; overflow-y:auto;">
+            <button id="quickCloseBtn" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666; z-index:10;">&times;</button>
             <h3 style="margin:0 0 1rem 0; color:#2A90A8; font-size:1.25rem; font-weight:700;">⚡ Réservation</h3>
             <div style="display:flex; flex-direction:column; gap:.95rem;">
                 <div>
                     <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Véhicule</label>
                     <div id="quickCarName" style="margin-top:.35rem; background:#f8f9fa; border:2px solid #e9ecef; border-radius:10px; padding:.65rem .75rem; font-weight:600; font-size:.9rem; color:#333;">-</div>
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Agence de Départ</label>
+                    <select id="quickDepartureAgency" style="margin-top:.35rem; width:100%; padding:.55rem .6rem; border:2px solid #e9ecef; border-radius:10px; font-size:.85rem; background:#fff; cursor:pointer;" required>
+                        <option value="" disabled selected>Choisir une agence</option>
+                        <option value="Aéroport Tlemcen">Aéroport Tlemcen</option>
+                        <option value="Aéroport Oran">Aéroport Oran</option>
+                        <option value="Agence Tlemcen">Agence Tlemcen</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:.75rem; letter-spacing:.5px; color:#555; text-transform:uppercase;">Agence de Retour</label>
+                    <select id="quickReturnAgency" style="margin-top:.35rem; width:100%; padding:.55rem .6rem; border:2px solid #e9ecef; border-radius:10px; font-size:.85rem; background:#fff; cursor:pointer;" required>
+                        <option value="" disabled selected>Choisir une agence</option>
+                        <option value="Aéroport Tlemcen">Aéroport Tlemcen</option>
+                        <option value="Aéroport Oran">Aéroport Oran</option>
+                        <option value="Agence Tlemcen">Agence Tlemcen</option>
+                    </select>
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:.85rem;">
                     <div>
@@ -2055,7 +2073,9 @@
         // Variables pour la recherche active
         let currentSearchDates = {
             startDate: null,
-            endDate: null
+            endDate: null,
+            departureAgency: null,
+            returnAgency: null
         };
 
         // Base de données des voitures avec réservations (mise à jour: toutes les dates futures)
@@ -2594,7 +2614,23 @@
         document.getElementById('searchAvailability').addEventListener('click', async function() {
             const startDate = document.getElementById('searchStartDate').value;
             const endDate = document.getElementById('searchEndDate').value;
+            const departureAgency = document.getElementById('searchDepartureAgency').value;
+            const returnAgency = document.getElementById('searchReturnAgency').value;
             const today = todayLocal();
+
+            // Validation de l'agence de départ (OBLIGATOIRE)
+            if (!departureAgency) {
+                alert('⚠️ Veuillez sélectionner une agence de départ.');
+                document.getElementById('searchDepartureAgency').focus();
+                return;
+            }
+
+            // Validation de l'agence de retour (OBLIGATOIRE)
+            if (!returnAgency) {
+                alert('⚠️ Veuillez sélectionner une agence de retour.');
+                document.getElementById('searchReturnAgency').focus();
+                return;
+            }
 
             if (!startDate || !endDate) {
                 alert('Veuillez sélectionner les dates de début et de fin.');
@@ -2612,9 +2648,11 @@
                 return;
             }
 
-            // Sauvegarder les dates de recherche
+            // Sauvegarder les dates de recherche ET les agences
             currentSearchDates.startDate = startDate;
             currentSearchDates.endDate = endDate;
+            currentSearchDates.departureAgency = departureAgency;
+            currentSearchDates.returnAgency = returnAgency;
 
             console.log(`🔍 Recherche de disponibilité du ${startDate} au ${endDate} (via API)`);
             
@@ -2644,10 +2682,14 @@
         document.getElementById('resetSearch').addEventListener('click', function() {
             document.getElementById('searchStartDate').value = '';
             document.getElementById('searchEndDate').value = '';
+            document.getElementById('searchDepartureAgency').value = '';
+            document.getElementById('searchReturnAgency').value = '';
             
-            // Réinitialiser les dates de recherche
+            // Réinitialiser les dates de recherche et les agences
             currentSearchDates.startDate = null;
             currentSearchDates.endDate = null;
+            currentSearchDates.departureAgency = null;
+            currentSearchDates.returnAgency = null;
             
             // Réinitialiser l'affichage SANS déclencher les alertes
             resetToDefaultDisplay();
@@ -2740,15 +2782,33 @@
                 const today = todayLocal();
                 const qs = document.getElementById('quickStart');
                 const qe = document.getElementById('quickEnd');
+                const qDep = document.getElementById('quickDepartureAgency');
+                const qRet = document.getElementById('quickReturnAgency');
                 qs.min = today; qe.min = today;
                 if (currentSearchDates.startDate && currentSearchDates.endDate) {
                     qs.value = currentSearchDates.startDate;
                     qe.value = currentSearchDates.endDate;
                 } else { qs.value=''; qe.value=''; }
+                // Pré-remplir les agences depuis la recherche
+                if (currentSearchDates.departureAgency) {
+                    qDep.value = currentSearchDates.departureAgency;
+                } else {
+                    qDep.value = '';
+                }
+                if (currentSearchDates.returnAgency) {
+                    qRet.value = currentSearchDates.returnAgency;
+                } else {
+                    qRet.value = '';
+                }
                 document.getElementById('quickPriceBox').style.display='none';
                 document.getElementById('quickError').style.display='none';
                 quickModal.style.display='block';
                 document.body.style.overflow='hidden';
+                
+                // Calculate and show price if dates are pre-filled
+                if (currentSearchDates.startDate && currentSearchDates.endDate) {
+                    updateQuickPrice();
+                }
             }
         });
 
@@ -2861,7 +2921,26 @@
             const carId = quickModal.getAttribute('data-car-id');
             const startDate = document.getElementById('quickStart').value;
             const endDate = document.getElementById('quickEnd').value;
+            const departureAgency = document.getElementById('quickDepartureAgency').value;
+            const returnAgency = document.getElementById('quickReturnAgency').value;
             const err = document.getElementById('quickError');
+            
+            // Validation de l'agence de départ
+            if (!departureAgency) { 
+                err.textContent='⚠️ Veuillez sélectionner une agence de départ'; 
+                err.style.display='block'; 
+                document.getElementById('quickDepartureAgency').focus();
+                return; 
+            }
+            
+            // Validation de l'agence de retour
+            if (!returnAgency) { 
+                err.textContent='⚠️ Veuillez sélectionner une agence de retour'; 
+                err.style.display='block'; 
+                document.getElementById('quickReturnAgency').focus();
+                return; 
+            }
+            
             if (!startDate || !endDate) { err.textContent='Sélectionnez les dates'; err.style.display='block'; return; }
             if (new Date(startDate) >= new Date(endDate)) { err.textContent='Dates invalides'; err.style.display='block'; return; }
             // Vérifier disponibilité avant paiement
@@ -2884,7 +2963,15 @@
                 }
             }
             
-            const params = new URLSearchParams({ carId, start:startDate, end:endDate, days:String(days), total:String(total) });
+            const params = new URLSearchParams({ 
+                carId, 
+                start: startDate, 
+                end: endDate, 
+                days: String(days), 
+                total: String(total),
+                departureAgency: departureAgency,
+                returnAgency: returnAgency
+            });
             window.location.href = `payment.html?${params.toString()}`;
         });
 

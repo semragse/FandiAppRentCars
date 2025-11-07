@@ -273,7 +273,7 @@ async function seedData() {
 
 (async () => {
   try {
-  await sequelize.sync({ alter: true });
+  await sequelize.sync();
     // Auto-seed if empty
     const carCount = await Car.count();
     if (carCount === 0) {
