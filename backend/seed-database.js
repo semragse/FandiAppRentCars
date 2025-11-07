@@ -21,35 +21,35 @@ async function seedDatabase() {
         name: 'Renault Clio 5',
         price: 250,
         image: 'images/clio5.jpg',
-        locationAgency: 'Aéroport'
+        locationAgency: 'Aéroport Tlemcen'
       },
       {
         id: uuidv4(),
         name: 'Dacia Logan',
         price: 200,
         image: 'images/logan.jpg',
-        locationAgency: 'Centre Ville'
+        locationAgency: 'Aéroport Oran'
       },
       {
         id: uuidv4(),
         name: 'Peugeot 208',
         price: 280,
         image: 'images/peugeot208.jpg',
-        locationAgency: 'Gare'
+        locationAgency: 'Agence Tlemcen'
       },
       {
         id: uuidv4(),
         name: 'Volkswagen Golf',
         price: 350,
         image: 'images/golf.jpg',
-        locationAgency: 'Agence Principale'
+        locationAgency: 'Aéroport Tlemcen'
       },
       {
         id: uuidv4(),
         name: 'Toyota Yaris',
         price: 270,
         image: 'images/yaris.jpg',
-        locationAgency: 'Aéroport'
+        locationAgency: 'Aéroport Oran'
       }
     ];
 
@@ -75,8 +75,8 @@ async function seedDatabase() {
         carId: cars[0].id, // Renault Clio 5
         startDate: getDateString(5),
         endDate: getDateString(8),
-        departureAgency: 'Aéroport',
-        returnAgency: 'Centre Ville',
+        departureAgency: 'Aéroport Tlemcen',
+        returnAgency: 'Agence Tlemcen',
         customerName: 'Ahmed Bennani',
         customerEmail: 'ahmed.bennani@email.com',
         customerPhone: '0661234567',
@@ -92,8 +92,8 @@ async function seedDatabase() {
         carId: cars[1].id, // Dacia Logan
         startDate: getDateString(10),
         endDate: getDateString(17),
-        departureAgency: 'Centre Ville',
-        returnAgency: 'Gare',
+        departureAgency: 'Agence Tlemcen',
+        returnAgency: 'Aéroport Oran',
         customerName: 'Fatima Alaoui',
         customerEmail: 'fatima.alaoui@email.com',
         customerPhone: '0662345678',
@@ -109,8 +109,8 @@ async function seedDatabase() {
         carId: cars[2].id, // Peugeot 208
         startDate: getDateString(3),
         endDate: getDateString(5),
-        departureAgency: 'Gare',
-        returnAgency: 'Gare',
+        departureAgency: 'Aéroport Oran',
+        returnAgency: 'Aéroport Oran',
         customerName: 'Youssef El Amrani',
         customerEmail: 'youssef.amrani@email.com',
         customerPhone: '0663456789',
@@ -127,8 +127,8 @@ async function seedDatabase() {
         carId: cars[3].id, // Volkswagen Golf
         startDate: getDateString(15),
         endDate: getDateString(22),
-        departureAgency: 'Agence Principale',
-        returnAgency: 'Aéroport',
+        departureAgency: 'Agence Tlemcen',
+        returnAgency: 'Aéroport Tlemcen',
         customerName: 'Khalid Tazi',
         customerEmail: 'khalid.tazi@email.com',
         customerPhone: '0664567890',
@@ -144,8 +144,8 @@ async function seedDatabase() {
         carId: cars[4].id, // Toyota Yaris
         startDate: getDateString(7),
         endDate: getDateString(10),
-        departureAgency: 'Aéroport',
-        returnAgency: 'Aéroport',
+        departureAgency: 'Aéroport Oran',
+        returnAgency: 'Aéroport Oran',
         customerName: 'Samira Idrissi',
         customerEmail: 'samira.idrissi@email.com',
         customerPhone: '0665678901',
