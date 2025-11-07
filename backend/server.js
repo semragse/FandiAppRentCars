@@ -12,6 +12,14 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Add cache control headers to prevent caching issues
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // Simple health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -128,7 +136,7 @@ app.get('/reservations', async (req, res) => {
 // Add a reservation with overlap validation
 app.post('/reservations', async (req, res) => {
   try {
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency } = req.body;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail || !departureAgency || !returnAgency) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -146,19 +154,31 @@ app.post('/reservations', async (req, res) => {
     }
 
     // Overlap validation: (start <= existing.end) AND (end >= existing.start)
+    // Seulement vérifier les réservations acceptées (ignorer pending et refused)
     const overlaps = await Reservation.findAll({
       where: {
         carId,
+        status: 'accepted' // Vérifier uniquement les réservations confirmées
       }
     });
+    
+    console.log('🔍 Checking overlap for car:', carId);
+    console.log('📅 New reservation:', { start: start.toISOString(), end: end.toISOString() });
+    console.log('📋 Existing accepted reservations:', overlaps.length);
+    
     const conflict = overlaps.some(r => {
       const rStart = new Date(r.startDate);
       const rEnd = new Date(r.endDate);
-      return start <= rEnd && end >= rStart;
+      const overlaps = start <= rEnd && end >= rStart;
+      console.log(`  - Existing: ${rStart.toISOString().split('T')[0]} to ${rEnd.toISOString().split('T')[0]} | Overlap: ${overlaps}`);
+      return overlaps;
     });
+    
     if (conflict) {
+      console.log('❌ Conflict detected!');
       return res.status(409).json({ error: 'Reservation conflict' });
     }
+    console.log('✅ No conflict - reservation can proceed');
 
     // Compute price if not provided
     let finalPrice = totalPrice;
@@ -180,6 +200,7 @@ app.post('/reservations', async (req, res) => {
       totalPrice: finalPrice,
       notes: notes || '',
       documents: documents || null,
+      status: status || 'pending', // Utiliser le status fourni ou 'pending' par défaut
     });
     res.status(201).json(reservation);
   } catch (err) {
@@ -208,7 +229,7 @@ app.delete('/reservations/:id', async (req, res) => {
 app.put('/reservations/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency } = req.body;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status } = req.body;
     
     const reservation = await Reservation.findByPk(id);
     if (!reservation) {
@@ -224,9 +245,10 @@ app.put('/reservations/:id', async (req, res) => {
     if (customerPhone !== undefined) reservation.customerPhone = customerPhone;
     if (totalPrice !== undefined) reservation.totalPrice = totalPrice;
     if (notes !== undefined) reservation.notes = notes;
-  if (documents !== undefined) reservation.documents = documents;
-  if (departureAgency !== undefined) reservation.departureAgency = departureAgency;
-  if (returnAgency !== undefined) reservation.returnAgency = returnAgency;
+    if (documents !== undefined) reservation.documents = documents;
+    if (departureAgency !== undefined) reservation.departureAgency = departureAgency;
+    if (returnAgency !== undefined) reservation.returnAgency = returnAgency;
+    if (status !== undefined) reservation.status = status;
 
     await reservation.save();
     res.json(reservation);
@@ -433,30 +455,30 @@ async function seedData() {
   ];
   await Car.bulkCreate(cars);
 
-  // Sample reservations (future dates) - toutes les voitures
+  // Sample reservations (future dates) - toutes les voitures avec status 'accepted'
   const reservations = [
     // Clio 5
-    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', customerName: 'Ahmed Alami', customerEmail: 'ahmed.alami@example.com', customerPhone: '+212 6 12 34 56 78', totalPrice: 35 * 2 },
-    { id: uuidv4(), carId: 'car1', startDate: '2025-11-20', endDate: '2025-11-22', customerName: 'Yasmine Benjelloun', customerEmail: 'yasmine.b@example.com', customerPhone: '+212 6 23 45 67 89', totalPrice: 35 * 2 },
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', departureAgency: 'Aéroport Tlemcen', returnAgency: 'Aéroport Tlemcen', customerName: 'Ahmed Alami', customerEmail: 'ahmed.alami@example.com', customerPhone: '+212 6 12 34 56 78', totalPrice: 35 * 2, status: 'accepted' },
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-20', endDate: '2025-11-22', departureAgency: 'Aéroport Tlemcen', returnAgency: 'Aéroport Tlemcen', customerName: 'Yasmine Benjelloun', customerEmail: 'yasmine.b@example.com', customerPhone: '+212 6 23 45 67 89', totalPrice: 35 * 2, status: 'accepted' },
     
     // Audi A4
-    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', customerName: 'Karim Tazi', customerEmail: 'karim.tazi@example.com', customerPhone: '+212 6 34 56 78 90', totalPrice: 85 * 3 },
-    { id: uuidv4(), carId: 'car2', startDate: '2025-12-01', endDate: '2025-12-03', customerName: 'Leila Fassi', customerEmail: 'leila.fassi@example.com', customerPhone: '+212 6 45 67 89 01', totalPrice: 85 * 2 },
+    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', departureAgency: 'Aéroport d\'Oran', returnAgency: 'Aéroport d\'Oran', customerName: 'Karim Tazi', customerEmail: 'karim.tazi@example.com', customerPhone: '+212 6 34 56 78 90', totalPrice: 85 * 3, status: 'accepted' },
+    { id: uuidv4(), carId: 'car2', startDate: '2025-12-01', endDate: '2025-12-03', departureAgency: 'Aéroport d\'Oran', returnAgency: 'Aéroport d\'Oran', customerName: 'Leila Fassi', customerEmail: 'leila.fassi@example.com', customerPhone: '+212 6 45 67 89 01', totalPrice: 85 * 2, status: 'accepted' },
     
     // Mercedes CLA 220
-    { id: uuidv4(), carId: 'car3', startDate: '2025-11-15', endDate: '2025-11-18', customerName: 'Omar Bennani', customerEmail: 'omar.bennani@example.com', customerPhone: '+212 6 56 78 90 12', totalPrice: 120 * 3 },
-    { id: uuidv4(), carId: 'car3', startDate: '2025-11-25', endDate: '2025-11-28', customerName: 'Salma Chraibi', customerEmail: 'salma.chraibi@example.com', customerPhone: '+212 6 67 89 01 23', totalPrice: 120 * 3 },
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-15', endDate: '2025-11-18', departureAgency: 'Agence ANISTOUR Oran', returnAgency: 'Agence ANISTOUR Oran', customerName: 'Omar Bennani', customerEmail: 'omar.bennani@example.com', customerPhone: '+212 6 56 78 90 12', totalPrice: 120 * 3, status: 'accepted' },
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-25', endDate: '2025-11-28', departureAgency: 'Agence ANISTOUR Oran', returnAgency: 'Agence ANISTOUR Oran', customerName: 'Salma Chraibi', customerEmail: 'salma.chraibi@example.com', customerPhone: '+212 6 67 89 01 23', totalPrice: 120 * 3, status: 'accepted' },
     
     // Dacia Logan
-    { id: uuidv4(), carId: 'car4', startDate: '2025-11-08', endDate: '2025-11-10', customerName: 'Hassan Idrissi', customerEmail: 'hassan.idrissi@example.com', customerPhone: '+212 6 78 90 12 34', totalPrice: 45 * 2 },
-    { id: uuidv4(), carId: 'car4', startDate: '2025-11-18', endDate: '2025-11-20', customerName: 'Nadia Lahlou', customerEmail: 'nadia.lahlou@example.com', customerPhone: '+212 6 89 01 23 45', totalPrice: 45 * 2 },
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-08', endDate: '2025-11-10', departureAgency: 'Agence ANISTOUR Tlemcen', returnAgency: 'Agence ANISTOUR Tlemcen', customerName: 'Hassan Idrissi', customerEmail: 'hassan.idrissi@example.com', customerPhone: '+212 6 78 90 12 34', totalPrice: 45 * 2, status: 'accepted' },
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-18', endDate: '2025-11-20', departureAgency: 'Agence ANISTOUR Tlemcen', returnAgency: 'Agence ANISTOUR Tlemcen', customerName: 'Nadia Lahlou', customerEmail: 'nadia.lahlou@example.com', customerPhone: '+212 6 89 01 23 45', totalPrice: 45 * 2, status: 'accepted' },
     
     // Peugeot 308
-    { id: uuidv4(), carId: 'car5', startDate: '2025-11-12', endDate: '2025-11-15', customerName: 'Youssef Kadiri', customerEmail: 'youssef.kadiri@example.com', customerPhone: '+212 6 90 12 34 56', totalPrice: 65 * 3 },
-    { id: uuidv4(), carId: 'car5', startDate: '2025-11-22', endDate: '2025-11-25', customerName: 'Fatima Zahra', customerEmail: 'fatima.zahra@example.com', customerPhone: '+212 6 01 23 45 67', totalPrice: 65 * 3 },
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-12', endDate: '2025-11-15', departureAgency: 'Aéroport de Chlef', returnAgency: 'Aéroport de Chlef', customerName: 'Youssef Kadiri', customerEmail: 'youssef.kadiri@example.com', customerPhone: '+212 6 90 12 34 56', totalPrice: 65 * 3, status: 'accepted' },
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-22', endDate: '2025-11-25', departureAgency: 'Aéroport de Chlef', returnAgency: 'Aéroport de Chlef', customerName: 'Fatima Zahra', customerEmail: 'fatima.zahra@example.com', customerPhone: '+212 6 01 23 45 67', totalPrice: 65 * 3, status: 'accepted' },
   ];
   await Reservation.bulkCreate(reservations);
-  console.log('✅ 10 réservations de test créées pour les 5 voitures');
+  console.log('✅ 10 réservations de test créées pour les 5 voitures (status: accepted)');
   
   // Create default settings
   const defaultSettings = [

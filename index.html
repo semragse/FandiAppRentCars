@@ -2327,9 +2327,9 @@
                 Object.keys(carsDatabase).forEach(key => delete carsDatabase[key]);
                 
                 cars.forEach(car => {
-                    // Filtrer les réservations pour cette voiture
+                    // Filtrer les réservations pour cette voiture (seulement les acceptées)
                     const carReservations = allReservations
-                        .filter(res => res.carId === car.id)
+                        .filter(res => res.carId === car.id && res.status === 'accepted')
                         .map(res => ({
                             id: res.id,
                             startDate: res.startDate,
