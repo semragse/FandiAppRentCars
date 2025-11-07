@@ -97,15 +97,23 @@ git push
 - ✅ **Résolu**: Serveur écoute maintenant sur `0.0.0.0`
 
 ### SQLite3 binding error
-- ✅ **Résolu**: Utilise PostgreSQL en production
+- ✅ **Résolu**: SQLite3 est optionnel, PostgreSQL est utilisé en production
+
+### Module not found errors
+- ✅ **Résolu**: Toutes les dépendances sont dans package.json
+- Railway installe automatiquement `pg` et `pg-hstore`
 
 ### Variables d'environnement manquantes
-- Vérifiez que `STRIPE_SECRET_KEY` est bien ajouté
-- Railway doit avoir `DATABASE_URL` automatiquement
+- Vérifiez que `STRIPE_SECRET_KEY` est bien ajouté dans Variables
+- Railway génère automatiquement `DATABASE_URL` quand vous ajoutez PostgreSQL
 
 ### Base de données vide
 - L'application seed automatiquement au démarrage si vide
-- Vous pouvez aussi exécuter: `railway run npm run seed` (optionnel)
+- Les données de test sont créées automatiquement
+
+### Connection timeout to database
+- Assurez-vous que PostgreSQL est bien créé dans le même projet
+- Railway connecte automatiquement via `DATABASE_URL`
 
 ## 🎉 C'est fait!
 
