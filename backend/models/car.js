@@ -17,6 +17,12 @@ module.exports = (sequelize) => {
     image: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    // Emplacement actuel (agence) de la voiture
+    locationAgency: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'location_agency'
     }
   }, {
     tableName: 'cars'

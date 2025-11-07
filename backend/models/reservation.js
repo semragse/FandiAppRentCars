@@ -18,6 +18,18 @@ module.exports = (sequelize) => {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
+    // Agence de départ de la réservation
+    departureAgency: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'departure_agency'
+    },
+    // Agence de retour de la réservation
+    returnAgency: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: 'return_agency'
+    },
     customerName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,6 +53,13 @@ module.exports = (sequelize) => {
     documents: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    // Flag interne pour indiquer que le mouvement de la voiture a été appliqué après fin de réservation
+    movementApplied: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: 'movement_applied'
     },
     createdAt: {
       type: DataTypes.DATE,

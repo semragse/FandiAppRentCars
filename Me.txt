@@ -2,6 +2,7 @@ Faire commit :
 git add .
 git commit -m "xxxxxx"
 git push
+git push -u origin main
 
 voir les commit:
 git log -5 --oneline
