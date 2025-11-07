@@ -1,6 +1,14 @@
-# FandiRent 3-Tier Architecture
+# 🚗 FandiAuto - Location de Voitures
 
-This project restructures the existing static HTML site (`index.html`, `admin.html`) into a simple 3-tier car rental application.
+Application complète de location de voitures avec gestion des réservations, paiements (Stripe, PayPal, Virement bancaire) et interface d'administration.
+
+## 🚀 Déploiement Rapide sur Railway
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/semragse/FandiAppRentCars)
+
+**Voir [DEPLOY.md](DEPLOY.md) pour les instructions détaillées de déploiement.**
+
+## Architecture 3-Tier
 
 ## 1. Frontend (Client)
 - Existing static HTML/CSS/JS (`index.html`, `admin.html`).
