@@ -609,23 +609,30 @@
         }
 
         .actions-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            justify-content: flex-start;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
 
         .action-btn {
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
         }
 
         .btn-danger {
@@ -640,6 +647,11 @@
 
         .btn-success {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
             color: white;
         }
 
@@ -731,8 +743,8 @@
             }
 
             .actions-grid {
-                flex-direction: column;
-                gap: 0.8rem;
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
             .action-btn {
@@ -1287,8 +1299,11 @@
         <div class="global-actions">
             <h3>🎛️ Actions globales</h3>
             <div class="actions-grid">
-                <button class="action-btn btn-success" onclick="openAddCarModal()" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); font-weight: bold;">
+                <button class="action-btn btn-success" onclick="openAddCarModal()">
                     ➕ Ajouter une voiture
+                </button>
+                <button class="action-btn btn-info" onclick="openContactInfoModal()">
+                    📞 Modifier les informations de contact
                 </button>
                 <button class="action-btn btn-danger" onclick="clearAllReservations()">
                     🗑️ Vider toutes les réservations
@@ -1664,6 +1679,43 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal des informations de contact -->
+    <div id="contactInfoModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">📞 Modifier les informations de contact</h2>
+                <button class="close-modal" onclick="closeContactInfoModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="contactInfoForm" onsubmit="saveContactInfo(event)">
+                    <div class="modal-form-group">
+                        <label>📱 Téléphone *</label>
+                        <input type="tel" id="contactPhone" placeholder="+213 771 39 14 80" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>✉️ Email *</label>
+                        <input type="email" id="contactEmail" placeholder="contact@fandiauto.com" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>📍 Adresse *</label>
+                        <input type="text" id="contactAddress" placeholder="Tlemcen, Algérie" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeContactInfoModal()">
+                            ❌ Annuler
+                        </button>
+                        <button type="submit" class="modal-btn modal-btn-primary">
+                            💾 Sauvegarder
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -2198,14 +2250,17 @@
         function updateGlobalActions() {
             const actionsContainer = document.querySelector('.actions-grid');
             actionsContainer.innerHTML = `
-                <button class="action-btn btn-success" onclick="openAddCarModal()" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); font-weight: bold;">
+                <button class="action-btn btn-success" onclick="openAddCarModal()">
                     ➕ Ajouter une voiture
                 </button>
+                <button class="action-btn btn-info" onclick="openContactInfoModal()">
+                    📞 Modifier les informations de contact
+                </button>
                 <button class="action-btn btn-danger" onclick="clearAllReservations()">
-                    �️ Vider toutes les réservations
+                    🗑️ Vider toutes les réservations
                 </button>
                 <button class="action-btn btn-warning" onclick="clearTodayReservations()">
-                    � Libérer toutes les voitures aujourd'hui
+                    📅 Libérer toutes les voitures aujourd'hui
                 </button>
             `;
         }
@@ -3034,6 +3089,117 @@
 
         // ============= FIN GESTION DES VOITURES =============
 
+        // ============= GESTION DES INFORMATIONS DE CONTACT =============
+
+        /**
+         * Ouvre le modal des informations de contact
+         */
+        function openContactInfoModal() {
+            loadContactInfo();
+            document.getElementById('contactInfoModal').style.display = 'flex';
+        }
+
+        /**
+         * Ferme le modal des informations de contact
+         */
+        function closeContactInfoModal() {
+            document.getElementById('contactInfoModal').style.display = 'none';
+        }
+
+        /**
+         * Charge les informations de contact depuis l'API
+         */
+        async function loadContactInfo() {
+            try {
+                console.log('📞 Chargement des informations de contact...');
+                const response = await fetch(`${API_URL}/settings`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch contact info');
+                }
+                
+                const settings = await response.json();
+                console.log('Paramètres reçus:', settings);
+                
+                // Remplir le formulaire
+                document.getElementById('contactPhone').value = settings.contact_phone || '+213 771 39 14 80';
+                document.getElementById('contactEmail').value = settings.contact_email || 'contact@fandiauto.com';
+                document.getElementById('contactAddress').value = settings.contact_address || 'Tlemcen, Algérie';
+                
+                console.log('✅ Informations de contact chargées');
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des informations de contact:', error);
+                showStatus('Erreur lors du chargement des informations de contact', 'error');
+            }
+        }
+
+        /**
+         * Sauvegarde les informations de contact
+         */
+        async function saveContactInfo(event) {
+            event.preventDefault();
+            
+            const phone = document.getElementById('contactPhone').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const address = document.getElementById('contactAddress').value.trim();
+            
+            // Validation côté client
+            if (!phone || !email || !address) {
+                showStatus('⚠️ Tous les champs sont obligatoires', 'error');
+                return;
+            }
+            
+            // Validation email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showStatus('⚠️ Format d\'email invalide', 'error');
+                return;
+            }
+            
+            // Validation téléphone
+            const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+            if (!phoneRegex.test(phone) || phone.replace(/\D/g, '').length < 8) {
+                showStatus('⚠️ Numéro de téléphone invalide (minimum 8 chiffres)', 'error');
+                return;
+            }
+            
+            try {
+                console.log('💾 Sauvegarde des informations de contact...');
+                
+                const response = await fetch(`${API_URL}/settings/contact`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone, email, address })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save contact info');
+                }
+                
+                const result = await response.json();
+                console.log('✅ Sauvegarde réussie:', result);
+                
+                showStatus('✅ Informations de contact mises à jour avec succès!', 'success');
+                
+                // Fermer le modal
+                closeContactInfoModal();
+                
+                // Actualiser l'affichage sur toutes les pages (si ContactInfoManager est disponible)
+                if (window.ContactInfoManager) {
+                    await window.ContactInfoManager.refresh();
+                }
+                
+            } catch (error) {
+                console.error('❌ Erreur lors de la sauvegarde:', error);
+                showStatus(`❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // ============= FIN GESTION DES INFORMATIONS DE CONTACT =============
+
         // Calculer prix dans modal d'édition avec majoration weekend
         function updateEditModalPrice() {
             const startDate = document.getElementById('editStartDate').value;
@@ -3229,5 +3395,8 @@
     
     <!-- Script de gestion du thème Dark/Light -->
     <script src="theme.js"></script>
+    
+    <!-- Script de gestion des informations de contact -->
+    <script src="contact-info.js"></script>
 </body>
 </html>

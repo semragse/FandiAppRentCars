@@ -241,13 +241,13 @@
                 <div class="contact-card-icon">📱</div>
                 <h2>Téléphone</h2>
                 <div class="contact-info">
-                    <p>📞 <a href="tel:+213771391480">+213 771 39 14 80</a></p>
+                    <p>📞 <a href="tel:+213771391480" data-contact="phone">+213 771 39 14 80</a></p>
                     <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
                         Disponible 7j/7 de 8h à 20h
                     </p>
                     
                     <div class="social-links">
-                        <a href="https://wa.me/213771391480" class="social-btn whatsapp-btn" target="_blank">
+                        <a href="https://wa.me/213771391480" class="social-btn whatsapp-btn" target="_blank" data-contact="whatsapp">
                             💬 WhatsApp
                         </a>
                     </div>
@@ -259,8 +259,7 @@
                 <div class="contact-card-icon">📧</div>
                 <h2>Email</h2>
                 <div class="contact-info">
-                    <p>✉️ <a href="mailto:contact@fandiauto.dz">contact@fandiauto.dz</a></p>
-                    <p>✉️ <a href="mailto:reservations@fandiauto.dz">reservations@fandiauto.dz</a></p>
+                    <p>✉️ <a href="mailto:contact@fandiauto.dz" data-contact="email">contact@fandiauto.dz</a></p>
                     <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
                         Réponse sous 24h maximum
                     </p>
@@ -272,10 +271,8 @@
                 <div class="contact-card-icon">📍</div>
                 <h2>Adresse</h2>
                 <div class="contact-info">
-                    <p>🏢 <strong>FANDIAUTO Location</strong></p>
-                    <p>47 Riat Makhoukh, mansourah</p>
-                    <p>Tlemcen 13000</p>
-                    <p>Algérie</p>
+                    <p>🏢 <strong data-contact="company">FANDIAUTO Location</strong></p>
+                    <p data-contact="address">47 Riat Makhoukh, mansourah, Tlemcen 13000, Algérie</p>
                     <div class="social-links" style="margin-top: 1rem;">
                         <a href="https://maps.google.com" class="social-btn" target="_blank">
                             🗺️ Voir sur Google Maps
@@ -327,7 +324,7 @@
         <!-- Urgence 24/7 -->
         <div class="emergency-contact">
             <h3>🚨 Service d'urgence 24/7</h3>
-            <p>📞 +213 771 39 14 80</p>
+            <p>📞 <span data-contact="phone">+213 771 39 14 80</span></p>
             <p style="font-size: 1rem; margin-top: 0.5rem; opacity: 0.9;">
                 Pour toute urgence en dehors des heures d'ouverture
             </p>
@@ -344,5 +341,8 @@
             </p>
         </div>
     </div>
+    
+    <!-- Script de gestion des informations de contact -->
+    <script src="../contact-info.js"></script>
 </body>
 </html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Contact Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2A90A8;
+            margin-top: 0;
+        }
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #2A90A8;
+        }
+        button {
+            background: #2A90A8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #7CC6D7;
+        }
+        #log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test du gestionnaire d'informations de contact</h1>
+    
+    <div class="card">
+        <h2>📞 Informations de contact actuelles</h2>
+        <div class="info">
+            <strong>Téléphone:</strong> <span data-contact="phone">Chargement...</span>
+        </div>
+        <div class="info">
+            <strong>Email:</strong> <span data-contact="email">Chargement...</span>
+        </div>
+        <div class="info">
+            <strong>Adresse:</strong> <span data-contact="address">Chargement...</span>
+        </div>
+        <div class="info">
+            <strong>Entreprise:</strong> <span data-contact="company">Chargement...</span>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🔧 Actions</h2>
+        <button onclick="testRefresh()">🔄 Rafraîchir les données</button>
+        <button onclick="testGetInfo()">📊 Afficher les données</button>
+        <button onclick="clearLog()">🗑️ Effacer le log</button>
+    </div>
+    
+    <div class="card">
+        <h2>📝 Console Log</h2>
+        <div id="log"></div>
+    </div>
+    
+    <script src="contact-info.js"></script>
+    <script>
+        const logEl = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff0000' : type === 'success' ? '#00ff00' : '#00ffff';
+            logEl.innerHTML += `<span style="color:${color}">[${timestamp}] ${message}</span>\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        function clearLog() {
+            logEl.innerHTML = '';
+        }
+        
+        async function testRefresh() {
+            addLog('🔄 Rafraîchissement des données...', 'info');
+            try {
+                const info = await window.ContactInfoManager.refresh();
+                addLog('✅ Données rafraîchies avec succès', 'success');
+                addLog(JSON.stringify(info, null, 2), 'info');
+            } catch (error) {
+                addLog('❌ Erreur: ' + error.message, 'error');
+            }
+        }
+        
+        function testGetInfo() {
+            addLog('📊 Récupération des données du cache...', 'info');
+            const info = window.ContactInfoManager.get();
+            addLog(JSON.stringify(info, null, 2), 'info');
+        }
+        
+        // Log initial
+        addLog('🚀 Page chargée - ContactInfoManager devrait se charger automatiquement', 'info');
+        
+        // Intercepter les logs console
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            addLog(args.join(' '), 'success');
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            addLog(args.join(' '), 'error');
+            originalError.apply(console, args);
+        };
+    </script>
+</body>
+</html>

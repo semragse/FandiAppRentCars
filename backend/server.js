@@ -3,7 +3,7 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
-const { sequelize, Car, Reservation } = require('./models');
+const { sequelize, Car, Reservation, Setting } = require('./models');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -220,6 +220,178 @@ app.put('/reservations/:id', async (req, res) => {
   }
 });
 
+// ============= SETTINGS ENDPOINTS =============
+
+// Get all settings
+app.get('/settings', async (req, res) => {
+  try {
+    const settings = await Setting.findAll();
+    // Convert to key-value object
+    const settingsObj = {};
+    settings.forEach(setting => {
+      let value = setting.value;
+      // Parse JSON if type is json
+      if (setting.type === 'json') {
+        try {
+          value = JSON.parse(value);
+        } catch (e) {
+          console.error('Error parsing JSON setting:', setting.key, e);
+        }
+      } else if (setting.type === 'number') {
+        value = parseFloat(value);
+      } else if (setting.type === 'boolean') {
+        value = value === 'true';
+      }
+      settingsObj[setting.key] = value;
+    });
+    res.json(settingsObj);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
+});
+
+// Get a single setting by key
+app.get('/settings/:key', async (req, res) => {
+  try {
+    const { key } = req.params;
+    const setting = await Setting.findByPk(key);
+    if (!setting) {
+      return res.status(404).json({ error: 'Setting not found' });
+    }
+    
+    let value = setting.value;
+    if (setting.type === 'json') {
+      try {
+        value = JSON.parse(value);
+      } catch (e) {
+        console.error('Error parsing JSON setting:', setting.key, e);
+      }
+    } else if (setting.type === 'number') {
+      value = parseFloat(value);
+    } else if (setting.type === 'boolean') {
+      value = value === 'true';
+    }
+    
+    res.json({ key: setting.key, value, type: setting.type, description: setting.description });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch setting' });
+  }
+});
+
+// Update or create a setting
+app.put('/settings/:key', async (req, res) => {
+  try {
+    const { key } = req.params;
+    const { value, type, description } = req.body;
+    
+    if (value === undefined) {
+      return res.status(400).json({ error: 'Value is required' });
+    }
+    
+    // Convert value to string for storage
+    let valueStr = value;
+    if (type === 'json') {
+      valueStr = JSON.stringify(value);
+    } else if (typeof value !== 'string') {
+      valueStr = String(value);
+    }
+    
+    // Find or create setting
+    const [setting, created] = await Setting.findOrCreate({
+      where: { key },
+      defaults: {
+        value: valueStr,
+        type: type || 'string',
+        description: description || null
+      }
+    });
+    
+    if (!created) {
+      // Update existing setting
+      setting.value = valueStr;
+      if (type) setting.type = type;
+      if (description !== undefined) setting.description = description;
+      await setting.save();
+    }
+    
+    res.json({ 
+      success: true, 
+      setting: {
+        key: setting.key,
+        value: value,
+        type: setting.type,
+        description: setting.description
+      },
+      created
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update setting' });
+  }
+});
+
+// Update contact information (batch update)
+app.post('/settings/contact', async (req, res) => {
+  try {
+    const { phone, email, address } = req.body;
+    
+    // Validation
+    if (!phone || !email || !address) {
+      return res.status(400).json({ error: 'All fields are required (phone, email, address)' });
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    
+    // Phone validation (basic)
+    const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+    if (!phoneRegex.test(phone) || phone.replace(/\D/g, '').length < 8) {
+      return res.status(400).json({ error: 'Invalid phone number' });
+    }
+    
+    // Update or create settings
+    await Setting.findOrCreate({
+      where: { key: 'contact_phone' },
+      defaults: { value: phone, type: 'string', description: 'Contact phone number' }
+    }).then(([setting]) => {
+      setting.value = phone;
+      return setting.save();
+    });
+    
+    await Setting.findOrCreate({
+      where: { key: 'contact_email' },
+      defaults: { value: email, type: 'string', description: 'Contact email address' }
+    }).then(([setting]) => {
+      setting.value = email;
+      return setting.save();
+    });
+    
+    await Setting.findOrCreate({
+      where: { key: 'contact_address' },
+      defaults: { value: address, type: 'string', description: 'Physical address' }
+    }).then(([setting]) => {
+      setting.value = address;
+      return setting.save();
+    });
+    
+    res.json({ 
+      success: true, 
+      message: 'Contact information updated successfully',
+      data: { phone, email, address }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update contact information' });
+  }
+});
+
+// ============= END SETTINGS ENDPOINTS =============
+
 // Seed endpoint (optional, for development)
 app.post('/seed', async (req, res) => {
   try {
@@ -269,6 +441,23 @@ async function seedData() {
   ];
   await Reservation.bulkCreate(reservations);
   console.log('✅ 10 réservations de test créées pour les 5 voitures');
+  
+  // Create default settings
+  const defaultSettings = [
+    { key: 'contact_phone', value: '+213 771 39 14 80', type: 'string', description: 'Contact phone number' },
+    { key: 'contact_email', value: 'contact@fandiauto.com', type: 'string', description: 'Contact email address' },
+    { key: 'contact_address', value: 'Tlemcen, Algérie', type: 'string', description: 'Physical address' },
+    { key: 'company_name', value: 'FANDIAUTO', type: 'string', description: 'Company name' },
+    { key: 'whatsapp_number', value: '212676543456', type: 'string', description: 'WhatsApp contact number' }
+  ];
+  
+  for (const setting of defaultSettings) {
+    await Setting.findOrCreate({
+      where: { key: setting.key },
+      defaults: setting
+    });
+  }
+  console.log('✅ Paramètres par défaut créés');
 }
 
 (async () => {

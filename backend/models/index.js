@@ -10,9 +10,10 @@ const sequelize = new Sequelize({
 
 const Car = require('./car')(sequelize);
 const Reservation = require('./reservation')(sequelize);
+const Setting = require('./setting')(sequelize);
 
 // Associations
 Car.hasMany(Reservation, { foreignKey: 'carId', onDelete: 'CASCADE' });
 Reservation.belongsTo(Car, { foreignKey: 'carId' });
 
-module.exports = { sequelize, Car, Reservation };
+module.exports = { sequelize, Car, Reservation, Setting };
