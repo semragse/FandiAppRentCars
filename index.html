@@ -1092,6 +1092,36 @@
             transform: translateY(-2px);
         }
 
+        /* Share buttons */
+        .share-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .share-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .share-btn:active {
+            transform: translateY(0);
+        }
+
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 2rem;
@@ -2000,55 +2030,40 @@
     <!-- Footer professionnel -->
     <footer class="footer">
         <div class="footer-content">
-            <!-- Services 
+            <!-- Navigation -->
             <div class="footer-section">
-                <h3>Nos Services</h3>
+                <h3>Navigation</h3>
                 <ul>
-                    <li><a href="pages/services.html">Location courte durée</a></li>
-                    <li><a href="pages/services.html">Location longue durée</a></li>
-                    <li><a href="pages/services.html">Véhicules de luxe</a></li>
-                    <li><a href="pages/services.html">Assurance complète</a></li>
-                    <li><a href="pages/services.html">Livraison gratuite</a></li>
+                    <li><a href="index.html">🏠 Accueil</a></li>
+                    <li><a href="pages/conditions.html">📋 Nos Conditions</a></li>
+                    <li><a href="pages/faq.html">❓ FAQ</a></li>
+                    <li><a href="pages/ma-reservation.html">🔍 Ma Réservation</a></li>
+                    <li><a href="pages/contact.html">📞 Contact</a></li>
                 </ul>
             </div>
 
-           
-            <div class="footer-section">
-                <h3>Informations</h3>
-                <ul>
-                    <li><a href="pages/tarifs.html">Grille tarifaire</a></li>
-                    <li><a href="pages/conditions.html">Conditions générales</a></li>
-                    <li><a href="pages/faq.html">Questions fréquentes</a></li>
-                    <li><a href="pages/politique.html">Politique de confidentialité</a></li>
-                    <li><a href="pages/mentions.html">Mentions légales</a></li>
-                </ul>
-            </div>
-
-            
+            <!-- Contact -->
             <div class="footer-section">
                 <h3>Contact</h3>
                 <p>📍 <span data-contact="address">47 Riat Makhoukh, mansourah Tlemcen 13000 Algérie</span></p>
                 <p>📞 <a href="tel:+213771391480" data-contact="phone">+213 771 39 14 80</a></p>
                 <p>✉️ <a href="mailto:contact@fandiauto.dz" data-contact="email">contact@fandiauto.dz</a></p>
                 <p>🕒 Lun-Dim: 8h00 - 20h00</p>
-                
-                <div class="social-links">
-                    <a href="https://facebook.com/fandiauto" target="_blank" title="Facebook">📘</a>
-                    <a href="https://instagram.com/fandiauto" target="_blank" title="Instagram">📷</a>
-                    <a href="https://wa.me/213771391480?text=Bonjour,%20je%20souhaite%20louer%20une%20voiture" target="_blank" title="WhatsApp" data-contact="whatsapp">💬</a>
-                    <a href="https://linkedin.com/company/fandiauto" target="_blank" title="LinkedIn">💼</a>
-                </div>
             </div>
 
+            <!-- Réseaux Sociaux -->
             
+            
+            <!-- FANDIAUTO -->
             <div class="footer-section">
-                <h3>FANDIAUTO</h3>
-                <p>Leader de la location de véhicules en Algérie depuis 2020. Notre flotte moderne et nos services personnalisés garantissent votre satisfaction.</p>
+                <h3 data-contact="company">FANDIAUTO</h3>
+                
+                <p style="margin-top: 1rem;"><strong>Pourquoi nous choisir ?</strong></p>
                 <ul>
-                    <li><a href="apropos.html">Notre histoire</a></li>
-                    <li><a href="apropos.html">Notre équipe</a></li>
-                    <li><a href="blog.html">Blog & Actualités</a></li>
-                    <li><a href="carrieres.html">Carrières</a></li>
+                    <li>✅ Véhicules récents et bien entretenus</li>
+                    <li>✅ Tarifs compétitifs et transparents</li>
+                    <li>✅ Service client disponible 7j/7</li>
+                    <li>✅ Réservation en ligne simple et rapide</li>
                 </ul>
             </div>
         </div>
@@ -2464,9 +2479,31 @@
             // Contenu de la carte
             const carContent = document.createElement('div');
             carContent.className = 'car-content';
+            
+            // Créer les caractéristiques de la voiture
+            const features = `
+                <div style="display: flex; flex-direction: column; gap: 0.4rem; margin: 1rem 0; font-size: 0.9rem; color: #555;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>👥</span> <span>${car.seats || 5} places</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>⛽</span> <span>${car.fuelType || 'Essence SP'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>⚙️</span> <span>${car.transmission || 'Automatique'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>❄️</span> <span>${car.airConditioning !== false ? 'Climatisation' : 'Sans climatisation'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🚪</span> <span>${car.doors || 5} portes</span>
+                    </div>
+                </div>
+            `;
+            
             carContent.innerHTML = `
                 <h3 class="car-name">${car.name}</h3>
-                <p class="car-details">Véhicule de qualité, disponible à la location</p>
+                ${features}
                 <div class="car-price">${car.price}€<span style="font-size: 0.9rem; font-weight: normal;">/jour</span></div>
                 <span class="car-status status-available">Disponible</span>
                 <button class="reserve-btn" data-car="${car.name}" data-price="${car.price}">
@@ -4159,5 +4196,121 @@
     
     <!-- Script de gestion du thème Dark/Light -->
     <script src="theme.js"></script>
+
+    <!-- Script de partage social -->
+    <script>
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            window.open(shareUrl, 'facebook-share', 'width=600,height=400');
+        }
+
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Découvrez FANDIAUTO - Location de voitures en Algérie 🚗');
+            const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+            window.open(shareUrl, 'twitter-share', 'width=600,height=400');
+        }
+
+        function shareOnWhatsApp() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Découvrez FANDIAUTO - Location de voitures en Algérie 🚗\n');
+            const shareUrl = `https://wa.me/?text=${text}${url}`;
+            window.open(shareUrl, '_blank');
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            
+            // Try using the modern Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCopyNotification('Lien copié dans le presse-papier ! 📋');
+                }).catch(err => {
+                    fallbackCopyLink(url);
+                });
+            } else {
+                fallbackCopyLink(url);
+            }
+        }
+
+        function fallbackCopyLink(url) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyNotification('Lien copié dans le presse-papier ! 📋');
+            } catch (err) {
+                showCopyNotification('Erreur lors de la copie. Veuillez copier manuellement: ' + url, true);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopyNotification(message, isError = false) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                right: 30px;
+                background: ${isError ? '#e74c3c' : '#27ae60'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add animation styles
+        if (!document.getElementById('share-animations')) {
+            const style = document.createElement('style');
+            style.id = 'share-animations';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
 </body>
 </html>

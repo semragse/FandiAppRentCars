@@ -1118,9 +1118,12 @@
             border-radius: 15px;
             width: 90%;
             max-width: 600px;
+            max-height: 90vh;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             overflow: hidden;
             transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
@@ -1154,6 +1157,29 @@
 
         .modal-body {
             padding: 2rem;
+            padding-bottom: 0;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(90vh - 200px);
+        }
+
+        /* Style personnalisé pour la barre de défilement */
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--header-gradient-start), var(--header-gradient-end));
+            border-radius: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
         }
 
         .modal-form-group {
@@ -1191,8 +1217,13 @@
         .modal-actions {
             display: flex;
             gap: 1rem;
-            margin-top: 2rem;
+            padding: 1.5rem 2rem;
             justify-content: flex-end;
+            background-color: var(--modal-bg);
+            border-top: 1px solid var(--card-border);
+            position: sticky;
+            bottom: 0;
+            margin: 0;
         }
 
         .modal-btn {
@@ -1617,6 +1648,43 @@
                             <option value="Agence Tlemcen">Agence Tlemcen</option>
                         </select>
                     </div>
+
+                    <div class="modal-form-group">
+                        <label>👥 Nombre de places *</label>
+                        <input type="number" id="newCarSeats" placeholder="Ex: 5" min="2" max="9" value="5" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>⛽ Type de carburant *</label>
+                        <select id="newCarFuelType" required>
+                            <option value="Essence SP">Essence SP</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Essence">Essence</option>
+                            <option value="Électrique">Électrique</option>
+                            <option value="Hybride">Hybride</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>⚙️ Type de transmission *</label>
+                        <select id="newCarTransmission" required>
+                            <option value="Automatique">Automatique</option>
+                            <option value="Manuelle">Manuelle</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>❄️ Climatisation *</label>
+                        <select id="newCarAirConditioning" required>
+                            <option value="true">Oui</option>
+                            <option value="false">Non</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>🚪 Nombre de portes *</label>
+                        <input type="number" id="newCarDoors" placeholder="Ex: 5" min="2" max="5" value="5" required>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -1667,6 +1735,43 @@
                             <option value="Aéroport Oran">Aéroport Oran</option>
                             <option value="Agence Tlemcen">Agence Tlemcen</option>
                         </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>👥 Nombre de places *</label>
+                        <input type="number" id="editCarModalSeats" placeholder="Ex: 5" min="2" max="9" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>⛽ Type de carburant *</label>
+                        <select id="editCarModalFuelType" required>
+                            <option value="Essence SP">Essence SP</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Essence">Essence</option>
+                            <option value="Électrique">Électrique</option>
+                            <option value="Hybride">Hybride</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>⚙️ Type de transmission *</label>
+                        <select id="editCarModalTransmission" required>
+                            <option value="Automatique">Automatique</option>
+                            <option value="Manuelle">Manuelle</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>❄️ Climatisation *</label>
+                        <select id="editCarModalAirConditioning" required>
+                            <option value="true">Oui</option>
+                            <option value="false">Non</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>🚪 Nombre de portes *</label>
+                        <input type="number" id="editCarModalDoors" placeholder="Ex: 5" min="2" max="5" required>
                     </div>
                 </div>
 
@@ -2868,6 +2973,11 @@
             const price = parseFloat(document.getElementById('newCarPrice').value);
             const imageFile = document.getElementById('newCarImage').files[0];
             const locationAgency = document.getElementById('newCarLocationAgency').value;
+            const seats = parseInt(document.getElementById('newCarSeats').value);
+            const fuelType = document.getElementById('newCarFuelType').value;
+            const transmission = document.getElementById('newCarTransmission').value;
+            const airConditioning = document.getElementById('newCarAirConditioning').value === 'true';
+            const doors = parseInt(document.getElementById('newCarDoors').value);
 
             if (!name || !price || !imageFile || !locationAgency) {
                 showStatus('Veuillez remplir tous les champs!', 'error');
@@ -2889,7 +2999,12 @@
                             name: name,
                             price: price,
                             image: imageBase64,
-                            locationAgency: locationAgency
+                            locationAgency: locationAgency,
+                            seats: seats,
+                            fuelType: fuelType,
+                            transmission: transmission,
+                            airConditioning: airConditioning,
+                            doors: doors
                         })
                     });
 
@@ -2931,6 +3046,11 @@
             document.getElementById('editCarModalName').value = car.name;
             document.getElementById('editCarModalPrice').value = car.price;
             document.getElementById('editCarModalLocationAgency').value = car.locationAgency || '';
+            document.getElementById('editCarModalSeats').value = car.seats || 5;
+            document.getElementById('editCarModalFuelType').value = car.fuelType || 'Essence SP';
+            document.getElementById('editCarModalTransmission').value = car.transmission || 'Automatique';
+            document.getElementById('editCarModalAirConditioning').value = car.airConditioning !== false ? 'true' : 'false';
+            document.getElementById('editCarModalDoors').value = car.doors || 5;
             document.getElementById('editCarModalImage').value = '';
             
             // Afficher l'image actuelle
@@ -2975,6 +3095,11 @@
             const name = document.getElementById('editCarModalName').value.trim();
             const price = parseFloat(document.getElementById('editCarModalPrice').value);
             const locationAgency = document.getElementById('editCarModalLocationAgency').value;
+            const seats = parseInt(document.getElementById('editCarModalSeats').value);
+            const fuelType = document.getElementById('editCarModalFuelType').value;
+            const transmission = document.getElementById('editCarModalTransmission').value;
+            const airConditioning = document.getElementById('editCarModalAirConditioning').value === 'true';
+            const doors = parseInt(document.getElementById('editCarModalDoors').value);
             const imageFile = document.getElementById('editCarModalImage').files[0];
 
             console.log('🔧 Modification voiture:', { carId, name, price, locationAgency, hasImage: !!imageFile });
@@ -2988,7 +3113,12 @@
             const updateData = {
                 name: name,
                 price: price,
-                locationAgency: locationAgency
+                locationAgency: locationAgency,
+                seats: seats,
+                fuelType: fuelType,
+                transmission: transmission,
+                airConditioning: airConditioning,
+                doors: doors
             };
 
             // Si une nouvelle image a été sélectionnée, la convertir en base64
