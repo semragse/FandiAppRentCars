@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Réservation - FANDIAUTO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+
+        .search-card h2 {
+            color: #2A90A8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2A90A8;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(42, 144, 168, 0.4);
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+        }
+
+        .reservation-details {
+            margin-top: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .info-card {
+            background: #e7f3ff;
+            border-left: 4px solid #2A90A8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info-card p {
+            color: #004085;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .search-card {
+                padding: 1.5rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+        <div class="header">
+            <h1>🔍 Suivre Ma Réservation</h1>
+            <p>Vérifiez l'état de votre réservation</p>
+        </div>
+
+        <div class="info-card">
+            <p>📧 Entrez l'email utilisé lors de votre réservation pour consulter les détails</p>
+        </div>
+
+        <!-- Formulaire de recherche -->
+        <div class="search-card">
+            <h2>Rechercher une réservation</h2>
+            
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" placeholder="email@exemple.com" required>
+                </div>
+
+                <button type="submit" class="search-btn">🔎 Rechercher</button>
+            </form>
+
+            <div class="error-message" id="errorMessage">
+                Aucune réservation trouvée avec cet email.
+            </div>
+        </div>
+
+        <!-- Résultats -->
+        <div class="result-card" id="resultCard">
+            <h2 style="color: #2A90A8; margin-bottom: 1.5rem;">✅ Réservation trouvée</h2>
+            
+            <div class="reservation-details" id="reservationDetails">
+                <!-- Les détails seront affichés ici -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script>
+        const API_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const resultCard = document.getElementById('resultCard');
+            
+            // Cacher les messages précédents
+            errorMessage.classList.remove('show');
+            resultCard.classList.remove('show');
+            
+            try {
+                // Rechercher les réservations par email
+                const response = await fetch(`${API_URL}/reservations`);
+                const allReservations = await response.json();
+                
+                // Filtrer par email
+                const reservations = allReservations.filter(r => 
+                    r.customerEmail && r.customerEmail.toLowerCase() === email.toLowerCase()
+                );
+                
+                if (reservations.length === 0) {
+                    errorMessage.classList.add('show');
+                    return;
+                }
+                
+                // Afficher les réservations trouvées
+                displayReservations(reservations);
+                resultCard.classList.add('show');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                errorMessage.textContent = 'Erreur lors de la recherche. Veuillez réessayer.';
+                errorMessage.classList.add('show');
+            }
+        });
+        
+        async function displayReservations(reservations) {
+            const container = document.getElementById('reservationDetails');
+            
+            // Charger les voitures pour afficher les noms
+            let cars = [];
+            try {
+                const carsResponse = await fetch(`${API_URL}/cars`);
+                cars = await carsResponse.json();
+            } catch (error) {
+                console.error('Erreur chargement voitures:', error);
+            }
+            
+            let html = '';
+            
+            reservations.forEach((reservation, index) => {
+                const car = cars.find(c => c.id === reservation.carId);
+                const carName = car ? car.name : 'Véhicule inconnu';
+                const status = new Date(reservation.endDate) >= new Date() ? 'confirmed' : 'completed';
+                const statusText = status === 'confirmed' ? 'En cours' : 'Terminée';
+                
+                html += `
+                    <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 2px solid #e9ecef;">
+                        <h3 style="color: #2A90A8; margin-bottom: 1rem;">Réservation ${index + 1}</h3>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">🚗 Véhicule:</span>
+                            <span class="detail-value">${carName}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">👤 Nom:</span>
+                            <span class="detail-value">${reservation.customerName}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">📧 Email:</span>
+                            <span class="detail-value">${reservation.customerEmail}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">📞 Téléphone:</span>
+                            <span class="detail-value">${reservation.customerPhone || 'Non renseigné'}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">📅 Date de début:</span>
+                            <span class="detail-value">${formatDate(reservation.startDate)}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">📅 Date de fin:</span>
+                            <span class="detail-value">${formatDate(reservation.endDate)}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">🏢 Agence départ:</span>
+                            <span class="detail-value">${reservation.departureAgency || 'Non renseigné'}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">🏢 Agence retour:</span>
+                            <span class="detail-value">${reservation.returnAgency || 'Non renseigné'}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">💰 Prix total:</span>
+                            <span class="detail-value" style="font-size: 1.2rem; font-weight: bold; color: #28a745;">${reservation.totalPrice} €</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-label">📊 Statut:</span>
+                            <span class="status-badge status-${status}">${statusText}</span>
+                        </div>
+                        
+                        ${reservation.notes ? `
+                            <div class="detail-row">
+                                <span class="detail-label">📝 Notes:</span>
+                                <span class="detail-value">${reservation.notes}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

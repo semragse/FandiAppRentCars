@@ -448,7 +448,7 @@ async function seedData() {
     { key: 'contact_email', value: 'contact@fandiauto.com', type: 'string', description: 'Contact email address' },
     { key: 'contact_address', value: 'Tlemcen, Algérie', type: 'string', description: 'Physical address' },
     { key: 'company_name', value: 'FANDIAUTO', type: 'string', description: 'Company name' },
-    { key: 'whatsapp_number', value: '212676543456', type: 'string', description: 'WhatsApp contact number' }
+    { key: 'whatsapp_number', value: '213771391480', type: 'string', description: 'WhatsApp contact number' }
   ];
   
   for (const setting of defaultSettings) {

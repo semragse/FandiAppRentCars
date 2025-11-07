@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - FANDIAUTO Location de Voitures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .faq-question h3 {
+            color: #2A90A8;
+            font-size: 1.1rem;
+            margin: 0;
+            flex: 1;
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            color: #2A90A8;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 1.5rem;
+        }
+
+        .faq-answer p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .faq-answer ul {
+            margin-left: 1.5rem;
+            color: #555;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .contact-cta {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .contact-cta h3 {
+            color: #2A90A8;
+            margin-bottom: 1rem;
+        }
+
+        .contact-cta p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #2A90A8 0%, #7CC6D7 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 144, 168, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .faq-question h3 {
+                font-size: 1rem;
+            }
+
+            .faq-question {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+        <div class="header">
+            <h1>❓ Foire Aux Questions (FAQ)</h1>
+            <p>Trouvez rapidement les réponses à vos questions</p>
+        </div>
+
+        <!-- FAQ Items -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Comment réserver un véhicule ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>La réservation est simple et rapide :</p>
+                <ul>
+                    <li>Sélectionnez vos dates et agences de départ/retour sur la page d'accueil</li>
+                    <li>Choisissez le véhicule qui correspond à vos besoins</li>
+                    <li>Remplissez vos informations personnelles</li>
+                    <li>Validez votre réservation</li>
+                </ul>
+                <p>Vous recevrez une confirmation par email dans les 2 heures.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Quels documents dois-je présenter ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Pour récupérer votre véhicule, vous devez présenter :</p>
+                <ul>
+                    <li>Une pièce d'identité valide (carte d'identité ou passeport)</li>
+                    <li>Un permis de conduire valide depuis au moins 1 an</li>
+                    <li>Une carte bancaire pour le dépôt de garantie</li>
+                </ul>
+                <p>Tous les documents doivent être originaux (pas de photocopies).</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Quel est le montant du dépôt de garantie ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Le dépôt de garantie est de <strong>5000 DA</strong> pour tous nos véhicules.</p>
+                <p>Ce montant est bloqué sur votre carte bancaire lors de la prise du véhicule et libéré sous 7 jours après le retour, si aucun dommage n'est constaté.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Puis-je annuler ma réservation ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, selon notre politique d'annulation :</p>
+                <ul>
+                    <li><strong>Gratuit</strong> : annulation jusqu'à 48h avant la prise du véhicule</li>
+                    <li><strong>30% de frais</strong> : annulation entre 48h et 24h</li>
+                    <li><strong>50% de frais</strong> : annulation moins de 24h avant</li>
+                    <li><strong>100% de frais</strong> : en cas de non-présentation</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Le kilométrage est-il illimité ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p><strong>Oui !</strong> Tous nos tarifs incluent le kilométrage illimité. Vous pouvez rouler autant que vous le souhaitez sans frais supplémentaires.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>L'assurance est-elle incluse ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, nos tarifs incluent :</p>
+                <ul>
+                    <li>L'assurance responsabilité civile (obligatoire)</li>
+                    <li>L'assurance tous risques avec franchise de 10 000 DA</li>
+                    <li>L'assistance 24h/24 et 7j/7</li>
+                </ul>
+                <p>En cas d'accident responsable, seule la franchise reste à votre charge.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Dois-je retourner le véhicule avec le plein ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p><strong>Oui</strong>, le véhicule doit être retourné avec le plein de carburant.</p>
+                <p>Si ce n'est pas le cas, nous facturerons le carburant manquant au tarif station + des frais de service de 1000 DA.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Puis-je ajouter un conducteur supplémentaire ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, vous pouvez ajouter un conducteur supplémentaire lors de la prise du véhicule.</p>
+                <p>Le conducteur supplémentaire doit :</p>
+                <ul>
+                    <li>Être présent lors de la prise du véhicule</li>
+                    <li>Présenter les mêmes documents que le conducteur principal</li>
+                    <li>Avoir au moins 21 ans et un permis valide depuis 1 an</li>
+                </ul>
+                <p>Des frais supplémentaires de 500 DA/jour peuvent s'appliquer.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Que faire en cas de panne ou d'accident ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>En cas de problème :</p>
+                <ul>
+                    <li>Contactez immédiatement notre assistance au <span data-contact="phone">+213 771 39 14 80</span></li>
+                    <li>Ne quittez pas les lieux</li>
+                    <li>En cas d'accident, établissez un constat amiable</li>
+                    <li>Prenez des photos des dommages</li>
+                </ul>
+                <p>Notre équipe vous assistera et organisera le dépannage ou le remplacement du véhicule si nécessaire.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Puis-je louer un véhicule pour quelqu'un d'autre ?</h3>
+                <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Oui, mais le conducteur principal doit :</p>
+                <ul>
+                    <li>Être présent lors de la prise du véhicule</li>
+                    <li>Présenter tous les documents requis à son nom</li>
+                    <li>Signer le contrat de location</li>
+                </ul>
+                <p>Le paiement peut être effectué par une tierce personne, mais le conducteur doit fournir une carte bancaire pour le dépôt de garantie.</p>
+            </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="contact-cta">
+            <h3>Vous ne trouvez pas la réponse à votre question ?</h3>
+            <p>Notre équipe est à votre disposition pour vous aider</p>
+            <a href="contact.html" class="contact-btn">📞 Contactez-nous</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Fermer tous les autres items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Ouvrir celui-ci s'il n'était pas déjà ouvert
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+    </script>
+
+    <!-- Script de gestion des informations de contact -->
+    <script src="../contact-info.js"></script>
+</body>
+</html>

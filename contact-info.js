@@ -15,7 +15,7 @@
         email: 'contact@fandiauto.com',
         address: 'Tlemcen, Algérie',
         company_name: 'FANDIAUTO',
-        whatsapp_number: '212676543456'
+        whatsapp_number: '213771391480'
     };
     
     /**
@@ -85,7 +85,26 @@
         document.querySelectorAll('[data-contact="whatsapp"]').forEach(el => {
             if (el.tagName === 'A') {
                 const whatsappNumber = contactInfo.whatsapp_number || contactInfo.phone.replace(/\s/g, '');
-                el.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`;
+                const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+                
+                // Déterminer le format du lien (wa.me ou api.whatsapp.com)
+                const currentHref = el.href;
+                const isApiFormat = currentHref.includes('api.whatsapp.com');
+                
+                if (isApiFormat) {
+                    // Format API WhatsApp
+                    const message = encodeURIComponent('Bonjour, je souhaite louer une voiture');
+                    el.href = `https://api.whatsapp.com/send/?phone=${cleanNumber}&text=${message}&type=phone_number&app_absent=0`;
+                } else {
+                    // Format wa.me
+                    const hasMessage = currentHref.includes('?text=');
+                    if (hasMessage) {
+                        const message = currentHref.split('?text=')[1];
+                        el.href = `https://wa.me/${cleanNumber}?text=${message}`;
+                    } else {
+                        el.href = `https://wa.me/${cleanNumber}`;
+                    }
+                }
             }
         });
         
