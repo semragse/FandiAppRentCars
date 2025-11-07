@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement PayPal - FANDIAUTO</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .reservation-details {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .payment-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .paypal-logo {
+            font-size: 2rem;
+        }
+
+        .instructions-box {
+            background: #e7f3ff;
+            border-left: 4px solid #0070ba;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .instructions-box h3 {
+            color: #003087;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .instructions-box ol {
+            margin-left: 1.5rem;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .instructions-box ol li {
+            margin-bottom: 0.5rem;
+        }
+
+        .paypal-info {
+            background: #f8f9fa;
+            border: 2px solid #0070ba;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .paypal-info h3 {
+            color: #003087;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .paypal-email {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #0070ba;
+            margin-bottom: 1rem;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .copy-btn {
+            background: #0070ba;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #005a94;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 5px;
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .important-note strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirmation-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .confirmation-form h3 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0070ba;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message h2 {
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Paiement PayPal</h1>
+            <p>Finalisez votre réservation via PayPal</p>
+        </div>
+
+        <div class="reservation-details">
+            <div class="detail-row">
+                <span class="detail-label">🚗 Véhicule</span>
+                <span class="detail-value" id="carName">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">📅 Période</span>
+                <span class="detail-value" id="rentalPeriod">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">👤 Client</span>
+                <span class="detail-value" id="customerName">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">📧 Email</span>
+                <span class="detail-value" id="customerEmail">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">🏢 Agence de départ</span>
+                <span class="detail-value" id="departureAgency">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">🏢 Agence de retour</span>
+                <span class="detail-value" id="returnAgency">...</span>
+            </div>
+            
+            <div class="total-price">
+                Total à payer: <span id="totalPrice">...</span> €
+            </div>
+        </div>
+
+        <div class="payment-section" id="paymentSection">
+            <h2><span class="paypal-logo">💰</span> Instructions de paiement PayPal</h2>
+
+            <div class="instructions-box">
+                <h3>📋 Comment procéder ?</h3>
+                <ol id="instructionsList">
+                    <li>Connectez-vous à votre compte PayPal</li>
+                    <li>Envoyez le montant indiqué à l'adresse email ci-dessous</li>
+                    <li>Ajoutez votre numéro de réservation dans la note de paiement</li>
+                    <li>Confirmez votre paiement en remplissant le formulaire ci-dessous</li>
+                </ol>
+            </div>
+
+            <div class="paypal-info">
+                <h3>📧 Adresse PayPal FANDIAUTO</h3>
+                <div class="paypal-email">
+                    <span id="paypalEmail">Chargement...</span>
+                    <button class="copy-btn" id="copyBtn" onclick="copyEmail()">📋 Copier</button>
+                </div>
+                <div class="important-note">
+                    <strong>⚠️ Important :</strong>
+                    N'oubliez pas d'inclure votre numéro de réservation dans la note de paiement PayPal pour que nous puissions identifier votre transaction.
+                </div>
+            </div>
+
+            <div class="confirmation-form">
+                <h3>✅ Confirmation de paiement</h3>
+                <form id="confirmationForm" onsubmit="submitPayment(event)">
+                    <div class="form-group">
+                        <label for="transactionId">ID de transaction PayPal *</label>
+                        <input type="text" id="transactionId" placeholder="Ex: 1AB23456CD789012E" required>
+                        <small style="color: #666;">Vous trouverez cet ID dans votre email de confirmation PayPal</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentProof">Capture d'écran de la confirmation (optionnel)</label>
+                        <input type="file" id="paymentProof" accept="image/*,.pdf">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes supplémentaires (optionnel)</label>
+                        <textarea id="notes" rows="3" placeholder="Ajoutez des informations complémentaires si nécessaire..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        ✓ Confirmer le paiement
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <div style="font-size: 72px; margin-bottom: 20px;">✅</div>
+            <h2>Paiement confirmé !</h2>
+            <p style="margin: 1rem 0;">
+                Votre demande de réservation a été enregistrée.<br>
+                Nous vérifierons votre paiement et vous enverrons une confirmation par email.
+            </p>
+            <p style="color: #666; font-size: 14px;">
+                Redirection automatique vers l'accueil...
+            </p>
+        </div>
+
+        <a href="payment.html" class="back-link">← Retour aux options de paiement</a>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const API_BASE_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
+        let reservationData;
+        let paypalSettings;
+
+        // Charger les paramètres PayPal
+        async function loadPayPalSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/payment-settings`);
+                const settings = await response.json();
+                paypalSettings = settings;
+                
+                // Afficher l'email PayPal
+                document.getElementById('paypalEmail').textContent = settings.paypalBusinessEmail || 'Non configuré';
+                
+                // Afficher les instructions personnalisées si disponibles
+                if (settings.paypalInstructions) {
+                    const instructionsList = document.getElementById('instructionsList');
+                    const customInstructions = settings.paypalInstructions.split('\n');
+                    if (customInstructions.length > 0 && customInstructions[0].trim() !== '') {
+                        instructionsList.innerHTML = '';
+                        customInstructions.forEach(instruction => {
+                            if (instruction.trim()) {
+                                const li = document.createElement('li');
+                                li.textContent = instruction.trim();
+                                instructionsList.appendChild(li);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des paramètres PayPal:', error);
+                document.getElementById('paypalEmail').textContent = 'Erreur de chargement';
+            }
+        }
+
+        // Récupérer et afficher les données de réservation
+        function displayReservationData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+            
+            if (encodedData) {
+                try {
+                    reservationData = JSON.parse(decodeURIComponent(encodedData));
+                    console.log('📦 Données de réservation reçues:', reservationData);
+                    
+                    // Afficher les détails
+                    document.getElementById('carName').textContent = reservationData.carName;
+                    document.getElementById('rentalPeriod').textContent = 
+                        `${reservationData.startDate} → ${reservationData.endDate}`;
+                    document.getElementById('customerName').textContent = reservationData.customerName;
+                    document.getElementById('customerEmail').textContent = reservationData.customerEmail;
+                    document.getElementById('departureAgency').textContent = reservationData.departureAgency;
+                    document.getElementById('returnAgency').textContent = reservationData.returnAgency;
+                    document.getElementById('totalPrice').textContent = reservationData.totalPrice;
+                } catch (error) {
+                    console.error('❌ Erreur lors du décodage des données:', error);
+                    alert('Erreur lors du chargement des détails de la réservation');
+                }
+            } else {
+                alert('Aucune donnée de réservation trouvée');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Copier l'email PayPal
+        function copyEmail() {
+            const email = document.getElementById('paypalEmail').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+            
+            navigator.clipboard.writeText(email).then(() => {
+                copyBtn.textContent = '✓ Copié !';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 Copier';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Erreur lors de la copie:', err);
+            });
+        }
+
+        // Soumettre le paiement
+        async function submitPayment(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Traitement en cours...';
+            
+            try {
+                const transactionId = document.getElementById('transactionId').value;
+                const notes = document.getElementById('notes').value;
+                
+                // Créer la réservation avec statut pending
+                const reservationResponse = await fetch(`${API_BASE_URL}/reservations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...reservationData,
+                        paymentMethod: 'paypal',
+                        paymentStatus: 'pending',
+                        transactionId: transactionId,
+                        notes: notes || '',
+                        notification: {
+                            type: 'payment_pending',
+                            message: `Nouveau paiement PayPal en attente de vérification (Transaction ID: ${transactionId}) pour ${reservationData.carName}`,
+                            amount: reservationData.totalPrice,
+                            paymentType: 'PayPal'
+                        }
+                    })
+                });
+
+                if (!reservationResponse.ok) {
+                    throw new Error('Erreur lors de la création de la réservation');
+                }
+
+                // Masquer le formulaire et afficher le message de succès
+                document.getElementById('paymentSection').style.display = 'none';
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                successMessage.style.animation = 'fadeIn 0.5s ease-out';
+
+                // Redirection après 5 secondes
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 5000);
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                alert('Erreur lors de la confirmation du paiement. Veuillez réessayer.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✓ Confirmer le paiement';
+            }
+        }
+
+        // Initialiser la page
+        loadPayPalSettings();
+        displayReservationData();
+    </script>
+</body>
+</html>

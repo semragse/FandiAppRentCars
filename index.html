@@ -2654,8 +2654,13 @@
                 const searchStart = new Date(startDate);
                 const searchEnd = new Date(endDate);
 
-                // Vérifier si la période demandée chevauche avec les réservations existantes
-                for (const reservation of reservations) {
+                // Vérifier SEULEMENT les réservations acceptées (ignorer pending et refused)
+                const acceptedReservations = reservations.filter(r => r.status === 'accepted');
+                
+                console.log(`🔍 Checking availability for car ${carId}: ${acceptedReservations.length} accepted reservations`);
+
+                // Vérifier si la période demandée chevauche avec les réservations acceptées
+                for (const reservation of acceptedReservations) {
                     const resStart = new Date(reservation.startDate);
                     const resEnd = new Date(reservation.endDate);
 

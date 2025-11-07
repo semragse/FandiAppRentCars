@@ -770,40 +770,11 @@
                 <div class="payment-options">
                     <h2>💳 Mode de paiement</h2>
 
-                    <!-- Option 1: Carte bancaire -->
-                    <div class="payment-option" onclick="selectPaymentOption('card')">
-                        <div class="payment-option-content">
-                            <input type="radio" name="paymentMethod" id="payCard" value="card">
-                            <div class="payment-icon">💳</div>
-                            <div class="payment-info">
-                                <h3>Payer par carte bancaire <span class="badge">Sécurisé</span></h3>
-                                <p>Paiement immédiat et sécurisé par Stripe ou CMI Maroc. Votre réservation sera confirmée instantanément.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Option 2: Virement bancaire -->
-                    <div class="payment-option" onclick="selectPaymentOption('transfer')">
-                        <div class="payment-option-content">
-                            <input type="radio" name="paymentMethod" id="payTransfer" value="transfer">
-                            <div class="payment-icon">🏦</div>
-                            <div class="payment-info">
-                                <h3>Virement bancaire <span class="badge pending">En attente</span></h3>
-                                <p>Effectuez un virement sur notre compte. Vous recevrez les coordonnées bancaires par email. Réservation confirmée après réception du paiement (1-2 jours ouvrés).</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Option 3: Réservation sans paiement -->
-                    <div class="payment-option" onclick="selectPaymentOption('later')">
-                        <div class="payment-option-content">
-                            <input type="radio" name="paymentMethod" id="payLater" value="later" checked>
-                            <div class="payment-icon">📞</div>
-                            <div class="payment-info">
-                                <h3>Réserver sans payer <span class="badge pending">Confirmation requise</span></h3>
-                                <p>Créez votre réservation maintenant, nous vous contacterons pour valider et finaliser le paiement. Parfait si vous avez des questions ou besoins spécifiques.</p>
-                            </div>
-                        </div>
+                    <!-- Les options de paiement seront chargées dynamiquement ici -->
+                    <div id="paymentOptionsContainer">
+                        <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                            Chargement des options de paiement...
+                        </p>
                     </div>
                 </div>
 
@@ -837,6 +808,115 @@
 
         // Charger les données de la voiture
         let currentCar = null;
+        let paymentSettings = null;
+
+        // Charger les paramètres de paiement
+        async function loadPaymentSettings() {
+            try {
+                const response = await fetch(`${API_URL}/payment-settings`);
+                paymentSettings = await response.json();
+                console.log('✅ Paramètres de paiement chargés:', paymentSettings);
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des paramètres de paiement:', error);
+                // Utiliser les paramètres par défaut
+                paymentSettings = null;
+            }
+            // Toujours afficher les options
+            renderPaymentOptions();
+        }
+
+        // Afficher les options de paiement
+        function renderPaymentOptions() {
+            const container = document.getElementById('paymentOptionsContainer');
+            let optionsHTML = '';
+            let hasOptions = false;
+
+            // Option Stripe (Carte bancaire) - Activée par défaut si pas de settings
+            const stripeEnabled = !paymentSettings || paymentSettings.stripeEnabled !== false;
+            if (stripeEnabled) {
+                hasOptions = true;
+                optionsHTML += `
+                    <div class="payment-option" onclick="selectPaymentOption('card')">
+                        <div class="payment-option-content">
+                            <input type="radio" name="paymentMethod" id="payCard" value="card">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-info">
+                                <h3>Payer par carte bancaire <span class="badge">Sécurisé</span></h3>
+                                <p>Paiement immédiat et sécurisé par Stripe. Votre réservation sera confirmée instantanément.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Option PayPal - Désactivée par défaut
+            if (paymentSettings && paymentSettings.paypalEnabled) {
+                hasOptions = true;
+                optionsHTML += `
+                    <div class="payment-option" onclick="selectPaymentOption('paypal')">
+                        <div class="payment-option-content">
+                            <input type="radio" name="paymentMethod" id="payPayPal" value="paypal">
+                            <div class="payment-icon">💰</div>
+                            <div class="payment-info">
+                                <h3>Payer par PayPal <span class="badge">Rapide</span></h3>
+                                <p>Envoyez votre paiement via PayPal. Confirmation après vérification (généralement sous 24h).</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Option Virement bancaire - Activée par défaut si pas de settings
+            const bankEnabled = !paymentSettings || paymentSettings.bankTransferEnabled !== false;
+            if (bankEnabled) {
+                hasOptions = true;
+                optionsHTML += `
+                    <div class="payment-option" onclick="selectPaymentOption('transfer')">
+                        <div class="payment-option-content">
+                            <input type="radio" name="paymentMethod" id="payTransfer" value="transfer">
+                            <div class="payment-icon">🏦</div>
+                            <div class="payment-info">
+                                <h3>Virement bancaire <span class="badge pending">En attente</span></h3>
+                                <p>Effectuez un virement sur notre compte. Vous recevrez les coordonnées bancaires par email. Réservation confirmée après réception du paiement (1-2 jours ouvrés).</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Option Réservation sans paiement (toujours disponible)
+            optionsHTML += `
+                <div class="payment-option" onclick="selectPaymentOption('later')">
+                    <div class="payment-option-content">
+                        <input type="radio" name="paymentMethod" id="payLater" value="later" ${!hasOptions ? 'checked' : ''}>
+                        <div class="payment-icon">📞</div>
+                        <div class="payment-info">
+                            <h3>Réserver sans payer <span class="badge pending">Confirmation requise</span></h3>
+                            <p>Créez votre réservation maintenant, nous vous contacterons pour valider et finaliser le paiement. Parfait si vous avez des questions ou besoins spécifiques.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = optionsHTML;
+        }
+
+        // Options par défaut si erreur de chargement
+        function renderDefaultPaymentOptions() {
+            const container = document.getElementById('paymentOptionsContainer');
+            container.innerHTML = `
+                <div class="payment-option" onclick="selectPaymentOption('later')">
+                    <div class="payment-option-content">
+                        <input type="radio" name="paymentMethod" id="payLater" value="later" checked>
+                        <div class="payment-icon">📞</div>
+                        <div class="payment-info">
+                            <h3>Réserver sans payer <span class="badge pending">Confirmation requise</span></h3>
+                            <p>Créez votre réservation maintenant, nous vous contacterons pour valider et finaliser le paiement.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
         async function loadCarData() {
             try {
@@ -848,12 +928,16 @@
                     document.getElementById('carName').textContent = currentCar.name;
                     document.getElementById('carDescription').textContent = 'Véhicule sélectionné';
                     document.getElementById('pricePerDay').textContent = `${currentCar.price}€`;
+                    // Stocker le nom de la voiture dans reservationData pour le transfert
+                    reservationData.carName = currentCar.name;
                 } else {
                     document.getElementById('carName').textContent = reservationData.carId || 'Véhicule inconnu';
+                    reservationData.carName = reservationData.carId || 'Véhicule inconnu';
                 }
             } catch (error) {
                 console.error('Erreur lors du chargement:', error);
                 document.getElementById('carName').textContent = reservationData.carId || 'Véhicule';
+                reservationData.carName = reservationData.carId || 'Véhicule';
             }
         }
 
@@ -975,8 +1059,57 @@
             submitBtn.disabled = true;
             submitBtn.classList.add('loading');
 
+            // Si c'est un virement bancaire, rediriger SANS créer la réservation
+            if (paymentMethod === 'transfer') {
+                console.log('🏦 Virement bancaire - Redirection vers bank-transfer.html');
+                
+                // Encoder les données de réservation dans l'URL
+                const transferData = {
+                    carId: reservationData.carId,
+                    carName: reservationData.carName,
+                    startDate: reservationData.startDate,
+                    endDate: reservationData.endDate,
+                    departureAgency: reservationData.departureAgency,
+                    returnAgency: reservationData.returnAgency,
+                    customerName: customerName,
+                    customerEmail: customerEmail,
+                    customerPhone: fullPhone || '',
+                    totalPrice: reservationData.total,
+                    notes: notes
+                };
+                
+                const encodedData = encodeURIComponent(JSON.stringify(transferData));
+                const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
+                window.location.href = `${baseUrl}bank-transfer.html?data=${encodedData}`;
+                return;
+            }
+
+            // Si c'est PayPal, rediriger vers la page PayPal
+            if (paymentMethod === 'paypal') {
+                console.log('💰 PayPal - Redirection vers paypal-payment.html');
+                
+                const paypalData = {
+                    carId: reservationData.carId,
+                    carName: reservationData.carName,
+                    startDate: reservationData.startDate,
+                    endDate: reservationData.endDate,
+                    departureAgency: reservationData.departureAgency,
+                    returnAgency: reservationData.returnAgency,
+                    customerName: customerName,
+                    customerEmail: customerEmail,
+                    customerPhone: fullPhone || '',
+                    totalPrice: reservationData.total,
+                    notes: notes
+                };
+                
+                const encodedData = encodeURIComponent(JSON.stringify(paypalData));
+                const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
+                window.location.href = `${baseUrl}paypal-payment.html?data=${encodedData}`;
+                return;
+            }
+
             try {
-                // Préparer les données de réservation
+                // Pour les autres modes de paiement, créer la réservation
                 const reservationPayload = {
                     carId: reservationData.carId,
                     startDate: reservationData.startDate,
@@ -986,8 +1119,8 @@
                     customerName: customerName,
                     customerEmail: customerEmail,
                     customerPhone: fullPhone || '+213 771 39 14 80',
-                    totalPrice: parseInt(reservationData.total, 10), // S'assurer que c'est un entier
-                    notes: notes + (paymentMethod !== 'card' ? `\n\nMode de paiement: ${paymentMethod === 'transfer' ? 'Virement bancaire' : 'Paiement ultérieur'}` : '')
+                    totalPrice: parseInt(reservationData.total, 10),
+                    notes: notes + (paymentMethod !== 'card' ? `\n\nMode de paiement: Paiement ultérieur` : '')
                 };
 
                 console.log('📤 Envoi de la réservation:', reservationPayload);
@@ -1019,21 +1152,24 @@
 
                 // Gérer selon le mode de paiement
                 if (paymentMethod === 'card') {
-                    // Rediriger vers la passerelle de paiement (à implémenter)
-                    showAlert('🔄 Redirection vers la passerelle de paiement...', 'info');
-                    setTimeout(() => {
-                        alert('Passerelle de paiement à venir (Stripe / CMI Maroc).\nRéservation créée avec succès!');
-                        window.location.href = 'index.html';
-                    }, 2000);
-                } else if (paymentMethod === 'transfer') {
-                    // Rediriger vers la page de virement bancaire
-                    console.log('🏦 Redirection vers la page de virement bancaire...');
-                    showAlert('✅ Réservation enregistrée! Redirection vers les informations bancaires...', 'success');
+                    // Rediriger vers la page de paiement par carte
+                    const cardPaymentData = {
+                        carId: reservationData.carId,
+                        carName: reservationData.carName,
+                        startDate: reservationData.startDate,
+                        endDate: reservationData.endDate,
+                        departureAgency: reservationData.departureAgency,
+                        returnAgency: reservationData.returnAgency,
+                        customerName: customerName,
+                        customerEmail: customerEmail,
+                        customerPhone: fullPhone || '',
+                        totalPrice: reservationData.total,
+                        notes: notes
+                    };
                     
-                    setTimeout(() => {
-                        const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
-                        window.location.href = `${baseUrl}bank-transfer.html?reservation=${result.id}&amount=${reservationData.total}`;
-                    }, 1500);
+                    const encodedData = encodeURIComponent(JSON.stringify(cardPaymentData));
+                    const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
+                    window.location.href = `${baseUrl}card-payment.html?data=${encodedData}`;
                 } else {
                     // Réservation sans paiement - AFFICHER ET REDIRIGER
                     console.log('🎯 Mode paiement ultérieur - Affichage du message');
@@ -1074,6 +1210,12 @@
 
             displayReservationInfo();
             loadCarData();
+            
+            // Afficher les options par défaut immédiatement
+            renderPaymentOptions();
+            
+            // Charger les paramètres en arrière-plan
+            loadPaymentSettings();
             
             // Sélectionner l'option par défaut
             selectPaymentOption('later');

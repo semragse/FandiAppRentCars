@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virement Bancaire - FANDIAUTO</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <style>
         * {
@@ -256,54 +257,14 @@
         </div>
 
         <div class="bank-cards">
-            <!-- Compte Algérie -->
-            <div class="bank-card">
-                <div class="bank-header">
-                    <div class="bank-flag">🇩🇿</div>
-                    <div class="bank-info">
-                        <h2>Compte Algérien</h2>
-                        <p>Banque Extérieure d'Algérie (BEA)</p>
-                    </div>
-                </div>
-                <div class="bank-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Titulaire:</span>
-                        <div>
-                            <span class="detail-value" id="alg-holder">FANDIAUTO SARL</span>
-                            <button class="copy-btn" onclick="copyToClipboard('alg-holder')">📋 Copier</button>
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">RIB:</span>
-                        <div>
-                            <span class="detail-value" id="alg-rib">007 99000 1234567890 12</span>
-                            <button class="copy-btn" onclick="copyToClipboard('alg-rib')">📋 Copier</button>
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">IBAN:</span>
-                        <div>
-                            <span class="detail-value" id="alg-iban">DZ58 0079 9000 1234 5678 9012</span>
-                            <button class="copy-btn" onclick="copyToClipboard('alg-iban')">📋 Copier</button>
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Code BIC/SWIFT:</span>
-                        <div>
-                            <span class="detail-value" id="alg-swift">BEALDZ22</span>
-                            <button class="copy-btn" onclick="copyToClipboard('alg-swift')">📋 Copier</button>
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Agence:</span>
-                        <div>
-                            <span class="detail-value">BEA Tlemcen Centre</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Informations bancaires (chargées dynamiquement) -->
+            <div id="bankDetailsContainer">
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Chargement des informations bancaires...
+                </p>
             </div>
 
-            <!-- Compte France -->
+            <!-- Compte Français (conservé comme fallback) -->
             <div class="bank-card">
                 <div class="bank-header">
                     <div class="bank-flag">🇫🇷</div>
@@ -367,18 +328,99 @@
             </div>
         </div>
 
-        <a href="index.html" class="back-btn">← Retour à l'accueil</a>
+        <a href="index.html" class="back-btn" id="backBtn">← Retour à l'accueil</a>
+        
+        <button class="confirm-btn" id="confirmBtn" style="display: none; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; padding: 1rem 2rem; font-size: 1.1rem; border-radius: 10px; cursor: pointer; margin-top: 1rem; width: 100%; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+            ✅ Confirmer la réservation
+        </button>
     </div>
 
     <div class="toast" id="toast">✅ Copié dans le presse-papiers !</div>
 
+    <!-- Configuration Script -->
+    <script src="config.js"></script>
+
     <script>
+        // Déterminer l'URL de l'API en fonction de l'environnement
+        let API_BASE_URL;
+        if (window.FandiConfig) {
+            API_BASE_URL = window.FandiConfig.getApiUrl();
+        } else {
+            // Fallback: utiliser le même host que la page actuelle
+            const currentHost = window.location.hostname;
+            API_BASE_URL = `http://${currentHost}:3001`;
+        }
+        
+        console.log('🌐 API_BASE_URL:', API_BASE_URL);
+
+        // Charger les informations bancaires depuis la base de données
+        async function loadBankDetails() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/payment-settings`);
+                const settings = await response.json();
+                
+                const container = document.getElementById('bankDetailsContainer');
+                
+                if (settings && settings.bankTransferEnabled) {
+                    container.innerHTML = `
+                        <div class="bank-card">
+                            <div class="bank-header">
+                                <div class="bank-flag">🏦</div>
+                                <div class="bank-info">
+                                    <h2>Coordonnées bancaires</h2>
+                                    <p>${settings.bankName || 'Banque'}</p>
+                                </div>
+                            </div>
+                            <div class="bank-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Titulaire:</span>
+                                    <div>
+                                        <span class="detail-value" id="bank-holder">${settings.accountHolderName || 'N/A'}</span>
+                                        <button class="copy-btn" onclick="copyToClipboard('bank-holder')">📋 Copier</button>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">IBAN:</span>
+                                    <div>
+                                        <span class="detail-value" id="bank-iban">${settings.iban || 'N/A'}</span>
+                                        <button class="copy-btn" onclick="copyToClipboard('bank-iban')">📋 Copier</button>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Code BIC/SWIFT:</span>
+                                    <div>
+                                        <span class="detail-value" id="bank-swift">${settings.bicSwift || 'N/A'}</span>
+                                        <button class="copy-btn" onclick="copyToClipboard('bank-swift')">📋 Copier</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #666;">
+                            <p>Les informations bancaires ne sont pas disponibles actuellement.</p>
+                            <p>Veuillez contacter notre service client.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement des informations bancaires:', error);
+                document.getElementById('bankDetailsContainer').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #dc3545;">
+                        <p>Erreur lors du chargement des informations bancaires.</p>
+                        <p>Veuillez réessayer ou contacter notre service client.</p>
+                    </div>
+                `;
+            }
+        }
+
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
             
             navigator.clipboard.writeText(text).then(() => {
-                showToast();
+                showToast('✅ Copié dans le presse-papiers !');
             }).catch(err => {
                 console.error('Erreur de copie:', err);
                 // Fallback pour les anciens navigateurs
@@ -390,7 +432,7 @@
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    showToast();
+                    showToast('✅ Copié dans le presse-papiers !');
                 } catch (err) {
                     console.error('Fallback: Erreur de copie:', err);
                 }
@@ -398,8 +440,9 @@
             });
         }
 
-        function showToast() {
+        function showToast(message = '✅ Copié dans le presse-papiers !') {
             const toast = document.getElementById('toast');
+            toast.textContent = message;
             toast.classList.add('show');
             
             setTimeout(() => {
@@ -407,21 +450,176 @@
             }, 3000);
         }
 
-        // Sauvegarder les informations de réservation si disponibles
+        // Récupérer les données de réservation depuis l'URL
         const urlParams = new URLSearchParams(window.location.search);
-        const reservationId = urlParams.get('reservation');
-        const amount = urlParams.get('amount');
+        const encodedData = urlParams.get('data');
         
-        if (amount) {
-            const amountInfo = document.createElement('div');
-            amountInfo.style.cssText = 'background: white; padding: 1.5rem; border-radius: 15px; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);';
-            amountInfo.innerHTML = `
-                <h3 style="color: #667eea; margin-bottom: 0.5rem;">Montant à virer</h3>
-                <p style="font-size: 2.5rem; font-weight: bold; color: #333; margin: 0;">${amount} DH</p>
-                ${reservationId ? `<p style="color: #666; margin-top: 0.5rem; font-size: 0.9rem;">Réf: ${reservationId}</p>` : ''}
-            `;
-            document.querySelector('.container').insertBefore(amountInfo, document.querySelector('.bank-cards'));
+        let reservationData = null;
+        
+        // Fonction pour charger le nom de la voiture depuis l'API
+        async function loadCarName(carId) {
+            try {
+                console.log('🚗 Chargement du nom de la voiture:', carId);
+                const response = await fetch(`${API_BASE_URL}/cars`);
+                if (!response.ok) throw new Error('Failed to fetch cars');
+                const cars = await response.json();
+                const car = cars.find(c => c.id === carId);
+                return car ? car.name : carId;
+            } catch (error) {
+                console.error('❌ Erreur chargement voiture:', error);
+                return carId;
+            }
         }
+        
+        // Fonction async pour initialiser la page
+        (async function initializePage() {
+            if (encodedData) {
+                try {
+                    reservationData = JSON.parse(decodeURIComponent(encodedData));
+                    console.log('📦 Données de réservation reçues:', reservationData);
+                    
+                    // Charger le vrai nom de la voiture
+                    const actualCarName = await loadCarName(reservationData.carId);
+                    console.log('✅ Nom de la voiture chargé:', actualCarName);
+                    
+                    // Afficher le montant et les détails de la réservation
+                    const amountInfo = document.createElement('div');
+                    amountInfo.style.cssText = 'background: white; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);';
+                    amountInfo.innerHTML = `
+                        <h3 style="color: #667eea; margin-bottom: 1rem; text-align: center;">📋 Détails de la réservation</h3>
+                        <div style="display: grid; gap: 0.75rem; color: #333;">
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f8f9fa; border-radius: 8px;">
+                                <strong>🚗 Véhicule:</strong>
+                                <span>${actualCarName}</span>
+                            </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <strong>📅 Période:</strong>
+                            <span>${reservationData.startDate} → ${reservationData.endDate}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <strong>👤 Client:</strong>
+                            <span>${reservationData.customerName}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <strong>📧 Email:</strong>
+                            <span>${reservationData.customerEmail}</span>
+                        </div>
+                        ${reservationData.customerPhone ? `
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <strong>📞 Téléphone:</strong>
+                            <span>${reservationData.customerPhone}</span>
+                        </div>
+                        ` : ''}
+                        <div style="display: flex; justify-content: space-between; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white; font-size: 1.5rem; font-weight: bold; margin-top: 0.5rem;">
+                            <strong>💰 Montant total:</strong>
+                            <span>${reservationData.totalPrice} €</span>
+                        </div>
+                    </div>
+                `;
+                
+                const container = document.querySelector('.container');
+                const header = document.querySelector('.header');
+                header.after(amountInfo);
+                
+                // Afficher le bouton de confirmation
+                const confirmBtn = document.getElementById('confirmBtn');
+                confirmBtn.style.display = 'block';
+                
+                // Gérer la confirmation
+                confirmBtn.addEventListener('click', async () => {
+                    confirmBtn.disabled = true;
+                    confirmBtn.textContent = '⏳ Création de la réservation...';
+                    
+                    try {
+                        const reservationPayload = {
+                            carId: reservationData.carId,
+                            startDate: reservationData.startDate,
+                            endDate: reservationData.endDate,
+                            departureAgency: reservationData.departureAgency,
+                            returnAgency: reservationData.returnAgency,
+                            customerName: reservationData.customerName,
+                            customerEmail: reservationData.customerEmail,
+                            customerPhone: reservationData.customerPhone || '+213 771 39 14 80',
+                            totalPrice: parseInt(reservationData.totalPrice, 10),
+                            notes: (reservationData.notes || '') + '\n\nMode de paiement: Virement bancaire'
+                        };
+                        
+                        console.log('📤 Création de la réservation:', reservationPayload);
+                        console.log('🌐 API URL:', API_BASE_URL);
+                        
+                        const response = await fetch(`${API_BASE_URL}/reservations`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(reservationPayload)
+                        });
+                        
+                        console.log('📥 Réponse HTTP:', response.status, response.statusText);
+                        
+                        if (!response.ok) {
+                            const error = await response.json();
+                            console.error('❌ Erreur backend:', error);
+                            throw new Error(error.error || 'Erreur lors de la création de la réservation');
+                        }
+                        
+                        const result = await response.json();
+                        console.log('✅ Réservation créée:', result);
+                        
+                        // Afficher le message de succès
+                        showToast('✅ Réservation confirmée avec succès !');
+                        confirmBtn.textContent = '✅ Réservation confirmée !';
+                        confirmBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                        
+                        // Préparer la redirection
+                        console.log('🔄 Préparation de la redirection...');
+                        const redirectUrl = 'http://127.0.0.1:5501/index.html';
+                        
+                        // Mettre en place un timeout pour la redirection
+                        setTimeout(() => {
+                            console.log('⏱️ Exécution de la redirection...');
+                            window.location.href = redirectUrl;
+                        }, 100);
+                        
+                        // Afficher le message de confirmation
+                        alert(`✅ Réservation confirmée avec succès !\n\n` +
+                              `📋 Numéro de réservation: ${result.id}\n\n` +
+                              `Merci d'effectuer le virement bancaire et de nous envoyer la preuve de paiement.\n\n` +
+                              `Vous allez être redirigé vers la page d'accueil...`);
+                              
+                        console.log('🏁 Message affiché, redirection en cours...');
+                        
+                    } catch (error) {
+                        console.error('❌ Erreur complète:', error);
+                        showToast('❌ ' + error.message);
+                        alert('Erreur: ' + error.message);
+                        confirmBtn.disabled = false;
+                        confirmBtn.textContent = '✅ Confirmer la réservation';
+                    }
+                });
+                
+                } catch (error) {
+                    console.error('❌ Erreur lors du décodage des données:', error);
+                }
+            } else {
+                // Mode ancien (avec reservation ID et amount) - pour compatibilité
+                const amount = urlParams.get('amount');
+                if (amount) {
+                    const amountInfo = document.createElement('div');
+                    amountInfo.style.cssText = 'background: white; padding: 1.5rem; border-radius: 15px; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);';
+                    amountInfo.innerHTML = `
+                        <h3 style="color: #667eea; margin-bottom: 0.5rem;">Montant à virer</h3>
+                        <p style="font-size: 2.5rem; font-weight: bold; color: #333; margin: 0;">${amount} €</p>
+                    `;
+                    
+                    const bankCards = document.querySelector('.bank-cards');
+                    bankCards.before(amountInfo);
+                }
+            }
+            
+            // Charger les informations bancaires
+            loadBankDetails();
+        })(); // Fin de l'IIFE async
     </script>
 </body>
 </html>

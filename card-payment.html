@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement par Carte - FANDIAUTO</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .reservation-details {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .payment-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #payment-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #payment-element {
+            margin-bottom: 1.5rem;
+        }
+
+        #submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #submit-button:hover {
+            transform: translateY(-2px);
+        }
+
+        #submit-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .processing-message {
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Paiement par Carte</h1>
+            <p>Finalisez votre réservation en toute sécurité</p>
+        </div>
+
+        <div class="reservation-details">
+            <div class="detail-row">
+                <span class="detail-label">🚗 Véhicule</span>
+                <span class="detail-value" id="carName">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">📅 Période</span>
+                <span class="detail-value" id="rentalPeriod">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">👤 Client</span>
+                <span class="detail-value" id="customerName">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">📧 Email</span>
+                <span class="detail-value" id="customerEmail">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">🏢 Agence de départ</span>
+                <span class="detail-value" id="departureAgency">...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">🏢 Agence de retour</span>
+                <span class="detail-value" id="returnAgency">...</span>
+            </div>
+            
+            <div class="total-price">
+                Total à payer: <span id="totalPrice">...</span> €
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h2>🔒 Paiement Sécurisé</h2>
+            <form id="payment-form">
+                <div id="payment-element"></div>
+                <button id="submit-button" type="submit">
+                    Payer maintenant
+                </button>
+                <div class="error-message" id="error-message"></div>
+                <div class="processing-message" id="processing-message">
+                    Traitement de votre paiement...
+                </div>
+                <div class="success-message" id="success-message">
+                    Paiement réussi ! Votre réservation est confirmée.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Déterminer l'URL de l'API
+        const API_BASE_URL = window.FandiConfig ? window.FandiConfig.getApiUrl() : 'http://localhost:3001';
+        
+        // Initialiser Stripe
+        const stripe = Stripe('pk_test_51QzoteKoPCrvfoFnpEmPEDWk4CNDnH4wyE8gD0wkuy9tkDqViHylV5GaKbVaveaQedHmxfxw6MmVAXiGiDoNZ8u400jaiF65qv'); // Clé publique de test
+        let elements;
+        let paymentElement;
+        let reservationData;
+
+        // Récupérer et afficher les données de réservation
+        function displayReservationData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+            
+            if (encodedData) {
+                try {
+                    reservationData = JSON.parse(decodeURIComponent(encodedData));
+                    console.log('📦 Données de réservation reçues:', reservationData);
+                    
+                    // Afficher les détails
+                    document.getElementById('carName').textContent = reservationData.carName;
+                    document.getElementById('rentalPeriod').textContent = 
+                        `${reservationData.startDate} → ${reservationData.endDate}`;
+                    document.getElementById('customerName').textContent = reservationData.customerName;
+                    document.getElementById('customerEmail').textContent = reservationData.customerEmail;
+                    document.getElementById('departureAgency').textContent = reservationData.departureAgency;
+                    document.getElementById('returnAgency').textContent = reservationData.returnAgency;
+                    document.getElementById('totalPrice').textContent = reservationData.totalPrice;
+                    
+                    // Initialiser le formulaire de paiement
+                    initializePayment();
+                } catch (error) {
+                    console.error('❌ Erreur lors du décodage des données:', error);
+                    showError('Erreur lors du chargement des détails de la réservation');
+                }
+            } else {
+                showError('Aucune donnée de réservation trouvée');
+            }
+        }
+
+        async function initializePayment() {
+            try {
+                // Créer l'intention de paiement côté serveur
+                const response = await fetch(`${API_BASE_URL}/create-payment-intent`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: reservationData.totalPrice * 100, // Stripe utilise les centimes
+                        currency: 'eur'
+                    })
+                });
+
+                const { clientSecret } = await response.json();
+
+                // Configurer Stripe Elements
+                elements = stripe.elements({
+                    clientSecret,
+                    appearance: {
+                        theme: 'stripe',
+                        variables: {
+                            colorPrimary: '#667eea',
+                        }
+                    }
+                });
+
+                // Créer et monter l'élément de paiement
+                paymentElement = elements.create('payment');
+                paymentElement.mount('#payment-element');
+            } catch (error) {
+                console.error('❌ Erreur lors de l\'initialisation du paiement:', error);
+                showError('Erreur lors de l\'initialisation du paiement');
+            }
+        }
+
+        // Gérer la soumission du formulaire
+        document.getElementById('payment-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const submitButton = document.getElementById('submit-button');
+            const processingMessage = document.getElementById('processing-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            submitButton.disabled = true;
+            processingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+
+            try {
+                // Confirmer le paiement
+                const { paymentIntent, error } = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: window.location.origin + window.location.pathname.replace('card-payment.html', 'index.html'),
+                    },
+                    redirect: 'if_required',
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                if (paymentIntent.status === 'succeeded') {
+                    try {
+                        // Créer la réservation avec notification
+                        const paymentDetails = {
+                            method: 'Carte bancaire',
+                            brand: paymentIntent.payment_method_details?.card?.brand || 'Carte',
+                            last4: paymentIntent.payment_method_details?.card?.last4 || 'XXXX'
+                        };
+
+                        const reservationResponse = await fetch(`${API_BASE_URL}/reservations`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ...reservationData,
+                                paymentMethod: 'card',
+                                paymentStatus: 'paid',
+                                notification: {
+                                    type: 'payment_success',
+                                    message: `Nouveau paiement reçu par ${paymentDetails.method} (${paymentDetails.brand} **** ${paymentDetails.last4}) pour la réservation ${reservationData.carId}`,
+                                    amount: reservationData.totalPrice,
+                                    paymentType: paymentDetails.method
+                                }
+                            })
+                        });
+
+                        // Envoyer l'email de confirmation
+                        await fetch(`${API_BASE_URL}/send-confirmation`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: reservationData.customerEmail,
+                                name: reservationData.customerName,
+                                reservationDetails: {
+                                    carName: reservationData.carName,
+                                    startDate: reservationData.startDate,
+                                    endDate: reservationData.endDate,
+                                    totalPrice: reservationData.totalPrice,
+                                    paymentMethod: paymentDetails.method,
+                                    departureAgency: reservationData.departureAgency,
+                                    returnAgency: reservationData.returnAgency
+                                }
+                            })
+                        });
+
+                        if (!reservationResponse.ok) {
+                            throw new Error('Erreur lors de la création de la réservation');
+                        }
+
+                        // Masquer le formulaire de paiement
+                        document.getElementById('payment-form').style.display = 'none';
+
+                        // Créer le conteneur de succès avec animation
+                        const successMessageContainer = document.createElement('div');
+                        successMessageContainer.id = 'success-message';
+                        successMessageContainer.style.cssText = `
+                            padding: 40px;
+                            text-align: center;
+                            background-color: #d4edda;
+                            border: 2px solid #28a745;
+                            border-radius: 15px;
+                            margin: 20px auto;
+                            max-width: 500px;
+                            animation: fadeIn 0.5s ease-out;
+                        `;
+
+                        successMessageContainer.innerHTML = `
+                            <div style="font-size: 72px; margin-bottom: 20px;">✅</div>
+                            <h2 style="color: #155724; font-size: 24px; margin-bottom: 15px;">
+                                Paiement confirmé !
+                            </h2>
+                            <p style="color: #155724; font-size: 18px; margin-bottom: 20px;">
+                                Votre réservation a été enregistrée avec succès.<br>
+                                Montant payé : ${reservationData.totalPrice}€<br>
+                                Un email de confirmation a été envoyé à ${reservationData.customerEmail}
+                            </p>
+                            <div style="color: #666; font-size: 16px; font-weight: bold;" id="countdown-text">
+                                Redirection automatique vers l'accueil...
+                            </div>
+                        `;
+
+                        const paymentContainer = document.querySelector('.payment-section');
+                        paymentContainer.innerHTML = '';
+                        paymentContainer.appendChild(successMessageContainer);
+
+                        // Scroll vers le haut en douceur
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+
+                        // Redirection immédiate avec délai
+                        setTimeout(() => {
+                            console.log('🔄 Redirection vers la page d\'accueil...');
+                            const redirectUrl = window.location.href.replace('card-payment.html', 'index.html');
+                            console.log('URL de redirection:', redirectUrl);
+                            
+                            // Forcer la redirection de plusieurs façons
+                            try {
+                                window.location.replace(redirectUrl);
+                            } catch (e) {
+                                console.error('Erreur lors de la redirection avec replace:', e);
+                                try {
+                                    window.location.href = redirectUrl;
+                                } catch (e2) {
+                                    console.error('Erreur lors de la redirection avec href:', e2);
+                                    try {
+                                        window.location.assign(redirectUrl);
+                                    } catch (e3) {
+                                        console.error('Erreur lors de la redirection avec assign:', e3);
+                                        // Dernier recours : redirection brutale
+                                        document.location = redirectUrl;
+                                    }
+                                }
+                            }
+                        }, 3000);
+                    } catch (innerError) {
+                        console.error('❌ Erreur lors de la finalisation:', innerError);
+                        showError('Erreur lors de la finalisation de la réservation');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erreur de paiement:', error);
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+                processingMessage.style.display = 'none';
+                submitButton.disabled = false;
+            }
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Initialiser la page
+        displayReservationData();
+    </script>
+</body>
+</html>
