@@ -54,13 +54,6 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    // Flag interne pour indiquer que le mouvement de la voiture a été appliqué après fin de réservation
-    movementApplied: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-      field: 'movement_applied'
-    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

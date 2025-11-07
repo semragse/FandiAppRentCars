@@ -1346,6 +1346,29 @@
                             <input type="date" id="modalEndDate" required>
                         </div>
                     </div>
+                    <!-- Agences de départ / retour -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="modal-form-group">
+                            <label>Agence de départ *</label>
+                            <select id="modalDepartureAgency" required>
+                                <option value="">-- Sélectionnez --</option>
+                                <option value="Aéroport">Aéroport</option>
+                                <option value="Centre Ville">Centre Ville</option>
+                                <option value="Gare">Gare</option>
+                                <option value="Agence Principale">Agence Principale</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label>Agence de retour *</label>
+                            <select id="modalReturnAgency" required>
+                                <option value="">-- Sélectionnez --</option>
+                                <option value="Aéroport">Aéroport</option>
+                                <option value="Centre Ville">Centre Ville</option>
+                                <option value="Gare">Gare</option>
+                                <option value="Agence Principale">Agence Principale</option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="modal-form-group">
                         <label>📄 Documents de Réservation</label>
@@ -1456,6 +1479,29 @@
                         <div class="modal-form-group">
                             <label>Date de fin *</label>
                             <input type="date" id="editEndDate" required>
+                        </div>
+                    </div>
+                    <!-- Agences de départ / retour (édition) -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="modal-form-group">
+                            <label>Agence de départ *</label>
+                            <select id="editDepartureAgency" required>
+                                <option value="">-- Sélectionnez --</option>
+                                <option value="Aéroport">Aéroport</option>
+                                <option value="Centre Ville">Centre Ville</option>
+                                <option value="Gare">Gare</option>
+                                <option value="Agence Principale">Agence Principale</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label>Agence de retour *</label>
+                            <select id="editReturnAgency" required>
+                                <option value="">-- Sélectionnez --</option>
+                                <option value="Aéroport">Aéroport</option>
+                                <option value="Centre Ville">Centre Ville</option>
+                                <option value="Gare">Gare</option>
+                                <option value="Agence Principale">Agence Principale</option>
+                            </select>
                         </div>
                     </div>
 
@@ -2040,6 +2086,12 @@
                                 📞 ${reservation.customerPhone || 'N/A'}
                             </div>
                             <div class="reservation-customer">
+                                🚩 Départ: ${reservation.departureAgency || 'N/A'}
+                            </div>
+                            <div class="reservation-customer">
+                                🏁 Retour: ${reservation.returnAgency || 'N/A'}
+                            </div>
+                            <div class="reservation-customer">
                                 💰 ${reservation.totalPrice}€
                             </div>
                         </div>
@@ -2254,6 +2306,9 @@
             document.getElementById('modalStartDate').min = today;
             document.getElementById('modalEndDate').value = '';
             document.getElementById('modalEndDate').min = today;
+            // Reset agences
+            document.getElementById('modalDepartureAgency').value = '';
+            document.getElementById('modalReturnAgency').value = '';
             document.getElementById('pricePreview').classList.remove('show');
             
             document.getElementById('reservationModal').style.display = 'block';
@@ -2423,8 +2478,10 @@
             const customerPhone = document.getElementById('modalCustomerPhone').value.trim();
             const notes = document.getElementById('modalNotes').value.trim();
             const manualPrice = document.getElementById('modalManualPrice').value.trim();
+            const departureAgency = document.getElementById('modalDepartureAgency').value;
+            const returnAgency = document.getElementById('modalReturnAgency').value;
 
-            if (!customerName || !customerEmail || !startDate || !endDate) {
+            if (!customerName || !customerEmail || !startDate || !endDate || !departureAgency || !returnAgency) {
                 showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
                 return;
             }
@@ -2484,6 +2541,8 @@
                 carId,
                 startDate,
                 endDate,
+                departureAgency,
+                returnAgency,
                 customerName,
                 customerEmail,
                 customerPhone: customerPhone || '+212 6 00 00 00 00',
@@ -2538,6 +2597,9 @@
             document.getElementById('editStartDate').value = reservation.startDate;
             document.getElementById('editEndDate').value = reservation.endDate;
             document.getElementById('editNotes').value = reservation.notes || '';
+            // Agences
+            document.getElementById('editDepartureAgency').value = reservation.departureAgency || '';
+            document.getElementById('editReturnAgency').value = reservation.returnAgency || '';
             
             // Afficher les documents existants
             if (reservation.documents) {
@@ -3050,8 +3112,10 @@
             const customerEmail = document.getElementById('editCustomerEmail').value.trim();
             const customerPhone = document.getElementById('editCustomerPhone').value.trim();
             const notes = document.getElementById('editNotes').value.trim();
+            const departureAgency = document.getElementById('editDepartureAgency').value;
+            const returnAgency = document.getElementById('editReturnAgency').value;
 
-            if (!customerName || !customerEmail || !startDate || !endDate) {
+            if (!customerName || !customerEmail || !startDate || !endDate || !departureAgency || !returnAgency) {
                 showStatus('Veuillez remplir tous les champs obligatoires!', 'error');
                 return;
             }
@@ -3107,6 +3171,8 @@
                 carId,
                 startDate,
                 endDate,
+                departureAgency,
+                returnAgency,
                 customerName,
                 customerEmail,
                 customerPhone: customerPhone || '+212 6 00 00 00 00',

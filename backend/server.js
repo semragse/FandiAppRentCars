@@ -5,18 +5,6 @@ require('dotenv').config();
 
 const { sequelize, Car, Reservation } = require('./models');
 
-// Centralized agencies list (single source of truth)
-const AGENCIES = [
-  'Aéroport Tlemcen',
-  'Aéroport Oran',
-  'Agence Tlemcen'
-];
-
-// Helper validation
-function isValidAgency(value) {
-  return AGENCIES.includes(value);
-}
-
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -30,17 +18,9 @@ app.get('/health', (req, res) => {
 });
 
 // Get all cars
-// List agencies
-app.get('/agencies', (req, res) => {
-  res.json(AGENCIES);
-});
-
-// Get all cars (optional filter by location agency)
 app.get('/cars', async (req, res) => {
   try {
-    const { agency } = req.query;
-    const where = agency && isValidAgency(agency) ? { locationAgency: agency } : {};
-    const cars = await Car.findAll({ where });
+    const cars = await Car.findAll();
     res.json(cars);
   } catch (err) {
     console.error(err);
@@ -54,9 +34,6 @@ app.post('/cars', async (req, res) => {
     const { name, price, image, locationAgency } = req.body;
     if (!name || !price || !image || !locationAgency) {
       return res.status(400).json({ error: 'Missing required fields (name, price, image, locationAgency)' });
-    }
-    if (!isValidAgency(locationAgency)) {
-      return res.status(400).json({ error: 'Invalid locationAgency' });
     }
     const carId = 'car' + Date.now();
     const newCar = await Car.create({ id: carId, name, price, image, locationAgency });
@@ -88,12 +65,7 @@ app.put('/cars/:id', async (req, res) => {
     if (name !== undefined) car.name = name;
     if (price !== undefined) car.price = price;
   if (image !== undefined) car.image = image;
-  if (locationAgency !== undefined) {
-    if (!isValidAgency(locationAgency)) {
-      return res.status(400).json({ error: 'Invalid locationAgency' });
-    }
-    car.locationAgency = locationAgency;
-  }
+  if (locationAgency !== undefined) car.locationAgency = locationAgency;
 
     await car.save();
     
@@ -143,9 +115,6 @@ app.post('/reservations', async (req, res) => {
     const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail || !departureAgency || !returnAgency) {
       return res.status(400).json({ error: 'Missing required fields' });
-    }
-    if (!isValidAgency(departureAgency) || !isValidAgency(returnAgency)) {
-      return res.status(400).json({ error: 'Invalid departureAgency or returnAgency' });
     }
 
     const start = new Date(startDate);
@@ -240,18 +209,8 @@ app.put('/reservations/:id', async (req, res) => {
     if (totalPrice !== undefined) reservation.totalPrice = totalPrice;
     if (notes !== undefined) reservation.notes = notes;
   if (documents !== undefined) reservation.documents = documents;
-  if (departureAgency !== undefined) {
-    if (!isValidAgency(departureAgency)) {
-      return res.status(400).json({ error: 'Invalid departureAgency' });
-    }
-    reservation.departureAgency = departureAgency;
-  }
-  if (returnAgency !== undefined) {
-    if (!isValidAgency(returnAgency)) {
-      return res.status(400).json({ error: 'Invalid returnAgency' });
-    }
-    reservation.returnAgency = returnAgency;
-  }
+  if (departureAgency !== undefined) reservation.departureAgency = departureAgency;
+  if (returnAgency !== undefined) reservation.returnAgency = returnAgency;
 
     await reservation.save();
     res.json(reservation);
@@ -278,51 +237,38 @@ app.post('/seed', async (req, res) => {
 
 async function seedData() {
   const cars = [
-    { id: 'car1', name: 'Clio 5', price: 35, image: 'images/clio5.jpg', locationAgency: AGENCIES[0] },
-    { id: 'car2', name: 'Audi A4', price: 85, image: 'images/audia4.jpg', locationAgency: AGENCIES[1] },
-    { id: 'car3', name: 'Mercedes CLA 220', price: 120, image: 'images/Mercedes CLA 220.jpg', locationAgency: AGENCIES[2] },
-    { id: 'car4', name: 'Dacia Logan', price: 45, image: 'images/Dacia Logan.jpg', locationAgency: AGENCIES[0] },
-    { id: 'car5', name: 'Peugeot 308', price: 65, image: 'images/Peugeot 308.jpg', locationAgency: AGENCIES[1] },
+    { id: 'car1', name: 'Clio 5', price: 35, image: 'images/clio5.jpg', locationAgency: 'Aéroport Tlemcen - Messali El Hadj' },
+    { id: 'car2', name: 'Audi A4', price: 85, image: 'images/audia4.jpg', locationAgency: 'Aéroport d\'Oran - Ahmed Ben Bella' },
+    { id: 'car3', name: 'Mercedes CLA 220', price: 120, image: 'images/Mercedes CLA 220.jpg', locationAgency: 'Agence ANISTOUR Oran' },
+    { id: 'car4', name: 'Dacia Logan', price: 45, image: 'images/Dacia Logan.jpg', locationAgency: 'Agence ANISTOUR Tlemcen' },
+    { id: 'car5', name: 'Peugeot 308', price: 65, image: 'images/Peugeot 308.jpg', locationAgency: 'Aéroport de Chlef' },
   ];
   await Car.bulkCreate(cars);
 
+  // Sample reservations (future dates) - toutes les voitures
   const reservations = [
-    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', departureAgency: AGENCIES[0], returnAgency: AGENCIES[0], customerName: 'Ahmed Alami', customerEmail: 'ahmed.alami@example.com', customerPhone: '+212 6 12 34 56 78', totalPrice: 35 * 2 },
-    { id: uuidv4(), carId: 'car1', startDate: '2025-11-20', endDate: '2025-11-22', departureAgency: AGENCIES[0], returnAgency: AGENCIES[2], customerName: 'Yasmine Benjelloun', customerEmail: 'yasmine.b@example.com', customerPhone: '+212 6 23 45 67 89', totalPrice: 35 * 2 },
-    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', departureAgency: AGENCIES[1], returnAgency: AGENCIES[1], customerName: 'Karim Tazi', customerEmail: 'karim.tazi@example.com', customerPhone: '+212 6 34 56 78 90', totalPrice: 85 * 3 },
-    { id: uuidv4(), carId: 'car2', startDate: '2025-12-01', endDate: '2025-12-03', departureAgency: AGENCIES[1], returnAgency: AGENCIES[0], customerName: 'Leila Fassi', customerEmail: 'leila.fassi@example.com', customerPhone: '+212 6 45 67 89 01', totalPrice: 85 * 2 },
-    { id: uuidv4(), carId: 'car3', startDate: '2025-11-15', endDate: '2025-11-18', departureAgency: AGENCIES[2], returnAgency: AGENCIES[2], customerName: 'Omar Bennani', customerEmail: 'omar.bennani@example.com', customerPhone: '+212 6 56 78 90 12', totalPrice: 120 * 3 },
-    { id: uuidv4(), carId: 'car3', startDate: '2025-11-25', endDate: '2025-11-28', departureAgency: AGENCIES[2], returnAgency: AGENCIES[1], customerName: 'Salma Chraibi', customerEmail: 'salma.chraibi@example.com', customerPhone: '+212 6 67 89 01 23', totalPrice: 120 * 3 },
-    { id: uuidv4(), carId: 'car4', startDate: '2025-11-08', endDate: '2025-11-10', departureAgency: AGENCIES[0], returnAgency: AGENCIES[0], customerName: 'Hassan Idrissi', customerEmail: 'hassan.idrissi@example.com', customerPhone: '+212 6 78 90 12 34', totalPrice: 45 * 2 },
-    { id: uuidv4(), carId: 'car4', startDate: '2025-11-18', endDate: '2025-11-20', departureAgency: AGENCIES[0], returnAgency: AGENCIES[2], customerName: 'Nadia Lahlou', customerEmail: 'nadia.lahlou@example.com', customerPhone: '+212 6 89 01 23 45', totalPrice: 45 * 2 },
-    { id: uuidv4(), carId: 'car5', startDate: '2025-11-12', endDate: '2025-11-15', departureAgency: AGENCIES[1], returnAgency: AGENCIES[1], customerName: 'Youssef Kadiri', customerEmail: 'youssef.kadiri@example.com', customerPhone: '+212 6 90 12 34 56', totalPrice: 65 * 3 },
-    { id: uuidv4(), carId: 'car5', startDate: '2025-11-22', endDate: '2025-11-25', departureAgency: AGENCIES[1], returnAgency: AGENCIES[0], customerName: 'Fatima Zahra', customerEmail: 'fatima.zahra@example.com', customerPhone: '+212 6 01 23 45 67', totalPrice: 65 * 3 },
+    // Clio 5
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-10', endDate: '2025-11-12', customerName: 'Ahmed Alami', customerEmail: 'ahmed.alami@example.com', customerPhone: '+212 6 12 34 56 78', totalPrice: 35 * 2 },
+    { id: uuidv4(), carId: 'car1', startDate: '2025-11-20', endDate: '2025-11-22', customerName: 'Yasmine Benjelloun', customerEmail: 'yasmine.b@example.com', customerPhone: '+212 6 23 45 67 89', totalPrice: 35 * 2 },
+    
+    // Audi A4
+    { id: uuidv4(), carId: 'car2', startDate: '2025-11-13', endDate: '2025-11-16', customerName: 'Karim Tazi', customerEmail: 'karim.tazi@example.com', customerPhone: '+212 6 34 56 78 90', totalPrice: 85 * 3 },
+    { id: uuidv4(), carId: 'car2', startDate: '2025-12-01', endDate: '2025-12-03', customerName: 'Leila Fassi', customerEmail: 'leila.fassi@example.com', customerPhone: '+212 6 45 67 89 01', totalPrice: 85 * 2 },
+    
+    // Mercedes CLA 220
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-15', endDate: '2025-11-18', customerName: 'Omar Bennani', customerEmail: 'omar.bennani@example.com', customerPhone: '+212 6 56 78 90 12', totalPrice: 120 * 3 },
+    { id: uuidv4(), carId: 'car3', startDate: '2025-11-25', endDate: '2025-11-28', customerName: 'Salma Chraibi', customerEmail: 'salma.chraibi@example.com', customerPhone: '+212 6 67 89 01 23', totalPrice: 120 * 3 },
+    
+    // Dacia Logan
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-08', endDate: '2025-11-10', customerName: 'Hassan Idrissi', customerEmail: 'hassan.idrissi@example.com', customerPhone: '+212 6 78 90 12 34', totalPrice: 45 * 2 },
+    { id: uuidv4(), carId: 'car4', startDate: '2025-11-18', endDate: '2025-11-20', customerName: 'Nadia Lahlou', customerEmail: 'nadia.lahlou@example.com', customerPhone: '+212 6 89 01 23 45', totalPrice: 45 * 2 },
+    
+    // Peugeot 308
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-12', endDate: '2025-11-15', customerName: 'Youssef Kadiri', customerEmail: 'youssef.kadiri@example.com', customerPhone: '+212 6 90 12 34 56', totalPrice: 65 * 3 },
+    { id: uuidv4(), carId: 'car5', startDate: '2025-11-22', endDate: '2025-11-25', customerName: 'Fatima Zahra', customerEmail: 'fatima.zahra@example.com', customerPhone: '+212 6 01 23 45 67', totalPrice: 65 * 3 },
   ];
   await Reservation.bulkCreate(reservations);
-  console.log('✅ Seeded cars & reservations with unified agencies');
-}
-
-// Periodic task: reconcile car locations after reservations end (move car to return agency)
-async function reconcileCarLocations() {
-  const now = new Date();
-  const endedReservations = await Reservation.findAll({ where: { movementApplied: false } });
-  for (const r of endedReservations) {
-    const end = new Date(r.endDate);
-    if (end < now) {
-      const car = await Car.findByPk(r.carId);
-      if (car && car.locationAgency !== r.returnAgency && isValidAgency(r.returnAgency)) {
-        car.locationAgency = r.returnAgency;
-        await car.save();
-        r.movementApplied = true;
-        await r.save();
-        console.log(`🔄 Car ${car.id} moved to ${car.locationAgency} after reservation ${r.id}`);
-      } else if (car) {
-        // Mark movement processed even if no change needed
-        r.movementApplied = true;
-        await r.save();
-      }
-    }
-  }
+  console.log('✅ 10 réservations de test créées pour les 5 voitures');
 }
 
 (async () => {
