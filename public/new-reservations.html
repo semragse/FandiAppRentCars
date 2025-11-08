@@ -448,33 +448,35 @@
                             <div class="detail-label">💰 Prix Total</div>
                             <div class="detail-value">${reservation.totalPrice} €</div>
                         </div>
-                        ${reservation.paymentMethod ? `
-                        <div class="detail-item" style="grid-column: 1 / -1; background: #e3f2fd; padding: 12px; border-radius: 8px; margin-top: 12px;">
-                            <div class="detail-label" style="font-weight: 600; color: #1976d2;">💳 Informations de Paiement</div>
+                        
+                        <!-- Payment Information - Always display -->
+                        <div class="detail-item" style="grid-column: 1 / -1; background: ${reservation.paymentMethod ? '#e3f2fd' : '#fff3cd'}; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                            <div class="detail-label" style="font-weight: 600; color: ${reservation.paymentMethod ? '#1976d2' : '#856404'};">💳 Informations de Paiement</div>
                             <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px; margin-top: 8px;">
-                                <strong>Mode:</strong>
-                                <span>${
+                                <strong>Mode de paiement:</strong>
+                                <span style="font-weight: 600;">${
+                                    reservation.paymentMethod === 'card' ? '💳 Carte bancaire (Stripe)' :
                                     reservation.paymentMethod === 'stripe' ? '💳 Stripe (Carte bancaire)' :
                                     reservation.paymentMethod === 'paypal' ? '💰 PayPal' :
                                     reservation.paymentMethod === 'bank_transfer' ? '🏦 Virement bancaire' :
-                                    reservation.paymentMethod === 'reserve_without_payment' ? '📞 Réservé sans payer' :
-                                    reservation.paymentMethod
+                                    reservation.paymentMethod === 'reserve_without_payment' ? '📞 Réservation sans paiement' :
+                                    reservation.paymentMethod || '⚠️ Non spécifié'
                                 }</span>
-                                <strong>Statut:</strong>
-                                <span style="font-weight: 600; color: ${reservation.paymentStatus === 'completed' ? '#28a745' : '#ffc107'};">
+                                <strong>Statut paiement:</strong>
+                                <span style="font-weight: 600; color: ${reservation.paymentStatus === 'completed' ? '#28a745' : reservation.paymentStatus === 'failed' ? '#dc3545' : '#ffc107'};">
                                     ${
                                         reservation.paymentStatus === 'completed' ? '✅ Payé' :
                                         reservation.paymentStatus === 'pending' ? '⏳ En attente de vérification' :
                                         reservation.paymentStatus === 'failed' ? '❌ Échoué' :
-                                        reservation.paymentStatus || 'Non spécifié'
+                                        reservation.paymentStatus || '⏳ En attente'
                                     }
                                 </span>
                                 ${reservation.paypalTransactionId ? `
-                                <strong>ID PayPal:</strong>
+                                <strong>ID Transaction PayPal:</strong>
                                 <span>${reservation.paypalTransactionId}</span>
                                 ` : ''}
                                 ${reservation.stripePaymentIntentId ? `
-                                <strong>ID Stripe:</strong>
+                                <strong>ID Paiement Stripe:</strong>
                                 <span>${reservation.stripePaymentIntentId}</span>
                                 ` : ''}
                                 ${reservation.paymentNotes ? `
@@ -483,7 +485,7 @@
                                 ` : ''}
                             </div>
                         </div>
-                        ` : ''}
+                        
                         ${reservation.notes ? `
                         <div class="detail-item" style="grid-column: 1 / -1;">
                             <div class="detail-label">📝 Notes</div>
