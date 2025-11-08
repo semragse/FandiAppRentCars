@@ -487,44 +487,61 @@
             try {
                 const transactionId = document.getElementById('transactionId').value;
                 const notes = document.getElementById('notes').value;
-                const screenshotFile = document.getElementById('screenshot').files[0];
+                const proofElement = document.getElementById('paymentProof');
+                const proofFile = proofElement ? proofElement.files[0] : null;
                 
-                // Convertir la capture d'écran en base64 si elle existe
-                let screenshotBase64 = null;
-                if (screenshotFile) {
-                    screenshotBase64 = await new Promise((resolve, reject) => {
+                // Convertir la preuve de paiement en base64 si elle existe
+                let proofBase64 = null;
+                if (proofFile) {
+                    proofBase64 = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
                         reader.onload = () => resolve(reader.result);
                         reader.onerror = reject;
-                        reader.readAsDataURL(screenshotFile);
+                        reader.readAsDataURL(proofFile);
                     });
                 }
                 
                 // Créer la réservation avec statut pending
+                const payload = {
+                    carId: reservationData.carId,
+                    startDate: reservationData.startDate,
+                    endDate: reservationData.endDate,
+                    departureAgency: reservationData.departureAgency,
+                    returnAgency: reservationData.returnAgency,
+                    customerName: reservationData.customerName,
+                    customerEmail: reservationData.customerEmail,
+                    customerPhone: reservationData.customerPhone || '',
+                    totalPrice: reservationData.totalPrice,
+                    notes: reservationData.notes || '',
+                    paymentMethod: 'paypal',
+                    paymentStatus: 'pending',
+                    paypalTransactionId: transactionId,
+                    paypalScreenshot: proofBase64, // Capture d'écran de paiement
+                    documents: proofBase64, // Aussi dans documents pour compatibilité
+                    paymentNotes: notes || `Transaction PayPal ID: ${transactionId}`,
+                    status: 'pending'
+                };
+
+                console.log('📤 Envoi de la réservation PayPal:', payload);
+
                 const reservationResponse = await fetch(`${API_BASE_URL}/reservations`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        ...reservationData,
-                        paymentMethod: 'paypal',
-                        paymentStatus: 'pending',
-                        paypalTransactionId: transactionId,
-                        paypalScreenshot: screenshotBase64,
-                        paymentNotes: notes || '',
-                        notification: {
-                            type: 'payment_pending',
-                            message: `Nouveau paiement PayPal en attente de vérification (Transaction ID: ${transactionId}) pour ${reservationData.carName}`,
-                            amount: reservationData.totalPrice,
-                            paymentType: 'PayPal'
-                        }
-                    })
+                    body: JSON.stringify(payload)
                 });
 
+                console.log('📥 Réponse:', reservationResponse.status);
+
                 if (!reservationResponse.ok) {
-                    throw new Error('Erreur lors de la création de la réservation');
+                    const errorData = await reservationResponse.json();
+                    console.error('❌ Erreur backend:', errorData);
+                    throw new Error(errorData.error || 'Erreur lors de la création de la réservation');
                 }
+
+                const result = await reservationResponse.json();
+                console.log('✅ Réservation créée:', result);
 
                 // Masquer le formulaire et afficher le message de succès
                 document.getElementById('paymentSection').style.display = 'none';
@@ -534,12 +551,12 @@
 
                 // Redirection après 5 secondes
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.replace(window.location.origin + '/index.html');
                 }, 5000);
                 
             } catch (error) {
                 console.error('❌ Erreur:', error);
-                alert('Erreur lors de la confirmation du paiement. Veuillez réessayer.');
+                alert(`Erreur: ${error.message}\n\nVeuillez vérifier la console pour plus de détails.`);
                 submitBtn.disabled = false;
                 submitBtn.textContent = '✓ Confirmer le paiement';
             }

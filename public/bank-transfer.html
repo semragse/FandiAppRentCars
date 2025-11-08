@@ -576,12 +576,12 @@
                         
                         // Préparer la redirection
                         console.log('🔄 Préparation de la redirection...');
-                        const redirectUrl = 'http://127.0.0.1:5501/index.html';
+                        const redirectUrl = window.location.origin + '/index.html';
                         
                         // Mettre en place un timeout pour la redirection
                         setTimeout(() => {
                             console.log('⏱️ Exécution de la redirection...');
-                            window.location.href = redirectUrl;
+                            window.location.replace(redirectUrl);
                         }, 100);
                         
                         // Afficher le message de confirmation
