@@ -1176,7 +1176,6 @@
                 } else {
                     // Réservation sans paiement - AFFICHER ET REDIRIGER
                     console.log('🎯 Mode paiement ultérieur - Affichage du message');
-                    showAlert('✅ Réservation enregistrée avec succès!', 'success');
                     
                     // Préparer le texte avec les agences
                     const agencyInfo = reservationData.departureAgency && reservationData.returnAgency 
@@ -1186,11 +1185,16 @@
                     // Alert bloque l'exécution, donc la redirection se fera après que l'utilisateur clique OK
                     alert(`🙏 Merci pour votre confiance!\n\n✅ Votre réservation a été enregistrée avec succès.\n\nNous vous appellerons le plus tôt possible pour finaliser votre réservation.${agencyInfo}\n\n📧 Email: ${customerEmail}\n📞 Téléphone: ${fullPhone || 'Non fourni'}\n\nÀ très bientôt! 🚗`);
                     
-                    console.log('🔄 Redirection vers index.html');
+                    console.log('🔄 Redirection vers index.html après confirmation');
+                    console.log('📍 Current location:', window.location.href);
+                    console.log('📍 Origin:', window.location.origin);
+                    
                     // Redirection immédiate après que l'utilisateur ferme l'alert
-                    const baseUrl = window.location.origin + window.location.pathname.replace('payment.html', '');
-                    console.log('🌐 Base URL:', baseUrl);
-                    window.location.href = baseUrl + 'index.html';
+                    setTimeout(() => {
+                        console.log('⏰ Executing redirect now...');
+                        window.location.replace(window.location.origin + '/index.html');
+                    }, 100);
+                    return; // Stop execution here
                 }
 
             } catch (error) {

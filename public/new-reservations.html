@@ -528,7 +528,13 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to update reservation');
+                    const errorData = await response.json();
+                    if (response.status === 409) {
+                        // Conflict error - show specific message
+                        showAlert('⚠️ ' + errorData.error, 'error');
+                        return;
+                    }
+                    throw new Error(errorData.error || 'Failed to update reservation');
                 }
 
                 await loadReservations();
@@ -539,7 +545,7 @@
                 showAlert(message, 'success');
             } catch (error) {
                 console.error('Erreur:', error);
-                showAlert('Erreur lors de la mise à jour de la réservation', 'error');
+                showAlert('❌ Erreur lors de la mise à jour de la réservation', 'error');
             }
         }
 
