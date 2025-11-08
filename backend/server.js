@@ -23,19 +23,29 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static website files from project root (index.html, admin.html, etc.)
-// Add additional static directories if needed.
-const STATIC_ROOT = path.join(__dirname, '..');
+// Serve static website files. Primary public directory plus legacy root fallback.
+const STATIC_ROOT = path.join(__dirname, '..'); // legacy root (old html files)
+const PUBLIC_ROOT = path.join(__dirname, '..', 'public');
+
+// Mount public first (preferred), then legacy root and pages/
+if (fs.existsSync(PUBLIC_ROOT)) {
+  app.use(express.static(PUBLIC_ROOT));
+  console.log('🗂️ Public directory mounted:', PUBLIC_ROOT);
+} else {
+  console.log('⚠️ Public directory not found, skipping:', PUBLIC_ROOT);
+}
 app.use(express.static(STATIC_ROOT));
-app.use(express.static(path.join(STATIC_ROOT, 'pages'))); // if you have pages/ folder
-console.log('🗂️ Static root mounted:', STATIC_ROOT);
+app.use(express.static(path.join(STATIC_ROOT, 'pages')));
+console.log('🗂️ Legacy static root mounted:', STATIC_ROOT);
 
 // Root route now serves the main website (index.html). If you still want the
 // plain text status, you can move this to /status instead.
 app.get('/', (req, res) => {
-  const indexPath = path.join(STATIC_ROOT, 'index.html');
-  if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
-  return res.status(404).send('index.html not found');
+  const publicIndex = path.join(PUBLIC_ROOT, 'index.html');
+  if (fs.existsSync(publicIndex)) return res.sendFile(publicIndex);
+  const legacyIndex = path.join(STATIC_ROOT, 'index.html');
+  if (fs.existsSync(legacyIndex)) return res.sendFile(legacyIndex);
+  return res.status(404).send('index.html not found in public/ or root');
 });
 
 // Convenience redirect /admin -> /admin.html
@@ -43,19 +53,21 @@ app.get('/admin', (req, res) => res.redirect('/admin.html'));
 
 // Explicit admin.html route (some hosting environments may skip dynamic fallback)
 app.get('/admin.html', (req, res) => {
-  const filePath = path.join(STATIC_ROOT, 'admin.html');
-  if (fs.existsSync(filePath)) return res.sendFile(filePath);
-  return res.status(404).send('admin.html not found');
+  const publicAdmin = path.join(PUBLIC_ROOT, 'admin.html');
+  if (fs.existsSync(publicAdmin)) return res.sendFile(publicAdmin);
+  const legacyAdmin = path.join(STATIC_ROOT, 'admin.html');
+  if (fs.existsSync(legacyAdmin)) return res.sendFile(legacyAdmin);
+  return res.status(404).send('admin.html not found in public/ or root');
 });
 
 // Dynamic .html file fallback (e.g. /admin.html, /payment.html, etc.)
 app.get('/:page.html', (req, res, next) => {
   const fileName = req.params.page + '.html';
-  const filePath = path.join(STATIC_ROOT, fileName);
-  if (fs.existsSync(filePath)) {
-    return res.sendFile(filePath);
-  }
-  return next(); // pass to other routes / 404 handlers
+  const publicPath = path.join(PUBLIC_ROOT, fileName);
+  if (fs.existsSync(publicPath)) return res.sendFile(publicPath);
+  const legacyPath = path.join(STATIC_ROOT, fileName);
+  if (fs.existsSync(legacyPath)) return res.sendFile(legacyPath);
+  return next();
 });
 
 // Optional status endpoint for uptime / monitoring tools
