@@ -14,11 +14,8 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve static files (HTML, CSS, JS, images)
-app.use(express.static(path.join(__dirname)));
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/pages', express.static(path.join(__dirname, 'pages')));
+// Serve static files from public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Add cache control headers to prevent caching issues
 app.use((req, res, next) => {
@@ -28,9 +25,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Root route - serve index.html
+// Root route - serve index.html from public folder
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Simple health check
