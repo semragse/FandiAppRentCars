@@ -21,6 +21,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route - simple confirmation message for deployed environment
+// This helps avoid the default "Cannot GET /" response on platform home URL
+app.get('/', (req, res) => {
+  res.send('API is running and connected to PostgreSQL!');
+});
+
 // Simple health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
