@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
@@ -21,10 +22,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Root route - simple confirmation message for deployed environment
-// This helps avoid the default "Cannot GET /" response on platform home URL
+// Serve static website files from project root (index.html, admin.html, etc.)
+// This exposes only static assets; dynamic API routes remain below.
+app.use(express.static(path.join(__dirname, '..')));
+
+// Root route now serves the main website (index.html). If you still want the
+// plain text status, you can move this to /status instead.
 app.get('/', (req, res) => {
-  res.send('API is running and connected to PostgreSQL!');
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Optional status endpoint for uptime / monitoring tools
+app.get('/status', (req, res) => {
+  const dialect = sequelize.getDialect();
+  res.json({ ok: true, message: 'API running', dialect });
 });
 
 // Simple health check
