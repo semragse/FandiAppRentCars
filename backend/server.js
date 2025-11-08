@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -10,6 +11,12 @@ const { sequelize, Car, Reservation, Setting, PaymentSettings } = require('./mod
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+// Trust proxy for Railway/Heroku deployment
+app.set('trust proxy', 1);
+
+// Enable compression for all responses
+app.use(compression());
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -664,6 +671,33 @@ async function seedData() {
   }
   console.log('✅ Paramètres par défaut créés');
 }
+
+// ============= 404 HANDLER (MUST BE LAST) =============
+// Catch-all 404 handler - must be after all other routes
+app.use((req, res) => {
+  // If request is for API endpoint, return JSON error
+  if (req.path.startsWith('/api') || req.path.match(/^\/(cars|reservations|settings|payment)/)) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+  
+  // For all other paths, try to serve a 404 page or redirect to home
+  const notFoundPath = path.join(PUBLIC_ROOT, '404.html');
+  if (fs.existsSync(notFoundPath)) {
+    return res.status(404).sendFile(notFoundPath);
+  }
+  
+  // Fallback: redirect to home
+  res.redirect('/');
+});
+
+// ============= ERROR HANDLER =============
+app.use((err, req, res, next) => {
+  console.error('❌ Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
+  });
+});
 
 (async () => {
   try {

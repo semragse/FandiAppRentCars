@@ -1,3 +1,7 @@
-[service]
-name = "fandi-backend"
-start = "npm run migrate && npm run start:prod"
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
