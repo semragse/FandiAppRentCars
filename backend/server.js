@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
@@ -23,13 +24,31 @@ app.use((req, res, next) => {
 });
 
 // Serve static website files from project root (index.html, admin.html, etc.)
-// This exposes only static assets; dynamic API routes remain below.
-app.use(express.static(path.join(__dirname, '..')));
+// Add additional static directories if needed.
+const STATIC_ROOT = path.join(__dirname, '..');
+app.use(express.static(STATIC_ROOT));
+app.use(express.static(path.join(STATIC_ROOT, 'pages'))); // if you have pages/ folder
+console.log('🗂️ Static root mounted:', STATIC_ROOT);
 
 // Root route now serves the main website (index.html). If you still want the
 // plain text status, you can move this to /status instead.
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
+  const indexPath = path.join(STATIC_ROOT, 'index.html');
+  if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
+  return res.status(404).send('index.html not found');
+});
+
+// Convenience redirect /admin -> /admin.html
+app.get('/admin', (req, res) => res.redirect('/admin.html'));
+
+// Dynamic .html file fallback (e.g. /admin.html, /payment.html, etc.)
+app.get('/:page.html', (req, res, next) => {
+  const fileName = req.params.page + '.html';
+  const filePath = path.join(STATIC_ROOT, fileName);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  return next(); // pass to other routes / 404 handlers
 });
 
 // Optional status endpoint for uptime / monitoring tools
