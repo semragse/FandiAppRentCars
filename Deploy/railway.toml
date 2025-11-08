@@ -1,0 +1,3 @@
+[service]
+name = "fandi-backend"
+start = "npm run migrate && npm run start:prod"
