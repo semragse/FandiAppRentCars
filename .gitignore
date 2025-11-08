@@ -23,7 +23,7 @@ coverage/
 .env
 .env.*
 
-# Database
-backend/database.sqlite
-*.db
-*.sqlite
+# Database (commented out to track database in git for version control)
+# backend/database.sqlite
+# *.db
+# *.sqlite

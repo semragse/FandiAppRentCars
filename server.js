@@ -49,7 +49,7 @@ app.get('/cars', async (req, res) => {
 // Add a new car
 app.post('/cars', async (req, res) => {
   try {
-    const { name, price, image, locationAgency, seats, fuelType, transmission, airConditioning, doors } = req.body;
+    const { name, price, image, locationAgency, seats, fuelType, transmission, airConditioning, doors, carType } = req.body;
     if (!name || !price || !image || !locationAgency) {
       return res.status(400).json({ error: 'Missing required fields (name, price, image, locationAgency)' });
     }
@@ -64,7 +64,8 @@ app.post('/cars', async (req, res) => {
       fuelType: fuelType || 'Essence SP',
       transmission: transmission || 'Automatique',
       airConditioning: airConditioning !== false,
-      doors: doors || 5
+      doors: doors || 5,
+      carType: carType || 'Berline'
     });
     res.status(201).json(newCar);
   } catch (err) {
@@ -77,7 +78,7 @@ app.post('/cars', async (req, res) => {
 app.put('/cars/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, image, locationAgency, seats, fuelType, transmission, airConditioning, doors } = req.body;
+    const { name, price, image, locationAgency, seats, fuelType, transmission, airConditioning, doors, carType } = req.body;
     
     console.log('📝 PUT /cars/' + id);
     console.log('📦 Données reçues:', { name, price, hasImage: !!image });
@@ -100,6 +101,7 @@ app.put('/cars/:id', async (req, res) => {
     if (transmission !== undefined) car.transmission = transmission;
     if (airConditioning !== undefined) car.airConditioning = airConditioning;
     if (doors !== undefined) car.doors = doors;
+    if (carType !== undefined) car.carType = carType;
 
     await car.save();
     

@@ -1829,7 +1829,19 @@
                     </div>
 
                     <div class="modal-form-group">
-                        <label>👥 Nombre de places *</label>
+                        <label>� Type de voiture *</label>
+                        <select id="newCarType" required>
+                            <option value="Berline">Berline</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Citadine">Citadine</option>
+                            <option value="Luxe">Luxe</option>
+                            <option value="Utilitaire">Utilitaire</option>
+                            <option value="Monospace">Monospace</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>�👥 Nombre de places *</label>
                         <input type="number" id="newCarSeats" placeholder="Ex: 5" min="2" max="9" value="5" required>
                     </div>
 
@@ -1917,7 +1929,19 @@
                     </div>
 
                     <div class="modal-form-group">
-                        <label>👥 Nombre de places *</label>
+                        <label>� Type de voiture *</label>
+                        <select id="editCarModalType" required>
+                            <option value="Berline">Berline</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Citadine">Citadine</option>
+                            <option value="Luxe">Luxe</option>
+                            <option value="Utilitaire">Utilitaire</option>
+                            <option value="Monospace">Monospace</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>�👥 Nombre de places *</label>
                         <input type="number" id="editCarModalSeats" placeholder="Ex: 5" min="2" max="9" required>
                     </div>
 
@@ -3400,6 +3424,7 @@
             const price = parseFloat(document.getElementById('newCarPrice').value);
             const imageFile = document.getElementById('newCarImage').files[0];
             const locationAgency = document.getElementById('newCarLocationAgency').value;
+            const carType = document.getElementById('newCarType').value;
             const seats = parseInt(document.getElementById('newCarSeats').value);
             const fuelType = document.getElementById('newCarFuelType').value;
             const transmission = document.getElementById('newCarTransmission').value;
@@ -3427,6 +3452,7 @@
                             price: price,
                             image: imageBase64,
                             locationAgency: locationAgency,
+                            carType: carType,
                             seats: seats,
                             fuelType: fuelType,
                             transmission: transmission,
@@ -3473,6 +3499,7 @@
             document.getElementById('editCarModalName').value = car.name;
             document.getElementById('editCarModalPrice').value = car.price;
             document.getElementById('editCarModalLocationAgency').value = car.locationAgency || '';
+            document.getElementById('editCarModalType').value = car.carType || 'Berline';
             document.getElementById('editCarModalSeats').value = car.seats || 5;
             document.getElementById('editCarModalFuelType').value = car.fuelType || 'Essence SP';
             document.getElementById('editCarModalTransmission').value = car.transmission || 'Automatique';
@@ -3522,6 +3549,7 @@
             const name = document.getElementById('editCarModalName').value.trim();
             const price = parseFloat(document.getElementById('editCarModalPrice').value);
             const locationAgency = document.getElementById('editCarModalLocationAgency').value;
+            const carType = document.getElementById('editCarModalType').value;
             const seats = parseInt(document.getElementById('editCarModalSeats').value);
             const fuelType = document.getElementById('editCarModalFuelType').value;
             const transmission = document.getElementById('editCarModalTransmission').value;
@@ -3541,6 +3569,7 @@
                 name: name,
                 price: price,
                 locationAgency: locationAgency,
+                carType: carType,
                 seats: seats,
                 fuelType: fuelType,
                 transmission: transmission,

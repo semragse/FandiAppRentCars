@@ -51,6 +51,15 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 5
+    },
+    carType: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'Berline',
+      field: 'car_type',
+      validate: {
+        isIn: [['Berline', 'SUV', 'Citadine', 'Luxe', 'Utilitaire', 'Monospace']]
+      }
     }
   }, {
     tableName: 'cars'
