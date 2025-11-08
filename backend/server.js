@@ -41,6 +41,13 @@ app.get('/', (req, res) => {
 // Convenience redirect /admin -> /admin.html
 app.get('/admin', (req, res) => res.redirect('/admin.html'));
 
+// Explicit admin.html route (some hosting environments may skip dynamic fallback)
+app.get('/admin.html', (req, res) => {
+  const filePath = path.join(STATIC_ROOT, 'admin.html');
+  if (fs.existsSync(filePath)) return res.sendFile(filePath);
+  return res.status(404).send('admin.html not found');
+});
+
 // Dynamic .html file fallback (e.g. /admin.html, /payment.html, etc.)
 app.get('/:page.html', (req, res, next) => {
   const fileName = req.params.page + '.html';
