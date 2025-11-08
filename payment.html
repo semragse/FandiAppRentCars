@@ -1120,7 +1120,10 @@
                     customerEmail: customerEmail,
                     customerPhone: fullPhone || '+213 771 39 14 80',
                     totalPrice: parseInt(reservationData.total, 10),
-                    notes: notes + (paymentMethod !== 'card' ? `\n\nMode de paiement: Paiement ultérieur` : '')
+                    notes: notes,
+                    paymentMethod: paymentMethod === 'later' ? 'reserve_without_payment' : 'card',
+                    paymentStatus: 'pending',
+                    paymentNotes: paymentMethod === 'later' ? 'Réservation sans paiement - à confirmer' : ''
                 };
 
                 console.log('📤 Envoi de la réservation:', reservationPayload);

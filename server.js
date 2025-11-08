@@ -149,7 +149,12 @@ app.get('/reservations', async (req, res) => {
 // Add a reservation with overlap validation
 app.post('/reservations', async (req, res) => {
   try {
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status } = req.body;
+    const { 
+      carId, startDate, endDate, customerName, customerEmail, customerPhone, 
+      totalPrice, notes, documents, departureAgency, returnAgency, status,
+      paymentMethod, paymentStatus, paypalTransactionId, paypalScreenshot,
+      stripePaymentIntentId, bankTransferReceipt, paymentNotes
+    } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail || !departureAgency || !returnAgency) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -214,6 +219,13 @@ app.post('/reservations', async (req, res) => {
       notes: notes || '',
       documents: documents || null,
       status: status || 'pending', // Utiliser le status fourni ou 'pending' par défaut
+      paymentMethod: paymentMethod || null,
+      paymentStatus: paymentStatus || 'pending',
+      paypalTransactionId: paypalTransactionId || null,
+      paypalScreenshot: paypalScreenshot || null,
+      stripePaymentIntentId: stripePaymentIntentId || null,
+      bankTransferReceipt: bankTransferReceipt || null,
+      paymentNotes: paymentNotes || null,
     });
     res.status(201).json(reservation);
   } catch (err) {
@@ -242,7 +254,12 @@ app.delete('/reservations/:id', async (req, res) => {
 app.put('/reservations/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status } = req.body;
+    const { 
+      carId, startDate, endDate, customerName, customerEmail, customerPhone, 
+      totalPrice, notes, documents, departureAgency, returnAgency, status,
+      paymentMethod, paymentStatus, paypalTransactionId, paypalScreenshot,
+      stripePaymentIntentId, bankTransferReceipt, paymentNotes
+    } = req.body;
     
     const reservation = await Reservation.findByPk(id);
     if (!reservation) {
@@ -262,6 +279,13 @@ app.put('/reservations/:id', async (req, res) => {
     if (departureAgency !== undefined) reservation.departureAgency = departureAgency;
     if (returnAgency !== undefined) reservation.returnAgency = returnAgency;
     if (status !== undefined) reservation.status = status;
+    if (paymentMethod !== undefined) reservation.paymentMethod = paymentMethod;
+    if (paymentStatus !== undefined) reservation.paymentStatus = paymentStatus;
+    if (paypalTransactionId !== undefined) reservation.paypalTransactionId = paypalTransactionId;
+    if (paypalScreenshot !== undefined) reservation.paypalScreenshot = paypalScreenshot;
+    if (stripePaymentIntentId !== undefined) reservation.stripePaymentIntentId = stripePaymentIntentId;
+    if (bankTransferReceipt !== undefined) reservation.bankTransferReceipt = bankTransferReceipt;
+    if (paymentNotes !== undefined) reservation.paymentNotes = paymentNotes;
 
     await reservation.save();
     res.json(reservation);

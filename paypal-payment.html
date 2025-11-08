@@ -487,6 +487,18 @@
             try {
                 const transactionId = document.getElementById('transactionId').value;
                 const notes = document.getElementById('notes').value;
+                const screenshotFile = document.getElementById('screenshot').files[0];
+                
+                // Convertir la capture d'écran en base64 si elle existe
+                let screenshotBase64 = null;
+                if (screenshotFile) {
+                    screenshotBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(screenshotFile);
+                    });
+                }
                 
                 // Créer la réservation avec statut pending
                 const reservationResponse = await fetch(`${API_BASE_URL}/reservations`, {
@@ -498,8 +510,9 @@
                         ...reservationData,
                         paymentMethod: 'paypal',
                         paymentStatus: 'pending',
-                        transactionId: transactionId,
-                        notes: notes || '',
+                        paypalTransactionId: transactionId,
+                        paypalScreenshot: screenshotBase64,
+                        paymentNotes: notes || '',
                         notification: {
                             type: 'payment_pending',
                             message: `Nouveau paiement PayPal en attente de vérification (Transaction ID: ${transactionId}) pour ${reservationData.carName}`,

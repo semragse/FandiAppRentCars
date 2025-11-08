@@ -331,13 +331,15 @@
                             },
                             body: JSON.stringify({
                                 ...reservationData,
-                                paymentMethod: 'card',
-                                paymentStatus: 'paid',
+                                paymentMethod: 'stripe',
+                                paymentStatus: 'completed',
+                                stripePaymentIntentId: paymentIntent.id,
+                                paymentNotes: `Paiement par ${paymentDetails.brand} **** ${paymentDetails.last4}`,
                                 notification: {
                                     type: 'payment_success',
                                     message: `Nouveau paiement reçu par ${paymentDetails.method} (${paymentDetails.brand} **** ${paymentDetails.last4}) pour la réservation ${reservationData.carId}`,
                                     amount: reservationData.totalPrice,
-                                    paymentType: paymentDetails.method
+                                    paymentType: 'Stripe (Carte bancaire)'
                                 }
                             })
                         });

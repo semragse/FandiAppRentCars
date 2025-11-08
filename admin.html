@@ -2626,6 +2626,36 @@
                             <div class="reservation-customer">
                                 💰 ${reservation.totalPrice}€
                             </div>
+                            ${reservation.paymentMethod ? `
+                            <div class="reservation-customer" style="background: #e3f2fd; padding: 8px; border-radius: 4px; margin-top: 8px;">
+                                <strong>💳 Mode de paiement:</strong> 
+                                ${reservation.paymentMethod === 'stripe' ? '💳 Stripe (Carte bancaire)' : 
+                                  reservation.paymentMethod === 'paypal' ? '💰 PayPal' : 
+                                  reservation.paymentMethod === 'bank_transfer' ? '🏦 Virement bancaire' : 
+                                  reservation.paymentMethod === 'reserve_without_payment' ? '📞 Réservé sans payer' : 
+                                  reservation.paymentMethod}
+                            </div>
+                            ${reservation.paymentStatus ? `
+                            <div class="reservation-customer" style="background: ${reservation.paymentStatus === 'completed' ? '#d4edda' : '#fff3cd'}; padding: 8px; border-radius: 4px;">
+                                <strong>📊 Statut:</strong> 
+                                ${reservation.paymentStatus === 'completed' ? '✅ Payé' : 
+                                  reservation.paymentStatus === 'pending' ? '⏳ En attente' : 
+                                  reservation.paymentStatus === 'failed' ? '❌ Échoué' : 
+                                  reservation.paymentStatus}
+                            </div>` : ''}
+                            ${reservation.paypalTransactionId ? `
+                            <div class="reservation-customer" style="background: #fff3cd; padding: 8px; border-radius: 4px;">
+                                <strong>🆔 Transaction PayPal:</strong> ${reservation.paypalTransactionId}
+                            </div>` : ''}
+                            ${reservation.stripePaymentIntentId ? `
+                            <div class="reservation-customer" style="background: #d4edda; padding: 8px; border-radius: 4px;">
+                                <strong>🆔 ID Stripe:</strong> ${reservation.stripePaymentIntentId}
+                            </div>` : ''}
+                            ${reservation.paymentNotes ? `
+                            <div class="reservation-customer" style="background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                                <strong>📝 Notes de paiement:</strong> ${reservation.paymentNotes}
+                            </div>` : ''}
+                            ` : ''}
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-direction: column;">
                             ${whatsappButton}
@@ -3215,10 +3245,32 @@
                     <p><strong>Prix:</strong> ${reservation.totalPrice}€</p>
                     ${reservation.notes ? `<p><strong>Notes:</strong> ${reservation.notes}</p>` : ''}
                 </div>
+
+                ${reservation.paymentMethod ? `
+                <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h3 style="margin: 0 0 0.5rem 0;">💳 Informations de paiement</h3>
+                    <p><strong>Mode de paiement:</strong> 
+                        ${reservation.paymentMethod === 'stripe' ? '💳 Stripe (Carte bancaire)' : 
+                          reservation.paymentMethod === 'paypal' ? '💰 PayPal' : 
+                          reservation.paymentMethod === 'bank_transfer' ? '🏦 Virement bancaire' : 
+                          reservation.paymentMethod === 'reserve_without_payment' ? '📞 Réservé sans payer' : 
+                          reservation.paymentMethod}
+                    </p>
+                    <p><strong>Statut:</strong> 
+                        ${reservation.paymentStatus === 'completed' ? '✅ Payé' : 
+                          reservation.paymentStatus === 'pending' ? '⏳ En attente de vérification' : 
+                          reservation.paymentStatus === 'failed' ? '❌ Échoué' : 
+                          reservation.paymentStatus || 'N/A'}
+                    </p>
+                    ${reservation.paypalTransactionId ? `<p><strong>ID Transaction PayPal:</strong> ${reservation.paypalTransactionId}</p>` : ''}
+                    ${reservation.stripePaymentIntentId ? `<p><strong>ID Paiement Stripe:</strong> ${reservation.stripePaymentIntentId}</p>` : ''}
+                    ${reservation.paymentNotes ? `<p><strong>Notes de paiement:</strong> ${reservation.paymentNotes}</p>` : ''}
+                </div>
+                ` : ''}
             `;
 
             // Vérifier s'il y a des documents
-            const hasDocuments = documents.cin || documents.permis || documents.autre;
+            const hasDocuments = documents.cin || documents.permis || documents.autre || reservation.paypalScreenshot || reservation.bankTransferReceipt;
 
             if (!hasDocuments) {
                 html += `
@@ -3229,6 +3281,16 @@
                 `;
             } else {
                 html += '<div style="display: grid; gap: 1.5rem;">';
+
+                // Capture d'écran PayPal
+                if (reservation.paypalScreenshot) {
+                    html += createDocumentView('💰 Capture d\'écran PayPal', reservation.paypalScreenshot);
+                }
+
+                // Reçu de virement bancaire
+                if (reservation.bankTransferReceipt) {
+                    html += createDocumentView('🏦 Reçu de Virement Bancaire', reservation.bankTransferReceipt);
+                }
 
                 // CIN
                 if (documents.cin) {

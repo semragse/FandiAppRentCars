@@ -541,7 +541,10 @@
                             customerEmail: reservationData.customerEmail,
                             customerPhone: reservationData.customerPhone || '+213 771 39 14 80',
                             totalPrice: parseInt(reservationData.totalPrice, 10),
-                            notes: (reservationData.notes || '') + '\n\nMode de paiement: Virement bancaire'
+                            notes: reservationData.notes || '',
+                            paymentMethod: 'bank_transfer',
+                            paymentStatus: 'pending',
+                            paymentNotes: 'Mode de paiement: Virement bancaire'
                         };
                         
                         console.log('📤 Création de la réservation:', reservationPayload);

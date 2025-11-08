@@ -59,6 +59,41 @@ module.exports = (sequelize) => {
       allowNull: true,
       defaultValue: 'pending', // pending, accepted, refused
     },
+    // Payment information
+    paymentMethod: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      // 'stripe', 'paypal', 'bank_transfer'
+    },
+    paymentStatus: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'pending', // pending, completed, failed
+    },
+    // PayPal specific
+    paypalTransactionId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    paypalScreenshot: {
+      type: DataTypes.TEXT, // base64 image
+      allowNull: true,
+    },
+    // Stripe specific
+    stripePaymentIntentId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    // Bank transfer specific
+    bankTransferReceipt: {
+      type: DataTypes.TEXT, // base64 image
+      allowNull: true,
+    },
+    // General payment notes
+    paymentNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

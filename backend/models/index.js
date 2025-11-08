@@ -31,8 +31,22 @@ if (process.env.DATABASE_URL) {
       logging: false,
     });
   } catch (error) {
-    console.error('⚠️ SQLite3 not available and DATABASE_URL not set');
-    console.error('Please set DATABASE_URL environment variable for PostgreSQL');
+    console.error('');
+    console.error('❌ DATABASE CONFIGURATION ERROR');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('⚠️  SQLite3 is not available in this environment');
+    console.error('⚠️  DATABASE_URL environment variable is not set');
+    console.error('');
+    console.error('📋 TO FIX THIS ON RAILWAY:');
+    console.error('   1. Go to your Railway project');
+    console.error('   2. Click "+ New"');
+    console.error('   3. Select "Database"');
+    console.error('   4. Choose "Add PostgreSQL"');
+    console.error('   5. Railway will automatically set DATABASE_URL');
+    console.error('');
+    console.error('📖 See RAILWAY_SETUP.md for detailed instructions');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('');
     process.exit(1);
   }
 }

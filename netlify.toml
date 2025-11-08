@@ -12,12 +12,12 @@
   to = "/.netlify/functions/api/:splat"
   status = 200
 
-# SPA routing - toutes les routes vers index.html
+# SPA routing - toutes les routes HTML vers index.html (sauf les fichiers statiques)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin", "user"]}
+  force = false
 
 # Headers de sécurité
 [[headers]]
