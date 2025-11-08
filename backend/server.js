@@ -199,7 +199,7 @@ app.get('/reservations', async (req, res) => {
 // Add a reservation with overlap validation
 app.post('/reservations', async (req, res) => {
   try {
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status, paymentMethod, paymentStatus, paymentNotes, paypalTransactionId, stripePaymentIntentId, bankTransferReceipt } = req.body;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status, paymentMethod, paymentStatus, paymentNotes, paypalTransactionId, paypalScreenshot, stripePaymentIntentId, bankTransferReceipt } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail || !departureAgency || !returnAgency) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -268,6 +268,7 @@ app.post('/reservations', async (req, res) => {
       paymentStatus: paymentStatus || null,
       paymentNotes: paymentNotes || null,
       paypalTransactionId: paypalTransactionId || null,
+      paypalScreenshot: paypalScreenshot || null,
       stripePaymentIntentId: stripePaymentIntentId || null,
       bankTransferReceipt: bankTransferReceipt || null,
     });
