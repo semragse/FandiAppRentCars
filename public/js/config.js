@@ -17,8 +17,9 @@ const CONFIG = {
             return savedApiUrl;
         }
         
-        // Par défaut, essaye l'API sur le même domaine au port 3001
-        return `${window.location.protocol}//${window.location.hostname}:3001`;
+        // En production (Railway, Heroku, etc.), l'API est sur le même domaine/port
+        // Pas besoin de spécifier le port, le serveur gère tout
+        return `${window.location.protocol}//${window.location.host}`;
     },
     
     // Sauvegarder une nouvelle URL d'API
