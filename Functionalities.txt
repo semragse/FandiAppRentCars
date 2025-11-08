@@ -14,7 +14,7 @@ Following the proper 4-layer development process:
    - Options: Berline, SUV, Citadine, Luxe, Utilitaire, Monospace
    - Database recreated with: npm run seed
 
-2️⃣ API LAYER ✅
+2️⃣ API LAYER ✅taskkill /F /IM node.exe /T 2>$nulltaskkill /F /IM node.exe /T 2>$nulltaskkill /F /IM node.exe /T 2>$null
    - Updated POST /cars endpoint in server.js
    - Updated PUT /cars/:id endpoint in server.js
    - carType handled in create and update operations

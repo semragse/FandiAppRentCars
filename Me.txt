@@ -13,5 +13,8 @@ git checkout id 8634d4a
 
 Demmarer back-end :
 cd backend; npm start
+npm start
 
 ADMIN_PASSWORD = 'FandiCars2025';
+
+Envoyer email a moi et de confirmation et de contact us 
