@@ -199,7 +199,7 @@ app.get('/reservations', async (req, res) => {
 // Add a reservation with overlap validation
 app.post('/reservations', async (req, res) => {
   try {
-    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status } = req.body;
+    const { carId, startDate, endDate, customerName, customerEmail, customerPhone, totalPrice, notes, documents, departureAgency, returnAgency, status, paymentMethod, paymentStatus, paymentNotes, paypalTransactionId, stripePaymentIntentId, bankTransferReceipt } = req.body;
     if (!carId || !startDate || !endDate || !customerName || !customerEmail || !departureAgency || !returnAgency) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -264,6 +264,12 @@ app.post('/reservations', async (req, res) => {
       notes: notes || '',
       documents: documents || null,
       status: status || 'pending', // Utiliser le status fourni ou 'pending' par défaut
+      paymentMethod: paymentMethod || null,
+      paymentStatus: paymentStatus || null,
+      paymentNotes: paymentNotes || null,
+      paypalTransactionId: paypalTransactionId || null,
+      stripePaymentIntentId: stripePaymentIntentId || null,
+      bankTransferReceipt: bankTransferReceipt || null,
     });
     res.status(201).json(reservation);
   } catch (err) {
@@ -297,6 +303,35 @@ app.put('/reservations/:id', async (req, res) => {
     const reservation = await Reservation.findByPk(id);
     if (!reservation) {
       return res.status(404).json({ error: 'Reservation not found' });
+    }
+
+    // If changing status to 'accepted', check for conflicts
+    if (status === 'accepted' && reservation.status !== 'accepted') {
+      const start = new Date(startDate || reservation.startDate);
+      const end = new Date(endDate || reservation.endDate);
+      const checkCarId = carId || reservation.carId;
+
+      // Check for overlapping accepted reservations (excluding current reservation)
+      const overlaps = await Reservation.findAll({
+        where: {
+          carId: checkCarId,
+          status: 'accepted',
+          id: { [require('sequelize').Op.ne]: id } // Exclude current reservation
+        }
+      });
+
+      const conflict = overlaps.some(r => {
+        const rStart = new Date(r.startDate);
+        const rEnd = new Date(r.endDate);
+        return start <= rEnd && end >= rStart;
+      });
+
+      if (conflict) {
+        console.log('❌ Cannot accept: Conflict with existing accepted reservation');
+        return res.status(409).json({ 
+          error: 'Cette voiture est déjà réservée pour ces dates. Veuillez refuser cette réservation ou choisir d\'autres dates.' 
+        });
+      }
     }
 
     // Update fields
